@@ -35,7 +35,7 @@ spring:
   data:
     # Redis setting
     redis:
-      host: ${server.base-url}
+      host: redis # Redis 도커 컨테이너의 이름을 사용하여 접근 (같은 네트워크로 묶여야함)
       port: 6379
 
     # MongoDB setting
