@@ -10,8 +10,8 @@ pipeline {
             ],
             causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
             token: 'nowdoboss-be-springboot',
-            printContributedVariables: true,
-            printPostContent: true,
+            printContributedVariables: false,
+            printPostContent: false,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
             regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*BE-Springboot)'
         )
