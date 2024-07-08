@@ -6,7 +6,7 @@ pipeline {
                 [key: 'USER_NAME', value: '$.pull_request.user.login', expressionType: 'JSONPath'],
                 [key: 'IF_MERGED', value: '$.pull_request.merged', expressionType: 'JSONPath'],
                 [key: 'BASE_BRANCH', value: '$.pull_request.base.ref', expressionType: 'JSONPath'],
-                [key: 'LABEL', value: '$.labels[*].name', expressionType: 'JSONPath']
+                [key: 'LABEL', value: '$.pull_request.labels[*].name', expressionType: 'JSONPath']
             ],
             causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
             token: 'nowdoboss-be-springboot',
@@ -23,6 +23,17 @@ pipeline {
                 script {
                     // 빌드 설명 설정
                     currentBuild.description = "Merge requested by: ${env.USER_NAME}"
+                }
+            }
+        }
+
+        stage('Verify Webhook Payload') {
+            steps {
+                script {
+                    echo "User Name: ${env.USER_NAME}"
+                    echo "If Merged: ${env.IF_MERGED}"
+                    echo "Base Branch: ${env.BASE_BRANCH}"
+                    echo "Label: ${env.LABEL}"
                 }
             }
         }
