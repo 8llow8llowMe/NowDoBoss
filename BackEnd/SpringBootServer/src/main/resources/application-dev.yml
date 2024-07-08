@@ -1,6 +1,6 @@
 server:
-  base-url: k10c208.p.ssafy.io
-  https-url: https://k10c208.p.ssafy.io
+  base-url: 1.235.23.72
+  https-url: https://1.235.23.72
   fastapi-url: http://13.124.23.220:8000
 
 spring:
@@ -28,8 +28,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # DB 드라이버
     url: jdbc:mysql://${server.base-url}:3306/nowdoboss?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true       # 데이터베이스 URL
-    username: ENC(CIv9gIlHdeV0RVfvISnt1Q==)                     # 데이터베이스 계정명
-    password: ENC(8JDguUr+RtTPfR+4re7EluKRxKLKmaLb)             # 데이터베이스 계정 비밀번호
+    username: ENC(NYqtFSaM0KYco+Y8zivxH10AFbmGUc5b)             # 데이터베이스 계정명
+    password: ENC(1+qm22EMFffu+LHZSW+HOP3Ikh9gK4vY)             # 데이터베이스 계정 비밀번호
 
   # NoSQL setting
   data:
@@ -51,8 +51,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ENC(9zcJxzMJjdfsV97O7BJQvAtUCYHyAV12FmzBkDqpDW8=)
-    password: ENC(bad9dzuo4Yv1McadA8EOSn13JEEl/6UeyvsknQfCXyQ=)
+    username: ENC(+5jsIIJ6sQhfHib/WLZpOFVfaUB3j8nSAPvugM5tbA0=)
+    password: ENC(fXL++uSC79xcGgMraAlzsef+TJaoxLIsEJlEtsWt/gU=)
     properties:
       mail:
         smtp:
@@ -98,22 +98,22 @@ logging:
 
 # jwt setting
 jwt:
-  accessKey: ENC(s0vsxAuXmlzr6DjkUVLrlIS+MdTML5arOQyKWar2qbFPkVVJ1zZoR09t83GnhFYhzIvLDaD119HeajudDJS4GXxVTkd+M/zQ/q1ssX4aw00y+52LOysZk/q/I3T4a3zYmOxfYI4aCslih6D5TTl5rQnPeZV2rmjdJXAg1X7owfGsquBPnuUptjuKxteIdEjtFFp1SF9QZ/+TvWyYrlwH1Q==)
-  refreshKey: ENC(gE+DTAeZ7HD32Rd6u5HcfJu+bg4kgdULucqZWVJCbHG5q5SE53YWhNuQcSyE61MVF8Cow5idsgt1RoMi3w0ri7Bq57Fr6+m6qr5bi+kXL+nQOv/GWoPcj2DxteTB5izXHEp5fzC5uq1m8QrltRiQa1WfY8s1w6myZFWqPzn4S8FjoR/7/4oG7XU/Q/+HV1I0viF/51ziOKJFVn0nPAyMnQ==)
+  accessKey: ENC(sVO5iJmm3kQWp+iZwdwYOHW0o4mkgUQTv5AcpmBJ3tCSuTe59lryqbOj57lG9bv133Sr5fR9RRbY0I/mtphYQ2In6Key9xPsxLDs7izg+d5k21KswSys5PZ8h1T7Aq3dNujkA9DBkOGi3JinArAlsJNVcn2CoSyiVAd0Ke4D1SVwjnzMNMjPCkDHf9A9oTP6k2L+z/CAPd9338OYqS2SnQ==)
+  refreshKey: ENC(qvalG2VA7BkYezISPg6ik5iNLpB4062CoNvw3gzFcWHNwciYfCkRO9wklS1r9zKAJeTsi9f5ewtz4m/o+u2CjUAqrZIWJ+WTuFFV1G9o3hR+61vG7dLa+81lX7OljJD6jq/zrWBUjDUNwBPcZVkuvVKkXs03+L3/EYr0WzykXKkgpvt9q0LkUtskHYJNnsvBxNxivjpiUuxOwbfD0DRSAA==)
   accessExpiration: PT420M  # 420분 (PT420M)
   refreshExpiration: PT10080M  # 10080분 (7일) (PT10080M)
 
 # firebase setting
 app:
   firebase-configuration-file: classpath:serviceAccountKey.json
-  firebase-bucket: ENC(kEjE5eNrPFCEldmd4VOt0mXnXI2qkPVNJIhOBdW8K60=)
+  firebase-bucket: ENC(QyKD4uz1kofezMLc1GD9dpLblXKaIfU+nhv1KP3JinQ=)
   firebase-project-id: nowdoboss
 
 # OAUTH2.0 Setting
 oauth:
   kakao:
-    client-id: ENC(Er9vs53WOnigwpkw3PMICW6PwM0fN0m1xbjy9AIEqdSqyMhgFAKQkFnG2E1xxNFE)   # REST API 키
-    client-secret: ENC(15fElLNo9a/0jmRDVVdspIQYQQemm1JLA6ZW8G28x8J1PgPsbsRgwdol46dAfuug) # 보안 -> Client Secret 키
+    client-id: ENC(g/Vx8WTW7h5I2QZf+9dtLW/7kjmFO8ShBdsZTCs5X0737/ionud6CrjbnHWW/yx5)   # REST API 키
+    client-secret: ENC(asP3isod96DLoonCJyrARCQRjHmExfVqQQoksnX460rHQ5w8rdzRMYqUGZyswq9E) # 보안 -> Client Secret 키
     redirect-uri: ${server.https-url}/member/loading/kakao
     scope:
       - profile_nickname
@@ -122,8 +122,8 @@ oauth:
 #      - name
 
   naver:
-    client-id: ENC(+VjRqdSmB6m1Jvl1ZJGJRW+bTtY4tJNh123J0sHB4QU=)
-    client-secret: ENC(0BeyGmHNDHLJW5hudtEfpEpq+0hFiGaO)
+    client-id: ENC(8NHWe8Pgm5HfHuGZIqIsoJoOZHq/FEp1b2s9nrWwyAw=)
+    client-secret: ENC(OWV9NuO9XtzrcStSseRpG0aLL7wUg06y)
     redirect_uri: ${server.https-url}/member/loading/naver
     scope:
       - nickname
@@ -132,8 +132,8 @@ oauth:
       - profile_image
 
   google:
-    client_id: ENC(cDBVfDvLY03EnW9oNtZ9XqgVTS1otEDtR+jbK/4o2cK67zN1bWTfsX/bBJNwjKW3pP2iu0LzCLwG3LUVn8AJyZb5ENsfeN3DavnK+k0SeASHOTrlvZWPxA==)
-    client_secret: ENC(FEWnh24Bb7QzhYBqVbWowEN+fJkgt0qVchd8MVcwNBwdBl8oRKn9qIz7Ff22gtNI)
+    client_id: ENC(h60iOgCEaWm1FoBAE2egg1lFRiY2KDxtJk8hWsM3o2Pqc82z9xjFBpU27igPlAFZNvsuJPAiTihg9eixh8hXVje40XNOHBirDhNoqeCPM2VKGpeQtFAEZg==)
+    client_secret: ENC(WMCJejXDWzF/LMCkmM6nAwF6T6gnF1U/wPsSLLnWwr27VyggAbLclQmiwUM1YgWU)
     redirect_uri: ${server.https-url}/member/loading/google
     scope:
       - profile
