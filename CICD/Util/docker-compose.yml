@@ -24,7 +24,7 @@ services:
 
   # zookeeper 설정
   zookeeper:
-    image: confluentinc/cp-zookeeper:5.5.1
+    image: confluentinc/cp-zookeeper:latest.arm64
     container_name: zookeeper
     ports:
       - "32181:32181"
@@ -36,7 +36,7 @@ services:
 
   # kafka-1 설정
   kafka-1:
-    image: confluentinc/cp-kafka:5.5.1
+    image: confluentinc/cp-kafka:latest.arm64
     container_name: kafka-1
     depends_on:
       - zookeeper
@@ -60,7 +60,7 @@ services:
 
   # kafka-2 설정
   kafka-2:
-    image: confluentinc/cp-kafka:5.5.1
+    image: confluentinc/cp-kafka:latest.arm64
     container_name: kafka-2
     depends_on:
       - zookeeper
@@ -84,7 +84,7 @@ services:
 
   # kafka-3 설정
   kafka-3:
-    image: confluentinc/cp-kafka:5.5.1
+    image: confluentinc/cp-kafka:latest.arm64
     container_name: kafka-3
     depends_on:
       - zookeeper
