@@ -8,12 +8,12 @@ pipeline {
                 [key: 'BASE_BRANCH', value: '$.object_attributes.target_branch', expressionType: 'JSONPath'],
                 [key: 'LABEL', value: '$.labels[*].title', expressionType: 'JSONPath']
             ],
-            causeString: 'Triggered by GitLab Merge Request by ${USER_NAME}',
-            token: 'backend-springboot',
+            causeString: 'Triggered by GitHub Merge Request by ${USER_NAME}',
+            token: 'nowdoboss-backend-springboot',
             printContributedVariables: true,
             printPostContent: true,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
-            regexpFilterExpression: '(?=.*merged)(?=.*develop)(?=.*BackEnd)'
+            regexpFilterExpression: '(?=.*merged)(?=.*develop)(?=.*BE-Springboot)'
         )
     }
 
