@@ -4,40 +4,40 @@ services:
   # Redis 설정
   redis:
     image: redis # 사용할 Docker 이미지. 이 경우 공식 Redis 이미지를 사용합니다.
-    container_name: nowdoboss_redis # 생성될 Docker 컨테이너의 이름을 지정합니다.
+    container_name: redis # 생성될 Docker 컨테이너의 이름을 지정합니다.
     restart: always # 컨테이너가 실패하거나 Docker가 재시작될 때 자동으로 컨테이너를 재시작하도록 설정합니다.
     ports:
       - "6379:6379" # Redis 서버의 기본 포트 6379를 호스트의 같은 포트에 바인딩합니다. 이 설정은 외부에서 Redis 서버에 접근할 수 있게 합니다.
     networks:
-      - nowdoboss_net # 이 컨테이너가 연결될 네트워크. 이 네트워크 설정을 통해 다른 서비스와의 네트워크 분리 및 통신을 관리합니다.
+      - 8llow8llowme_net # 이 컨테이너가 연결될 네트워크. 이 네트워크 설정을 통해 다른 서비스와의 네트워크 분리 및 통신을 관리합니다.
     command: ["sh", "-c", "redis-server --notify-keyspace-events Ex"]
 
   # SonarQube 설정
   sonarqube:
     image: sonarqube:latest
-    container_name: nowdoboss_sonarqube
+    container_name: sonarqube
     restart: always
     ports:
       - "9000:9000"
     networks:
-      - nowdoboss_net # 이 컨테이너가 연결될 네트워크. 이 네트워크 설정을 통해 다른 서비스와의 네트워크 분리 및 통신을 관리합니다.
+      - 8llow8llowme_net # 이 컨테이너가 연결될 네트워크. 이 네트워크 설정을 통해 다른 서비스와의 네트워크 분리 및 통신을 관리합니다.
 
   # zookeeper 설정
   zookeeper:
     image: confluentinc/cp-zookeeper:5.5.1
-    container_name: nowdoboss_zookeeper
+    container_name: zookeeper
     ports:
       - "32181:32181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
     networks:
-      - nowdoboss_net
+      - 8llow8llowme_net
 
   # kafka-1 설정
   kafka-1:
     image: confluentinc/cp-kafka:5.5.1
-    container_name: nowdoboss_kafka-1
+    container_name: kafka-1
     depends_on:
       - zookeeper
     ports:
@@ -45,7 +45,7 @@ services:
     environment:
       TZ: Asia/Seoul
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: nowdoboss_zookeeper:32181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:29092,EXTERNAL://localhost:9092
@@ -56,12 +56,12 @@ services:
       KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
       KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
     networks:
-      - nowdoboss_net
+      - 8llow8llowme_net
 
   # kafka-2 설정
   kafka-2:
     image: confluentinc/cp-kafka:5.5.1
-    container_name: nowdoboss_kafka-2
+    container_name: kafka-2
     depends_on:
       - zookeeper
     ports:
@@ -69,7 +69,7 @@ services:
     environment:
       TZ: Asia/Seoul
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: nowdoboss_zookeeper:32181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:29093,EXTERNAL://localhost:9093
@@ -80,12 +80,12 @@ services:
       KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
       KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
     networks:
-      - nowdoboss_net
+      - 8llow8llowme_net
 
   # kafka-3 설정
   kafka-3:
     image: confluentinc/cp-kafka:5.5.1
-    container_name: nowdoboss_kafka-3
+    container_name: kafka-3
     depends_on:
       - zookeeper
     ports:
@@ -93,7 +93,7 @@ services:
     environment:
       TZ: Asia/Seoul
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: nowdoboss_zookeeper:32181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:29094,EXTERNAL://localhost:9094
@@ -104,12 +104,12 @@ services:
       KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
       KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
     networks:
-      - nowdoboss_net
+      - 8llow8llowme_net
 
   # kafka-ui 설정
   kafka-ui:
     image: provectuslabs/kafka-ui
-    container_name: nowdoboss_kafka-ui
+    container_name: kafka-ui
     ports:
       - "8090:8080"
     restart: always
@@ -119,9 +119,9 @@ services:
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:29092,kafka-2:29093,kafka-3:29094
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:32181
     networks:
-      - nowdoboss_net
+      - 8llow8llowme_net
 
 networks:
-  nowdoboss_net:
-    name: nowdoboss_net
+  8llow8llowme_net:
+    name: 8llow8llowme_net
     driver: bridge

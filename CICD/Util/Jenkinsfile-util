@@ -3,17 +3,17 @@ pipeline {
     triggers {
         GenericTrigger(
             genericVariables: [
-                [key: 'USER_NAME', value: '$.user.name', expressionType: 'JSONPath'],
-                [key: 'IF_MERGED', value: '$.object_attributes.state', expressionType: 'JSONPath'],
-                [key: 'BASE_BRANCH', value: '$.object_attributes.target_branch', expressionType: 'JSONPath'],
-                [key: 'LABEL', value: '$.labels[*].title', expressionType: 'JSONPath']
+                [key: 'USER_NAME', value: '$.pull_request.user.login', expressionType: 'JSONPath'],
+                [key: 'IF_MERGED', value: '$.pull_request.merged', expressionType: 'JSONPath'],
+                [key: 'BASE_BRANCH', value: '$.pull_request.base.ref', expressionType: 'JSONPath'],
+                [key: 'LABEL', value: '$.labels[*].name', expressionType: 'JSONPath']
             ],
-            causeString: 'Triggered by GitLab Merge Request by ${USER_NAME}',
-            token: 'util',
+            causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
+            token: 'nowdoboss-infra-util',
             printContributedVariables: true,
             printPostContent: true,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
-            regexpFilterExpression: '(?=.*merged)(?=.*develop)(?=.*CICD-Util)'
+            regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*Infra-Util)'
         )
     }
 
@@ -31,31 +31,31 @@ pipeline {
             steps {
                 script {
                     echo "Redis 컨테이너 실행 상태 확인 중..."
-                    def isRedisRunning = sh(script: "docker ps --filter name=nowdoboss_redis --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isRedisRunning = sh(script: "docker ps --filter name=redis --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Redis 실행 상태: ${isRedisRunning}"
 
                     echo "SonarQube 컨테이너 실행 상태 확인 중..."
-                    def isSonarQubeRunning = sh(script: "docker ps --filter name=nowdoboss_sonarqube --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isSonarQubeRunning = sh(script: "docker ps --filter name=sonarqube --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "SonarQube 실행 상태: ${isSonarQubeRunning}"
 
                     echo "Zookeeper 컨테이너 실행 상태 확인 중..."
-                    def isZookeeperRunning = sh(script: "docker ps --filter name=nowdoboss_zookeeper --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isZookeeperRunning = sh(script: "docker ps --filter name=zookeeper --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Zookeeper 실행 상태: ${isZookeeperRunning}"
 
                     echo "Kafka-1 컨테이너 실행 상태 확인 중..."
-                    def isKafkaRunning_1 = sh(script: "docker ps --filter name=nowdoboss_kafka-1 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isKafkaRunning_1 = sh(script: "docker ps --filter name=kafka-1 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Kafka-1 실행 상태: ${isKafkaRunning_1}"
 
                     echo "Kafka-2 컨테이너 실행 상태 확인 중..."
-                    def isKafkaRunning_2 = sh(script: "docker ps --filter name=nowdoboss_kafka-2 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isKafkaRunning_2 = sh(script: "docker ps --filter name=kafka-2 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Kafka-2 실행 상태: ${isKafkaRunning_2}"
 
                     echo "Kafka-3 컨테이너 실행 상태 확인 중..."
-                    def isKafkaRunning_3 = sh(script: "docker ps --filter name=nowdoboss_kafka-3 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isKafkaRunning_3 = sh(script: "docker ps --filter name=kafka-3 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Kafka-3 실행 상태: ${isKafkaRunning_3}"
 
                     echo "Kafka-ui 컨테이너 실행 상태 확인 중..."
-                    def isKafkaUiRunning = sh(script: "docker ps --filter name=nowdoboss_kafka-ui --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isKafkaUiRunning = sh(script: "docker ps --filter name=kafka-ui --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Kafka-ui 실행 상태: ${isKafkaUiRunning}"
 
                     if (isRedisRunning == "") {
