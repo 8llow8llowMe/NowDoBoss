@@ -6,7 +6,7 @@ pipeline {
                 [key: 'USER_NAME', value: '$.pull_request.user.login', expressionType: 'JSONPath'],
                 [key: 'IF_MERGED', value: '$.pull_request.merged', expressionType: 'JSONPath'],
                 [key: 'BASE_BRANCH', value: '$.pull_request.base.ref', expressionType: 'JSONPath'],
-                [key: 'LABEL', value: '$.label.name', expressionType: 'JSONPath']
+                [key: 'LABEL', value: '$.labels[*].title', expressionType: 'JSONPath']
             ],
             causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
             token: 'nowdoboss-be-springboot',
