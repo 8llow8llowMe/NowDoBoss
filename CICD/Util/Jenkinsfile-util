@@ -11,7 +11,7 @@ pipeline {
             causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
             token: 'nowdoboss-infra-util',
             printContributedVariables: true,
-            printPostContent: true,
+            printPostContent: false,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
             regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*Infra-Util)'
         )
