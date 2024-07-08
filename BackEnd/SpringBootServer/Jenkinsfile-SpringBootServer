@@ -3,17 +3,17 @@ pipeline {
     triggers {
         GenericTrigger(
             genericVariables: [
-                [key: 'USER_NAME', value: '$.user.name', expressionType: 'JSONPath'],
-                [key: 'IF_MERGED', value: '$.object_attributes.state', expressionType: 'JSONPath'],
-                [key: 'BASE_BRANCH', value: '$.object_attributes.target_branch', expressionType: 'JSONPath'],
-                [key: 'LABEL', value: '$.labels[*].title', expressionType: 'JSONPath']
+                [key: 'USER_NAME', value: '$.pull_request.user.login', expressionType: 'JSONPath'],
+                [key: 'IF_MERGED', value: '$.pull_request.merged', expressionType: 'JSONPath'],
+                [key: 'BASE_BRANCH', value: '$.pull_request.base.ref', expressionType: 'JSONPath'],
+                [key: 'LABEL', value: '$.label.name', expressionType: 'JSONPath']
             ],
-            causeString: 'Triggered by GitHub Merge Request by ${USER_NAME}',
+            causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
             token: 'nowdoboss-be-springboot',
             printContributedVariables: true,
             printPostContent: true,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
-            regexpFilterExpression: '(?=.*merged)(?=.*develop)(?=.*BE-Springboot)'
+            regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*BE-Springboot)'
         )
     }
 
