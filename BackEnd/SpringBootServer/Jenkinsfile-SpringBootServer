@@ -9,7 +9,7 @@ pipeline {
                 [key: 'LABEL', value: '$.labels[*].title', expressionType: 'JSONPath']
             ],
             causeString: 'Triggered by GitHub Merge Request by ${USER_NAME}',
-            token: 'nowdoboss-backend-springboot',
+            token: 'nowdoboss-be-springboot',
             printContributedVariables: true,
             printPostContent: true,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
