@@ -1,12 +1,15 @@
 pipeline {
     agent any  // 이 파이프라인이 실행될 Jenkins 에이전트를 지정합니다. 'any'는 사용 가능한 임의의 에이전트에서 실행될 수 있음을 의미합니다.
+    environment {
+        GIT_LFS_SKIP_SMUDGE = '1'
+    }
     triggers {
         GenericTrigger(
             genericVariables: [
                 [key: 'USER_NAME', value: '$.pull_request.user.login', expressionType: 'JSONPath'],
                 [key: 'IF_MERGED', value: '$.pull_request.merged', expressionType: 'JSONPath'],
                 [key: 'BASE_BRANCH', value: '$.pull_request.base.ref', expressionType: 'JSONPath'],
-                [key: 'LABEL', value: '$.labels[*].title', expressionType: 'JSONPath']
+                [key: 'LABEL', value: '$.labels[*].name', expressionType: 'JSONPath']
             ],
             causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
             token: 'nowdoboss-be-springboot',
