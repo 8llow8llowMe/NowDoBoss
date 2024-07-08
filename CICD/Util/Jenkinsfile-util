@@ -6,8 +6,7 @@ pipeline {
                 [key: 'USER_NAME', value: '$.pull_request.user.login', expressionType: 'JSONPath'],
                 [key: 'IF_MERGED', value: '$.pull_request.merged', expressionType: 'JSONPath'],
                 [key: 'BASE_BRANCH', value: '$.pull_request.base.ref', expressionType: 'JSONPath'],
-                [key: 'LABEL', value: '$.pull_request.labels[*].name', expressionType: 'JSONPath'],
-                [key: 'PAYLOAD', value: '$', expressionType: 'JSONPath']
+                [key: 'LABEL', value: '$.pull_request.labels[*].name', expressionType: 'JSONPath']
             ],
             causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
             token: 'nowdoboss-infra-util',
@@ -35,7 +34,6 @@ pipeline {
                     echo "If Merged: ${env.IF_MERGED}"
                     echo "Base Branch: ${env.BASE_BRANCH}"
                     echo "Label: ${env.LABEL}"
-                    echo "Payload: ${env.PAYLOAD}"
                 }
             }
         }
