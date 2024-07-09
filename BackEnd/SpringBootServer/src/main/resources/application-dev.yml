@@ -42,9 +42,9 @@ spring:
     mongodb:
       host: ${server.base-url}
       port: 27017
-      database: nowdoboss
-      username: ssafy
-      password: ssafy!2341234
+      database: 8llow8llowme
+      username: 8llow8llowme
+      password: 8llow8llowme
       authentication-database: admin
 
   # Java Mail Sender setting (Google Mail)

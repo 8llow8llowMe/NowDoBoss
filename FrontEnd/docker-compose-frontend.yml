@@ -24,7 +24,7 @@ services:
       - "80:80"
       - "443:443"
     networks:
-      - nowdoboss_net
+      - 8llow8llowme_net
     depends_on:
       - nowdoboss_react
     # command: "nginx -g 'daemon off;'"  # Nginx를 포그라운드 모드로 실행하여 컨테이너가 종료되지 않도록 설정
@@ -45,6 +45,6 @@ volumes:
   react_build:  # 공유 볼륨 선언
 
 networks:
-  nowdoboss_net:  # 사용할 네트워크를 정의합니다. 
-    name: nowdoboss_net
+  8llow8llowme_net:  # 사용할 네트워크를 정의합니다. 
+    name: 8llow8llowme_net
     driver: bridge
