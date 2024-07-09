@@ -89,4 +89,10 @@ pipeline {
         }
 
     }
+
+    post {
+        always {
+            cleanWs() // 작업 공간 정리
+        }
+    }
 }

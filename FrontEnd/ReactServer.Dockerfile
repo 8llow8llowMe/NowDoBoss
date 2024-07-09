@@ -1,5 +1,5 @@
-# 기본 이미지로 Node.js 버전 20.11.1 사용
-FROM node:20.11.1 AS build
+# 기본 이미지로 Node.js 버전 20.11.1 사용 -> 20.15.0으로 버전 업그레이드
+FROM node:20.15.0 AS build
 
 # 작업 디렉토리 설정
 WORKDIR /usr/src/app
