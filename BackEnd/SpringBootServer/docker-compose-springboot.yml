@@ -1,12 +1,12 @@
 version: "3.8"  # Docker Compose 파일 버전을 지정합니다. "3.8"은 사용 가능한 최신 버전 중 하나입니다.
 
 services:
-  nowdoboss_backend_springboot:
-    container_name: nowdoboss_backend_springboot  # 컨테이너의 이름을 설정합니다.
+  springboot:
+    container_name: nowdoboss-backend-springboot  # 컨테이너의 이름을 설정합니다.
     build:  # 도커 이미지 빌드 관련 설정입니다.
       context: .  # Dockerfile이 위치한 디렉토리 경로입니다. (현재 docker-compose 파일이 있는 경로와 Dockerfile 경로 같이 비교)
       dockerfile: SpringBootServer.Dockerfile  # 사용할 Dockerfile의 이름입니다.
-    image: nowdoboss_backend_springboot_img  # 빌드된 이미지의 이름을 설정합니다.
+    image: nowdoboss-backend-springboot-img  # 빌드된 이미지의 이름을 설정합니다.
     restart: always  # 컨테이너가 항상 재시작되도록 설정합니다.
     ports:
       - "8080:8080"  # 호스트의 8080 포트를 컨테이너의 8080 포트에 바인딩합니다.
@@ -14,9 +14,9 @@ services:
       - TZ=Asia/Seoul # 해당 백엔드 서버의 시간을 아시아/서울로 설정합니다.
       - jasypt.encryptor.key=8llow8llowme  # 환경 변수로 jasypt 암호화 키를 설정합니다.
     networks:
-      - 8llow8llowme_net  # 사용할 네트워크를 지정합니다.
+      - nowdoboss-net  # 사용할 네트워크를 지정합니다.
 
 networks:
-  8llow8llowme_net:  # 사용할 네트워크를 정의합니다.
-    name: 8llow8llowme_net
+  nowdoboss-net:  # 사용할 네트워크를 정의합니다.
+    name: nowdoboss-net
     driver: bridge

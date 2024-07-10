@@ -41,24 +41,24 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {  // 'Deploy with Docker Compose'라는 이름의 단계를 정의합니다. 이 단계에서는 Docker Compose를 사용한 배포가 이루어집니다.
+        stage('Deploy with Docker Compose') {
             steps {
                 script {
                     echo "certbot 컨테이너 실행 상태 확인 중..."
-                    def isCertBotRunning = sh(script: "docker ps --filter name=nowdoboss_certbot --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isCertBotRunning = sh(script: "docker ps --filter name=nowdoboss-certbot --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "certbot 실행 상태: ${isCertBotRunning}"
                     if (isCertBotRunning == "") {
                         echo "Certbot dockerfile 빌드..."
-                        sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d nowdoboss_certbot"
+                        sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d certbot"
                     }
                     
-                    // React Nginx 컨테이너를 종료하고 관련 볼륨을 삭제합니다. 이 단계는 이전에 생성된 데이터를 클리어하고 새로운 정적 파일을 적용하기 위해 필요합니다.
-                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml down --volumes nowdoboss_react nowdoboss_frontend"
-                    // React Nginx 컨테이너를 재빌드하고 백그라운드에서 실행합니다. `--build` 옵션은 이미지를 다시 빌드하고, `-d`는 백그라운드 모드에서 실행합니다.
-                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d nowdoboss_react nowdoboss_frontend"
+                    // React Nginx 컨테이너를 종료하고 관련 볼륨을 삭제합니다. 이 단계는 이전에 생성된 데이터를 클리어하고 새로운 정적 파일을 적용하기 위해 필요합니다. (서비스명)
+                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml down --volumes react frontend"
+                    // React Nginx 컨테이너를 재빌드하고 백그라운드에서 실행합니다. `--build` 옵션은 이미지를 다시 빌드하고, `-d`는 백그라운드 모드에서 실행합니다. (서비스명)
+                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d react frontend"
 
-                    // React 컨테이너가 빌드 작업을 완료한 후에는 종료해야 합니다. 
-                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml stop nowdoboss_react"
+                    // React 컨테이너가 빌드 작업을 완료한 후에는 종료해야 합니다. (컨테이너명)
+                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml stop nowdoboss-react"
                 }
             }
         }
@@ -66,9 +66,9 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    // nowdoboss_react 컨테이너를 종료하고 삭제합니다.
-                    sh "docker stop nowdoboss_react || true" // 컨테이너가 실행 중이지 않더라도 오류를 무시합니다.
-                    sh "docker rm nowdoboss_react || true" // 컨테이너를 삭제합니다.
+                    // nowdoboss-react 컨테이너를 종료하고 삭제합니다. (컨테이너명)
+                    sh "docker stop nowdoboss-react || true" // 컨테이너가 실행 중이지 않더라도 오류를 무시합니다.
+                    sh "docker rm nowdoboss-react || true" // 컨테이너를 삭제합니다.
                 }
             }
         }
