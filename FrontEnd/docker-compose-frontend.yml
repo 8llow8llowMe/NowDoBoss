@@ -1,17 +1,17 @@
 version: "3.8"  # Docker Compose 파일 버전을 지정합니다. "3.8"은 사용 가능한 최신 버전 중 하나입니다.
 
 services:
-  react:
+  nowdoboss_react_service:
     container_name: nowdoboss-react  # 컨테이너의 이름을 설정합니다.
     build:  # 도커 이미지 빌드 관련 설정입니다.
       context: .  # Dockerfile이 위치한 디렉토리 경로입니다.
       dockerfile: ReactServer.Dockerfile  # 사용할 Dockerfile의 이름입니다.
     image: nowdoboss-frontend-img  # 빌드된 이미지의 이름을 설정합니다.
     volumes:
-      - react_build:/usr/src/app/dist  # 빌드 결과물을 볼륨에 저장
+      - nowdoboss_react_build:/usr/src/app/dist  # 빌드 결과물을 볼륨에 저장
     entrypoint: ["true"]  # Docker 이미지가 빌드되고 볼륨이 준비된 후에 컨테이너 실행을 즉시 종료
 
-  frontend:
+  nowdoboss_frontend_service:
     container_name: nowdoboss-frontend
     build:
       context: ../CICD/Nginx
@@ -30,7 +30,7 @@ services:
     # command: "nginx -g 'daemon off;'"  # Nginx를 포그라운드 모드로 실행하여 컨테이너가 종료되지 않도록 설정
     # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
-  certbot:
+  nowdoboss_certbot_service:
     container_name: nowdoboss-certbot
     image: certbot/certbot
     volumes:
@@ -41,7 +41,7 @@ services:
       - nowdoboss-frontend
 
 volumes:
-  react-build:  # 공유 볼륨 선언
+  nowdoboss_react_build:  # 공유 볼륨 선언
 
 networks:
   nowdoboss-net:  # 사용할 네트워크를 정의합니다. 

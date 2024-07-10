@@ -71,7 +71,7 @@ pipeline {
 
                     if (isRedisRunning == "") {
                         echo "redis 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d redis"
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d nowdoboss_redis_service"
                     }
 
                     // if (isSonarQubeRunning == "") {

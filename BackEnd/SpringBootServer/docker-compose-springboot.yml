@@ -1,7 +1,7 @@
 version: "3.8"  # Docker Compose 파일 버전을 지정합니다. "3.8"은 사용 가능한 최신 버전 중 하나입니다.
 
 services:
-  springboot:
+  nowdoboss_springboot_service:
     container_name: nowdoboss-backend-springboot  # 컨테이너의 이름을 설정합니다.
     build:  # 도커 이미지 빌드 관련 설정입니다.
       context: .  # Dockerfile이 위치한 디렉토리 경로입니다. (현재 docker-compose 파일이 있는 경로와 Dockerfile 경로 같이 비교)
