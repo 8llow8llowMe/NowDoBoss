@@ -2,7 +2,7 @@ version: "3.8" # Docker Compose 파일의 버전을 명시합니다. 여기서 "
 
 services:
   # Redis 설정
-  redis:
+  nowdoboss_redis_service:
     image: redis # 사용할 Docker 이미지. 이 경우 공식 Redis 이미지를 사용합니다.
     container_name: nowdoboss-redis # 생성될 Docker 컨테이너의 이름을 지정합니다.
     restart: always # 컨테이너가 실패하거나 Docker가 재시작될 때 자동으로 컨테이너를 재시작하도록 설정합니다.
@@ -13,7 +13,7 @@ services:
     command: ["sh", "-c", "redis-server --notify-keyspace-events Ex"]
 
   # SonarQube 설정
-  sonarqube:
+  sonarqube_service:
     image: sonarqube:latest
     container_name: sonarqube
     restart: always
