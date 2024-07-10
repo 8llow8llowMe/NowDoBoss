@@ -1,6 +1,6 @@
 server:
-  base-url: 1.235.23.72
-  https-url: https://1.235.23.72
+  base-url: www.nowdoboss.com
+  https-url: https://www.nowdoboss.com
   fastapi-url: http://13.124.23.220:8000
 
 spring:
@@ -35,7 +35,7 @@ spring:
   data:
     # Redis setting
     redis:
-      host: redis # Redis 도커 컨테이너의 이름을 사용하여 접근 (같은 네트워크로 묶여야함)
+      host: nowdoboss-redis # Redis 도커 컨테이너의 이름을 사용하여 접근 (같은 네트워크로 묶여야함)
       port: 6379
 
     # MongoDB setting

@@ -13,7 +13,7 @@ pipeline {
             printContributedVariables: false,
             printPostContent: false,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
-            regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*Infra-Util)'
+            regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*INFRA-Util)'
         )
     }
 
@@ -42,12 +42,12 @@ pipeline {
             steps {
                 script {
                     echo "Redis 컨테이너 실행 상태 확인 중..."
-                    def isRedisRunning = sh(script: "docker ps --filter name=redis --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    def isRedisRunning = sh(script: "docker ps --filter name=nowdoboss-redis --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Redis 실행 상태: ${isRedisRunning}"
 
-                    echo "SonarQube 컨테이너 실행 상태 확인 중..."
-                    def isSonarQubeRunning = sh(script: "docker ps --filter name=sonarqube --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
-                    echo "SonarQube 실행 상태: ${isSonarQubeRunning}"
+                    // echo "SonarQube 컨테이너 실행 상태 확인 중..."
+                    // def isSonarQubeRunning = sh(script: "docker ps --filter name=sonarqube --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    // echo "SonarQube 실행 상태: ${isSonarQubeRunning}"
 
                     echo "Zookeeper 컨테이너 실행 상태 확인 중..."
                     def isZookeeperRunning = sh(script: "docker ps --filter name=zookeeper --filter status=running --format '{{.Names}}'", returnStdout: true).trim()

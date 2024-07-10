@@ -4,12 +4,12 @@ services:
   # Redis 설정
   redis:
     image: redis # 사용할 Docker 이미지. 이 경우 공식 Redis 이미지를 사용합니다.
-    container_name: redis # 생성될 Docker 컨테이너의 이름을 지정합니다.
+    container_name: nowdoboss-redis # 생성될 Docker 컨테이너의 이름을 지정합니다.
     restart: always # 컨테이너가 실패하거나 Docker가 재시작될 때 자동으로 컨테이너를 재시작하도록 설정합니다.
     ports:
       - "6379:6379" # Redis 서버의 기본 포트 6379를 호스트의 같은 포트에 바인딩합니다. 이 설정은 외부에서 Redis 서버에 접근할 수 있게 합니다.
     networks:
-      - 8llow8llowme_net # 이 컨테이너가 연결될 네트워크. 이 네트워크 설정을 통해 다른 서비스와의 네트워크 분리 및 통신을 관리합니다.
+      - nowdoboss-net # 이 컨테이너가 연결될 네트워크. 이 네트워크 설정을 통해 다른 서비스와의 네트워크 분리 및 통신을 관리합니다.
     command: ["sh", "-c", "redis-server --notify-keyspace-events Ex"]
 
   # SonarQube 설정
@@ -20,7 +20,7 @@ services:
     ports:
       - "9000:9000"
     networks:
-      - 8llow8llowme_net # 이 컨테이너가 연결될 네트워크. 이 네트워크 설정을 통해 다른 서비스와의 네트워크 분리 및 통신을 관리합니다.
+      - nowdoboss-net # 이 컨테이너가 연결될 네트워크. 이 네트워크 설정을 통해 다른 서비스와의 네트워크 분리 및 통신을 관리합니다.
 
   # zookeeper 설정
   zookeeper:
@@ -32,7 +32,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
     networks:
-      - 8llow8llowme_net
+      - nowdoboss-net
 
   # kafka-1 설정
   kafka-1:
@@ -56,7 +56,7 @@ services:
       KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
       KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
     networks:
-      - 8llow8llowme_net
+      - nowdoboss-net
 
   # kafka-2 설정
   kafka-2:
@@ -80,7 +80,7 @@ services:
       KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
       KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
     networks:
-      - 8llow8llowme_net
+      - nowdoboss-net
 
   # kafka-3 설정
   kafka-3:
@@ -104,7 +104,7 @@ services:
       KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
       KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
     networks:
-      - 8llow8llowme_net
+      - nowdoboss-net
 
   # kafka-ui 설정
   kafka-ui:
@@ -119,9 +119,9 @@ services:
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:29092,kafka-2:29093,kafka-3:29094
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:32181
     networks:
-      - 8llow8llowme_net
+      - nowdoboss-net
 
 networks:
-  8llow8llowme_net:
-    name: 8llow8llowme_net
+  nowdoboss-net:
+    name: nowdoboss-net
     driver: bridge
