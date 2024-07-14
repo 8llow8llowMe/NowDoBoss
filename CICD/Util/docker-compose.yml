@@ -121,6 +121,21 @@ services:
     networks:
       - nowdoboss-net
 
+  # MongoDB 설정
+  mongodb_service:
+    image: arm64v8/mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 8llow8llowme
+      MONGO_INITDB_ROOT_PASSWORD: 8llow8llowme
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - nowdoboss-net
+
 networks:
   nowdoboss-net:
     name: nowdoboss-net

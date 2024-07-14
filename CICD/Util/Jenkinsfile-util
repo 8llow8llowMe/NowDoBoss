@@ -69,6 +69,10 @@ pipeline {
                     def isKafkaUiRunning = sh(script: "docker ps --filter name=kafka-ui --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Kafka-ui 실행 상태: ${isKafkaUiRunning}"
 
+                    echo "MongoDB 컨테이너 실행 상태 확인 중..."
+                    def isMongoDBRunning = sh(script: "docker ps --filter name=mongodb --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    echo "MongoDB 실행 상태: ${isMongoDBRunning}"
+
                     if (isRedisRunning == "") {
                         echo "redis 관련 dockerfile 빌드..."
                         sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d nowdoboss_redis_service"
@@ -83,6 +87,11 @@ pipeline {
                     if (isZookeeperRunning == "" || isKafkaRunning_1 == "" || isKafkaRunning_2 == "" || isKafkaRunning_3 == "" || isKafkaUiRunning == "") {
                         echo "zookeeper 및 kafka, kafka-ui 관련 dockerfile 빌드..."
                         sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d zookeeper kafka-1 kafka-2 kafka-3 kafka-ui"
+                    }
+
+                    if (isMongoDBRunning == "") {
+                        echo "MongoDB 관련 dockerfile 빌드..."
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d mongodb_service"
                     }
                 }
             }

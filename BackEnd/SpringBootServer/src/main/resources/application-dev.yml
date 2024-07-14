@@ -40,9 +40,9 @@ spring:
 
     # MongoDB setting
     mongodb:
-      host: ${server.base-url}
+      host: mongodb # MongoDB 도커 컨테이너의 이름을 사용하여 접근
       port: 27017
-      database: 8llow8llowme
+      database: nowdoboss
       username: 8llow8llowme
       password: 8llow8llowme
       authentication-database: admin
