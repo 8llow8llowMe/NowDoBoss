@@ -58,7 +58,7 @@ pipeline {
                     sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d nowdoboss_react_service nowdoboss_frontend_service"
 
                     // React 컨테이너가 빌드 작업을 완료한 후에는 종료해야 합니다. (컨테이너명)
-                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml stop nowdoboss-react"
+                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml stop nowdoboss_react_service"
                 }
             }
         }
