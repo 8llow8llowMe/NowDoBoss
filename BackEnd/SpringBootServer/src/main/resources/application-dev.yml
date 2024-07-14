@@ -39,13 +39,13 @@ spring:
       port: 6379
 
     # MongoDB setting
-#    mongodb:
-#      host: ${server.base-url}
-#      port: 27017
-#      database: 8llow8llowme
-#      username: 8llow8llowme
-#      password: 8llow8llowme
-#      authentication-database: admin
+    mongodb:
+      host: ${server.base-url}
+      port: 27017
+      database: 8llow8llowme
+      username: 8llow8llowme
+      password: 8llow8llowme
+      authentication-database: admin
 
   # Java Mail Sender setting (Google Mail)
   mail:

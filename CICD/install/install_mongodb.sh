@@ -32,16 +32,16 @@ sudo mongod --config /etc/mongod.conf --dbpath /data/db &
 sleep 5
 
 # 기존 관리자 계정 삭제 (존재하는 경우)
-mongo admin --eval "db.dropUser('ssafy')"
+mongo admin --eval "db.dropUser('8llow8llowme')"
 
 # MongoDB에 관리자 계정 생성 스크립트 실행
-mongo admin --eval "db.createUser({user: 'ssafy', pwd: 'ssafy!2341234', roles:[{role:'root', db: 'admin'}]})"
+mongo admin --eval "db.createUser({user: '8llow8llowme', pwd: '8llow8llowme', roles:[{role:'root', db: 'admin'}]})"
 
 # MongoDB 재시작
 sudo systemctl restart mongod
 
 # MongoDB에 데이터베이스 생성 (컬렉션 생성 없음)
-mongo --username ssafy --password ssafy!2341234 --authenticationDatabase admin --eval "use nowdoboss;"
+mongo --username 8llow8llowme --password 8llow8llowme --authenticationDatabase admin --eval "use nowdoboss;"
 
 # 부팅 시 MongoDB 자동 시작 설정
 sudo systemctl enable mongod
