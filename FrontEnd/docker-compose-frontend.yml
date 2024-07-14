@@ -26,7 +26,7 @@ services:
     networks:
       - nowdoboss-net
     depends_on:
-      - nowdoboss-react
+      - nowdoboss_react_service
     # command: "nginx -g 'daemon off;'"  # Nginx를 포그라운드 모드로 실행하여 컨테이너가 종료되지 않도록 설정
     # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
@@ -38,7 +38,7 @@ services:
       - ./certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --quiet --no-self-upgrade; sleep 12h & wait $${!}; done;'"
     depends_on:
-      - nowdoboss-frontend
+      - nowdoboss_frontend_service
 
 volumes:
   nowdoboss_react_build:  # 공유 볼륨 선언
