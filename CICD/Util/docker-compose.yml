@@ -136,6 +136,9 @@ services:
     networks:
       - nowdoboss-net
 
+volumes:
+  mongo_data:
+
 networks:
   nowdoboss-net:
     name: nowdoboss-net
