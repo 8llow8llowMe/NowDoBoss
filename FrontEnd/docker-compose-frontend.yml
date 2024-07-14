@@ -17,7 +17,7 @@ services:
       context: ../CICD/Nginx
       dockerfile: Nginx.Dockerfile
     volumes:
-      - react-build:/usr/share/nginx/html  # Nginx가 빌드된 정적 파일을 서빙
+      - nowdoboss_react-build:/usr/share/nginx/html  # Nginx가 빌드된 정적 파일을 서빙
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     ports:
