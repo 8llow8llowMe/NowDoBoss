@@ -1,0 +1,132 @@
+version: "3.8"
+
+services:
+  nowdoboss_redis_service:
+    image: redis # x86_64 아키텍처에서 동작하는 Redis 이미지
+    container_name: nowdoboss-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - nowdoboss-net
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest # x86_64 아키텍처용 Zookeeper
+    container_name: zookeeper
+    ports:
+      - "32181:32181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - nowdoboss-net
+
+  # kafka-1 설정
+  kafka-1:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      TZ: Asia/Seoul
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:29092,EXTERNAL://localhost:9092
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3 # 자동으로 생성되는 topic의 기본 복제 수 (브로커수)
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_LOG_RETENTION_HOURS: 24 # 메시지 보존 기간을 24시간으로 설정
+      KAFKA_COMPRESSION_TYPE: "gzip" # 메시지 압축 방식 설정
+      KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
+      KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
+    networks:
+      - nowdoboss-net
+
+  # kafka-2 설정
+  kafka-2:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-2
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9093"
+    environment:
+      TZ: Asia/Seoul
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:29093,EXTERNAL://localhost:9093
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3 # 자동으로 생성되는 topic의 기본 복제 수 (브로커수)
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_LOG_RETENTION_HOURS: 24 # 메시지 보존 기간을 24시간으로 설정
+      KAFKA_COMPRESSION_TYPE: "gzip" # 메시지 압축 방식 설정
+      KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
+      KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
+    networks:
+      - nowdoboss-net
+
+  # kafka-3 설정
+  kafka-3:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-3
+    depends_on:
+      - zookeeper
+    ports:
+      - "9094:9094"
+    environment:
+      TZ: Asia/Seoul
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:29094,EXTERNAL://localhost:9094
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3 # 자동으로 생성되는 topic의 기본 복제 수 (브로커수)
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_LOG_RETENTION_HOURS: 24 # 메시지 보존 기간을 24시간으로 설정
+      KAFKA_COMPRESSION_TYPE: "gzip" # 메시지 압축 방식 설정
+      KAFKA_SEGMENT_BYTES: 1073741824 # 로그 세그먼트 크기를 1GB로 설정
+      KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # JVM 힙 메모리 설정
+    networks:
+      - nowdoboss-net
+
+  # kafka-ui 설정
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8090:8080"
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:29092,kafka-2:29093,kafka-3:29094
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:32181
+    networks:
+      - nowdoboss-net
+
+  # MongoDB 설정
+  mongodb_service:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 8llow8llowme
+      MONGO_INITDB_ROOT_PASSWORD: 8llow8llowme
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - nowdoboss-net
+
+volumes:
+  mongo_data:
+
+networks:
+  nowdoboss-net:
+    name: nowdoboss-net
+    driver: bridge
