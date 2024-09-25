@@ -136,6 +136,20 @@ services:
     networks:
       - nowdoboss-net
 
+  # Portainer 설정
+  portainer_service:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - "9001:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - nowdoboss-net
+
+
 volumes:
   mongo_data:
 

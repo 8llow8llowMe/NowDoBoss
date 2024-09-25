@@ -73,6 +73,11 @@ pipeline {
                     def isMongoDBRunning = sh(script: "docker ps --filter name=mongodb --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "MongoDB 실행 상태: ${isMongoDBRunning}"
 
+                    echo "Portainer 컨테이너 실행 상태 확인 중..."
+                    def isPortainerRunning = sh(script: "docker ps --filter name=portainer --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    echo "Portainer 실행 상태: ${isPortainerRunning}"
+
+
                     if (isRedisRunning == "") {
                         echo "redis 관련 dockerfile 빌드..."
                         sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d nowdoboss_redis_service"
@@ -92,6 +97,11 @@ pipeline {
                     if (isMongoDBRunning == "") {
                         echo "MongoDB 관련 dockerfile 빌드..."
                         sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d mongodb_service"
+                    }
+
+                    if (isPortainerRunning == "") {
+                        echo "Portainer 관련 dockerfile 빌드..."
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d portainer_service"
                     }
                 }
             }
