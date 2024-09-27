@@ -1,4 +1,4 @@
-# Util/fail2ban/jail.local
+# Util/Fail2Ban/jail.local
 
 [DEFAULT]
 # 기본 설정으로 모든 서비스에 대해 적용
