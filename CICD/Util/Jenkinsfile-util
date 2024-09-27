@@ -77,6 +77,10 @@ pipeline {
                     def isPortainerRunning = sh(script: "docker ps --filter name=portainer --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Portainer 실행 상태: ${isPortainerRunning}"
 
+                    echo "Fail2Ban 컨테이너 실행 상태 확인 중..."
+                    def isFail2BanRunning = sh(script: "docker ps --filter name=fail2ban --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    echo "Fail2Ban 실행 상태: ${isFail2BanRunning}"
+
 
                     if (isRedisRunning == "") {
                         echo "redis 관련 dockerfile 빌드..."
@@ -102,6 +106,11 @@ pipeline {
                     if (isPortainerRunning == "") {
                         echo "Portainer 관련 dockerfile 빌드..."
                         sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d portainer_service"
+                    }
+
+                    if (isFail2BanRunning == "") {
+                        echo "Fail2Ban 관련 dockerfile 빌드..."
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d fail2ban_service"
                     }
                 }
             }
