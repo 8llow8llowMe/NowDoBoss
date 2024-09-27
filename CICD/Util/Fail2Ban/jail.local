@@ -17,3 +17,9 @@ logpath  = /var/log/fail2ban.log  # Fail2Ban 로그에서 차단된 IP 감지
 bantime  = 86400  # 1일 차단
 findtime = 86400  # 1일 내에서 공격 시도 시 차단
 maxretry = 5
+
+[sshd]
+enabled = true  # SSH 서비스에 대해 Fail2Ban을 활성화
+port    = ssh   # 기본 SSH 포트 (22)
+logpath = /var/log/auth.log  # SSH 로그 파일 경로
+maxretry = 5  # 5회 실패 시 차단
