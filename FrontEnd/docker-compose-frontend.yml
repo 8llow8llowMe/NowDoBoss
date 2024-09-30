@@ -56,7 +56,7 @@ services:
     volumes:
       - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스 공유
     env_file:
-      -  .env-docker-compose-geoip  # GeoIP 업데이트 서비스에 해당 .env 환경변수 파일 사용
+      -  docker-compose-geoip.env  # GeoIP 업데이트 서비스에 해당 .env 환경변수 파일 사용
 
 volumes:
   nowdoboss_react_build:  # React 빌드 결과를 저장할 공유 볼륨입니다.
