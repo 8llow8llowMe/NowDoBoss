@@ -52,13 +52,13 @@ pipeline {
                         sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d nowdoboss_certbot_service"
                     }
 
-                    echo "geoip 컨테이너 실행 상태 확인 중..."
-                    def isGeoIPRunning = sh(script: "docker ps --filter name=geoip --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
-                    echo "geoip 실행 상태: ${isGeoIPRunning}"
-                    if (isGeoIPRunning == "") {
-                        echo "geoip dockerfile 빌드..."
-                        sh "docker-compose --env-file ./FrontEnd/.env-docker-compose-geoip -f ./FrontEnd/docker-compose-frontend.yml up --build -d geoip_service"
-                    }
+                    // echo "geoip 컨테이너 실행 상태 확인 중..."
+                    // def isGeoIPRunning = sh(script: "docker ps --filter name=geoip --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    // echo "geoip 실행 상태: ${isGeoIPRunning}"
+                    // if (isGeoIPRunning == "") {
+                    //     echo "geoip dockerfile 빌드..."
+                    //     sh "docker-compose --env-file ./FrontEnd/.env-docker-compose-geoip -f ./FrontEnd/docker-compose-frontend.yml up --build -d geoip_service"
+                    // }
                     
                     // React Nginx 컨테이너를 종료하고 관련 볼륨을 삭제합니다. 이 단계는 이전에 생성된 데이터를 클리어하고 새로운 정적 파일을 적용하기 위해 필요합니다. (서비스명)
                     sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml down --volumes nowdoboss_react_service nowdoboss_frontend_service"

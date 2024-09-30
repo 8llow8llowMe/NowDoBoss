@@ -22,7 +22,7 @@ services:
       - nowdoboss_react_build:/usr/share/nginx/html  # 빌드된 정적 파일을 Nginx가 서빙할 경로에 마운트합니다.
       - ./certbot/conf:/etc/letsencrypt  # Certbot이 사용하는 SSL 인증서 경로를 Nginx와 공유합니다.
       - ./certbot/www:/var/www/certbot  # Certbot 인증 파일을 저장할 경로를 Nginx와 공유합니다.
-      - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스를 공유합니다.
+      # - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스를 공유합니다.
     ports:
       - "80:80"  # Nginx의 HTTP 트래픽을 포트 80에서 처리합니다.
       - "443:443"  # Nginx의 HTTPS 트래픽을 포트 443에서 처리합니다.
@@ -30,7 +30,7 @@ services:
       - nowdoboss-net  # 애플리케이션 서비스들이 같은 네트워크에 연결되도록 설정합니다.
     depends_on:
       - nowdoboss_react_service  # React 빌드가 완료된 후 Nginx가 실행되도록 의존성을 설정합니다.
-      - geoip_service  # GeoIP 데이터가 업데이트된 후 Nginx 실행되도록 의존성을 설정합니다.
+      # - geoip_service  # GeoIP 데이터가 업데이트된 후 Nginx 실행되도록 의존성을 설정합니다.
     command: "/bin/sh -c 'nginx -g \"daemon off;\"'"  # Nginx를 포그라운드에서 실행하여 컨테이너가 종료되지 않도록 합니다.
 
   # Certbot SSL 관리 서비스
