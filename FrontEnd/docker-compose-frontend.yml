@@ -30,7 +30,7 @@ services:
       - nowdoboss-net  # 애플리케이션 서비스들이 같은 네트워크에 연결되도록 설정합니다.
     depends_on:
       - nowdoboss_react_service  # React 빌드가 완료된 후 Nginx가 실행되도록 의존성을 설정합니다.
-      - geoipupdate_service  # GeoIP 데이터가 업데이트된 후 Nginx 실행되도록 의존성을 설정합니다.
+      - geoip_service  # GeoIP 데이터가 업데이트된 후 Nginx 실행되도록 의존성을 설정합니다.
     command: "/bin/sh -c 'nginx -g \"daemon off;\"'"  # Nginx를 포그라운드에서 실행하여 컨테이너가 종료되지 않도록 합니다.
 
   # Certbot SSL 관리 서비스
@@ -52,14 +52,15 @@ services:
       GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID}
       GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY}  
       GEOIPUPDATE_EDITION_IDS: ${GEOIPUPDATE_EDITION_IDS}  
-      GEOIPUPDATE_FREQUENCY: ${GEOIPUPDATE_EDITION_IDS}
+      GEOIPUPDATE_FREQUENCY: ${GEOIPUPDATE_FREQUENCY}
     volumes:
       - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스 공유
     env_file:
-      - ./.env-docker-compose-geoip  # GeoIP 업데이트 서비스에 해당 .env 환경변수 파일 사용
+      -  .env-docker-compose-geoip  # GeoIP 업데이트 서비스에 해당 .env 환경변수 파일 사용
 
 volumes:
   nowdoboss_react_build:  # React 빌드 결과를 저장할 공유 볼륨입니다.
+  geoip_data: # GeoIP 데이터 베이스 공유 볼륨
 
 networks:
   nowdoboss-net:  # Nginx, React, Certbot이 사용할 네트워크를 정의합니다.
