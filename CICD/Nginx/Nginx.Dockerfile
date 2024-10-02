@@ -39,4 +39,5 @@ RUN apt-get update \
 RUN sed -i '1iload_module /usr/lib/nginx/modules/ngx_http_geoip2_module.so;' /etc/nginx/nginx.conf
 
 # nginx 설정 파일을 컨테이너의 적절한 위치에 복사
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
