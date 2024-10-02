@@ -12,11 +12,12 @@ RUN apt-get update && \
     zlib1g-dev \
     libpcre3 \
     libpcre3-dev \
-    libssl-dev && \
+    libssl-dev \
+    unzip && \  # unzip 패키지를 추가합니다
     wget https://nginx.org/download/nginx-1.21.6.tar.gz && \
     tar -zxvf nginx-1.21.6.tar.gz && \
     wget https://github.com/leev/ngx_http_geoip2_module/archive/refs/heads/master.zip && \
-    unzip master.zip && \
+    unzip master.zip && \  # unzip 명령어를 정상적으로 실행합니다
     cd nginx-1.21.6 && \
     ./configure --with-compat --add-dynamic-module=../ngx_http_geoip2_module-master && \
     make modules && \
