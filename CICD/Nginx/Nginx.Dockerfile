@@ -1,5 +1,6 @@
-# 빌드용 이미지 - Nginx 최신 버전 사용
-FROM nginx:latest as builder
+# 빌드용 이미지 - Nginx 최신 버전 (2024-08 version) 사용
+ARG NGINX_VERSION=1.27.1
+FROM nginx:$NGINX_VERSION as builder
 
 # 빌드에 필요한 도구 및 라이브러리 설치
 RUN apt-get update \
@@ -15,8 +16,8 @@ RUN apt-get update \
 # GeoIP2 모듈 다운로드 및 Nginx 빌드
 RUN cd /opt \
     && git clone --depth 1 https://github.com/leev/ngx_http_geoip2_module.git \
-    && wget -O - http://nginx.org/download/nginx.tar.gz | tar zxfv - \
-    && mv /opt/nginx* /opt/nginx \
+    && wget -O - http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | tar zxfv - \
+    && mv /opt/nginx-$NGINX_VERSION /opt/nginx \
     && cd /opt/nginx \
     && ./configure --with-compat --add-dynamic-module=/opt/ngx_http_geoip2_module \
     && make modules
