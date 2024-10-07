@@ -23,7 +23,7 @@ RUN cd /opt \
     && make modules
 
 # 최종 이미지 - 필요 없는 빌드 도구 제거하고 경량화
-FROM nginx:latest
+FROM nginx:1.27.1  # 최신 버전이 아닌, 빌드에 사용한 버전으로 고정
 
 # 빌드한 GeoIP2 모듈을 복사
 COPY --from=builder /opt/nginx/objs/ngx_http_geoip2_module.so /usr/lib/nginx/modules/
