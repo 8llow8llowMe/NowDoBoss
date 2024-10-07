@@ -1,6 +1,6 @@
 # 빌드용 이미지 - Nginx 최신 버전 (2024-08 version) 사용
 ARG NGINX_VERSION=1.27.1
-FROM nginx:$NGINX_VERSION as builder
+FROM nginx:$NGINX_VERSION AS builder
 
 # 빌드에 필요한 도구 및 라이브러리 설치
 RUN apt-get update \
@@ -23,7 +23,7 @@ RUN cd /opt \
     && make modules
 
 # 최종 이미지 - 필요 없는 빌드 도구 제거하고 경량화
-FROM nginx:1.27.1  # 최신 버전이 아닌, 빌드에 사용한 버전으로 고정
+FROM nginx:1.27.1
 
 # 빌드한 GeoIP2 모듈을 복사
 COPY --from=builder /opt/nginx/objs/ngx_http_geoip2_module.so /usr/lib/nginx/modules/
