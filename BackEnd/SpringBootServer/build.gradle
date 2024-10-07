@@ -88,6 +88,12 @@ dependencies {
 	// Jackson Databind
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+	// Actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// Prometheus
+	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
