@@ -138,3 +138,13 @@ oauth:
     scope:
       - profile
       - email
+
+# Prometheus Actuator Setting
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # 모든 Actuator 엔드포인트 노출 (원하는 엔드포인트를 선택적으로 노출 가능)
+  endpoint:
+    prometheus:
+      enabled: true  # Prometheus 엔드포인트 활성화
