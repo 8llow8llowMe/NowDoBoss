@@ -40,7 +40,7 @@ pipeline {
         
         stage('Check prometheus.yml existence') {
             steps {
-                sh 'ls -l ../../CICD/Util/Prometheus/prometheus.yml'
+                sh 'ls -l ./CICD/Util/Prometheus/prometheus.yml'
             }
         }
 
