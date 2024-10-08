@@ -175,7 +175,7 @@ services:
       - "9090:9090"  # Prometheus 웹 UI 포트
     command:
       - '--web.enable-lifecycle' # Prometheus의 라이프사이클 관련 엔드포인트를 활성화
-      # - '--config.file=/etc/prometheus/prometheus.yml' # Prometheus가 사용할 설정 파일을 지정합니다.
+      - '--config.file=/etc/prometheus/prometheus.yml' # Prometheus가 사용할 설정 파일을 지정합니다.
       - '--storage.tsdb.path=/prometheus'  # 데이터 저장 경로
     networks:
       - nowdoboss-net  # Spring Boot 서비스와 같은 네트워크 사용

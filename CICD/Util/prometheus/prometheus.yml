@@ -5,4 +5,4 @@ scrape_configs:
   - job_name: 'prometheus'
     metrics_path: '/actuator/prometheus' # 메트릭을 가져올 엔드포인트
     static_configs:
-      - targets: ['nowdoboss-backend-springboot:8080']  # Spring Boot 애플리케이션 컨테이너 이름과 포트
+      - targets: ['localhost:8080']  # Spring Boot 애플리케이션 컨테이너 이름과 포트
