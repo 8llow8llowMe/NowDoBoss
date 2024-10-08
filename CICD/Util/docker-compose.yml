@@ -166,11 +166,12 @@ services:
     networks:
       - nowdoboss-net
       
+  # Prometheus 설정
   prometheus_service:
     image: prom/prometheus:latest
     container_name: prometheus
-    volumes:
-      - ./Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml  # prometheus 설정 파일이 위치한 디렉토리를 도커 볼륨을 생성할 디렉토리에 마운트 시킴
+    # volumes:
+    #   - ./Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml  # prometheus 설정 파일이 위치한 디렉토리를 도커 볼륨을 생성할 디렉토리에 마운트 시킴
     ports:
       - "9090:9090"  # Prometheus 웹 UI 포트
     command:
