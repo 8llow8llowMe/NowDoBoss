@@ -166,17 +166,19 @@ services:
       
   # Prometheus 설정
   prometheus_service:
-    image: prom/prometheus:latest
+    build:
+      context: ./Prometheus # 해당 Dockerfile이 위치한 경로
+      dockerfile: prometheus.Dockerfile # 직접 빌드할 Dockerfile명
     container_name: prometheus
+    restart: always
     volumes:
-      - ./prometheus/test.txt:/etc/prometheus/test.txt  # 설정 파일이 들어있는 디렉토리를 통째로 마운트
       - prometheus_data:/prometheus  # Prometheus 데이터 저장소
     ports:
       - "9090:9090"  # Prometheus 웹 UI 포트
     command:
-      # - '--web.enable-lifecycle' # Prometheus의 라이프사이클 관련 엔드포인트를 활성화
-      # - '--config.file=/etc/prometheus/prometheus.yml' # Prometheus가 사용할 설정 파일을 지정합니다.
-      # - '--storage.tsdb.path=/prometheus'  # 데이터 저장 경로
+      - '--web.enable-lifecycle' # Prometheus의 라이프사이클 관련 엔드포인트를 활성화
+      - '--config.file=/etc/prometheus/prometheus.yml' # Prometheus가 사용할 설정 파일을 지정합니다.
+      - '--storage.tsdb.path=/prometheus'  # 데이터 저장 경로
     networks:
       - nowdoboss-net  # Spring Boot 서비스와 같은 네트워크 사용
 
