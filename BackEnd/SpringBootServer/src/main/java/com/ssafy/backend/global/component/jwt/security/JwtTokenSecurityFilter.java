@@ -125,4 +125,21 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
         writer.write(objectMapper.writeValueAsString(Message.fail(e.getErrorCode().name(), e.getMessage())));
         writer.flush();
     }
+
+    /**
+     * 특정 경로에 대해 JWT 필터를 적용하지 않도록 설정합니다.
+     * 이 메서드를 오버라이드하여 특정 조건에 해당하는 요청을 필터링하지 않도록 할 수 있습니다.
+     *
+     * @param request 현재 처리 중인 HTTP 요청 객체
+     * @return {@code true}이면 필터가 적용되지 않으며, {@code false}이면 필터가 적용됩니다.
+     *         여기서는 "/actuator/prometheus" 경로에 대해 필터를 건너뛰도록 설정했습니다.
+     * @throws ServletException 서블릿 예외 발생 시
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException{
+        // 특정 경로에 대해 필터를 건너뜁니다.
+        // 프로메테우스가 메트릭을 가져오는 API 호출 경로는 필터링 되지 않으며, 해당 경로는 doFilterInternal() 로직을 타지 않습니다.
+        String requestURI = request.getRequestURI();
+        return "/actuator/prometheus".equals(requestURI);
+    }
 }
