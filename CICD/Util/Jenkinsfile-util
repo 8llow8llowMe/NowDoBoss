@@ -85,6 +85,10 @@ pipeline {
                     def isPrometheusRunning = sh(script: "docker ps --filter name=prometheus --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Prometheus 실행 상태: ${isPrometheusRunning}"
 
+                    echo "Grafana 컨테이너 실행 상태 확인 중..."
+                    def isGrafanaRunning = sh(script: "docker ps --filter name=grafana --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    echo "Grafana 실행 상태: ${isGrafanaRunning}"
+
 
                     if (isRedisRunning == "") {
                         echo "redis 관련 dockerfile 빌드..."
@@ -120,6 +124,11 @@ pipeline {
                     if (isPrometheusRunning == "") {
                         echo "Prometheus 관련 dockerfile 빌드..."
                         sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d prometheus_service"
+                    }
+
+                    if (isGrafanaRunning == "") {
+                        echo "Prometheus 관련 dockerfile 빌드..."
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d grafana_service"
                     }
                 }
             }
