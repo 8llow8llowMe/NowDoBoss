@@ -184,7 +184,7 @@ services:
 
   # Grafana 설정
   grafana_service:
-    image: grafana/grafana_latest:
+    image: grafana/grafana_latest
     container_name: grafana
     restart: always
     ports: 
