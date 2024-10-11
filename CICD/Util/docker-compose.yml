@@ -182,10 +182,25 @@ services:
     networks:
       - nowdoboss-net  # Spring Boot 서비스와 같은 네트워크 사용
 
+  # Grafana 설정
+  grafana_service:
+    image: grafana/grafana_latest:
+    container_name: grafana
+    restart: always
+    ports: 
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=8llow8llowme  # 기본 관리자 패스워드 설정
+    volumes:
+      - grafana_data:/var/lib/grafana  # Grafana 데이터 저장소
+    networks:
+      - nowdoboss-net  # Prometheus와 같은 네트워크 사용
+
 volumes:
   mongo_data:
   portainer_data:
   prometheus_data:
+  grafana_data:
 
 networks:
   nowdoboss-net:
