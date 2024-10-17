@@ -111,8 +111,8 @@ app:
 # OAUTH2.0 Setting
 oauth:
   kakao:
-    client-id: ENC(g/Vx8WTW7h5I2QZf+9dtLW/7kjmFO8ShBdsZTCs5X0737/ionud6CrjbnHWW/yx5)   # REST API 키
-    client-secret: ENC(asP3isod96DLoonCJyrARCQRjHmExfVqQQoksnX460rHQ5w8rdzRMYqUGZyswq9E) # 보안 -> Client Secret 키
+    client-id: ${OAUTH_KAKAO_CLIENT_ID}   # REST API 키
+    client-secret: ${OAUTH_KAKAO_CLIENT_SECRET} # 보안 -> Client Secret 키
     redirect-uri: ${server.https-url}/member/loading/kakao
     scope:
       - profile_nickname
@@ -121,8 +121,8 @@ oauth:
 #      - name
 
   naver:
-    client-id: ENC(8NHWe8Pgm5HfHuGZIqIsoJoOZHq/FEp1b2s9nrWwyAw=)
-    client-secret: ENC(OWV9NuO9XtzrcStSseRpG0aLL7wUg06y)
+    client-id: ${OAUTH_NAVER_CLIENT_ID}
+    client-secret: ${OAUTH_NAVER_CLIENT_SECRET}
     redirect_uri: ${server.https-url}/member/loading/naver
     scope:
       - nickname
@@ -131,8 +131,8 @@ oauth:
       - profile_image
 
   google:
-    client_id: ENC(h60iOgCEaWm1FoBAE2egg1lFRiY2KDxtJk8hWsM3o2Pqc82z9xjFBpU27igPlAFZNvsuJPAiTihg9eixh8hXVje40XNOHBirDhNoqeCPM2VKGpeQtFAEZg==)
-    client_secret: ENC(WMCJejXDWzF/LMCkmM6nAwF6T6gnF1U/wPsSLLnWwr27VyggAbLclQmiwUM1YgWU)
+    client_id: ${OAUTH_GOOGLE_CLIENT_ID}
+    client_secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
     redirect_uri: ${server.https-url}/member/loading/google
     scope:
       - profile
@@ -147,3 +147,8 @@ management:
   endpoint:
     prometheus:
       enabled: true  # Prometheus 엔드포인트 활성화
+
+# Java Simplified Encryption Setting
+jasypt:
+  encryptor:
+    key: ${JASYPT_ENCRYPTOR_KEY}
