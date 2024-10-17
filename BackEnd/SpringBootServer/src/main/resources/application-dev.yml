@@ -1,5 +1,4 @@
 server:
-  base-url: www.nowdoboss.com
   https-url: https://www.nowdoboss.com
   fastapi-url: http://13.124.23.220:8000
 
@@ -27,9 +26,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # DB 드라이버
-    url: jdbc:mysql://${server.base-url}:3306/nowdoboss?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true       # 데이터베이스 URL
-    username: ENC(NYqtFSaM0KYco+Y8zivxH10AFbmGUc5b)             # 데이터베이스 계정명
-    password: ENC(1+qm22EMFffu+LHZSW+HOP3Ikh9gK4vY)             # 데이터베이스 계정 비밀번호
+    url: ${MYSQL_DB_URL}       # 데이터베이스 URL
+    username: ${MYSQL_DB_USERNAME}             # 데이터베이스 계정명
+    password: ${MYSQL_DB_PASSWORD}             # 데이터베이스 계정 비밀번호
 
   # NoSQL setting
   data:
@@ -40,19 +39,19 @@ spring:
 
     # MongoDB setting
     mongodb:
-      host: mongodb # MongoDB 도커 컨테이너의 이름을 사용하여 접근
+      host: ${MONGO_DB_HOST} # MongoDB 도커 컨테이너의 이름을 사용하여 접근
       port: 27017
-      database: nowdoboss
-      username: 8llow8llowme
-      password: 8llow8llowme
-      authentication-database: admin
+      database: ${MONGO_DB_DATABASE}
+      username: ${MONGO_DB_USERNAME}
+      password: ${MONGO_DB_PASSWORD}
+      authentication-database: ${MONGO_DB_AUTHENTICATION_DATABASE}
 
   # Java Mail Sender setting (Google Mail)
   mail:
-    host: smtp.gmail.com
+    host: ${JAVA_MAIL_HOST}
     port: 587
-    username: ENC(+5jsIIJ6sQhfHib/WLZpOFVfaUB3j8nSAPvugM5tbA0=)
-    password: ENC(fXL++uSC79xcGgMraAlzsef+TJaoxLIsEJlEtsWt/gU=)
+    username: ${JAVA_MAIL_USERNAME}
+    password: ${JAVA_MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -98,16 +97,16 @@ logging:
 
 # jwt setting
 jwt:
-  accessKey: ENC(sVO5iJmm3kQWp+iZwdwYOHW0o4mkgUQTv5AcpmBJ3tCSuTe59lryqbOj57lG9bv133Sr5fR9RRbY0I/mtphYQ2In6Key9xPsxLDs7izg+d5k21KswSys5PZ8h1T7Aq3dNujkA9DBkOGi3JinArAlsJNVcn2CoSyiVAd0Ke4D1SVwjnzMNMjPCkDHf9A9oTP6k2L+z/CAPd9338OYqS2SnQ==)
-  refreshKey: ENC(qvalG2VA7BkYezISPg6ik5iNLpB4062CoNvw3gzFcWHNwciYfCkRO9wklS1r9zKAJeTsi9f5ewtz4m/o+u2CjUAqrZIWJ+WTuFFV1G9o3hR+61vG7dLa+81lX7OljJD6jq/zrWBUjDUNwBPcZVkuvVKkXs03+L3/EYr0WzykXKkgpvt9q0LkUtskHYJNnsvBxNxivjpiUuxOwbfD0DRSAA==)
+  accessKey: ${JWT_ACCESS_KEY}
+  refreshKey: ${JWT_REFRESH_KEY}
   accessExpiration: PT420M  # 420분 (PT420M)
   refreshExpiration: PT10080M  # 10080분 (7일) (PT10080M)
 
 # firebase setting
 app:
   firebase-configuration-file: classpath:serviceAccountKey.json
-  firebase-bucket: ENC(QyKD4uz1kofezMLc1GD9dpLblXKaIfU+nhv1KP3JinQ=)
-  firebase-project-id: nowdoboss
+  firebase-bucket: ${FIREBASE_BUCKET}
+  firebase-project-id: ${FIREBAASE_PROJECT_ID}
 
 # OAUTH2.0 Setting
 oauth:
