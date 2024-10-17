@@ -106,7 +106,7 @@ jwt:
 app:
   firebase-configuration-file: classpath:serviceAccountKey.json
   firebase-bucket: ${FIREBASE_BUCKET}
-  firebase-project-id: ${FIREBAASE_PROJECT_ID}
+  firebase-project-id: ${FIREBASE_PROJECT_ID}
 
 # OAUTH2.0 Setting
 oauth:
