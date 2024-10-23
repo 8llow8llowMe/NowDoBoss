@@ -38,7 +38,6 @@ import com.ssafy.backend.global.component.kafka.producer.KafkaProducer;
 import com.ssafy.backend.global.util.CoordinateConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -88,39 +87,6 @@ public class CommercialServiceImpl implements CommercialService {
 
         // 상권
         return areaCommercialRepository.findCommercialInfoByCommercialCodeName(request.codeName());
-
-
-        /*// 자치구 변환
-        String districtCode = areaCommercialRepository.findDistrictCodeByDistrictCodeName(request.districtCodeName());
-
-        // 행정동 변환
-        String administrationCode = convertAdministrationCodeNameToAdministrationCode(request.administrationCodeName());
-
-        // 상권 변환
-        String commercialCode = convertCommercialCodeNameToCommercialCode(request.commercialCodName());
-
-        return ConversionCodeResponse.builder()
-                .districtCodeName(request.districtCodeName())
-                .districtCode(districtCode)
-                .administrationCodeName(request.administrationCodeName())
-                .administrationCode(administrationCode)
-                .commercialCodeName(request.commercialCodName())
-                .commercialCode(commercialCode)
-                .build();*/
-    }
-
-    private String convertAdministrationCodeNameToAdministrationCode(final String administrationCodeName) {
-        if (StringUtils.isBlank(administrationCodeName)) {
-            return null;
-        }
-        return areaCommercialRepository.findAdministrationCodeByAdministrationCodeName(administrationCodeName);
-    }
-
-    private String convertCommercialCodeNameToCommercialCode(final String commercialCodeName) {
-        if (StringUtils.isBlank(commercialCodeName)) {
-            return null;
-        }
-        return areaCommercialRepository.findCommercialCodeByCommercialCodeName(commercialCodeName);
     }
 
     @Override
@@ -409,15 +375,13 @@ public class CommercialServiceImpl implements CommercialService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CommercialAdministrationAreaResponse getAdministrationInfoByCommercialCode(Long memberId, String commercialCode) {
-//        // 추천용 데이터 카프카 토픽으로
-//        DataInfo dataInfo = new DataInfo(memberId,commercialCode, "click");
-//        kafkaProducer.publish(KafkaConstants.KAFKA_TOPIC_DATA, dataInfo);
-
         return areaCommercialRepository.findByCommercialCode(commercialCode);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CommercialStoreResponse getStoreByPeriodAndCommercialCodeAndServiceCode(String periodCode, String commercialCode, String serviceCode) {
         ServiceType serviceType = storeCommercialRepository.findServiceTypeByPeriodCodeAndCommercialCodeAndServiceCode(periodCode, commercialCode, serviceCode);
 
@@ -456,6 +420,7 @@ public class CommercialServiceImpl implements CommercialService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CommercialIncomeResponse getIncomeByPeriodCodeAndCommercialCode(String periodCode, String commercialCode) {
         IncomeCommercial incomeCommercial = incomeCommercialRepository.findByPeriodCodeAndCommercialCode(periodCode, commercialCode)
                 .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_INCOME));
@@ -497,6 +462,7 @@ public class CommercialServiceImpl implements CommercialService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AllIncomeResponse getAllIncomeByPeriodCodeAndDistrictCodeAndAdministrationCodeAndCommercialCode(String periodCode, String districtCode, String administrationCode, String commercialCode) {
         IncomeDistrict incomeDistrict = incomeDistrictRepository.findByPeriodCodeAndDistrictCode(periodCode, districtCode)
                 .orElseThrow(() -> new DistrictException(DistrictErrorCode.NOT_INCOME));
@@ -576,6 +542,7 @@ public class CommercialServiceImpl implements CommercialService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<CommercialAnalysisResponse> getMyAnalysisListByMemberId(Long memberId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<CommercialAnalysis> commercialAnalysisPage = commercialAnalysisRepository.findByMemberIdOrderByCreatedAt(memberId, pageable);
