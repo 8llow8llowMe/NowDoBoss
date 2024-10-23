@@ -19,6 +19,9 @@ RUN cp build/libs/*.jar /app/app.jar
 # 로그를 기록할 디렉토리 생성
 RUN mkdir -p /app/logs
 
+# 로그 디렉토리에 쓰기 권한 부여
+RUN chmod -R 777 /app/logs
+
 RUN mkdir /app/videos
 
 # Spring Boot 애플리케이션 실행을 위한 명령 설정
