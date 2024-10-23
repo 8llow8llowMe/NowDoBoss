@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.function.Supplier;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class    NullSafeBuilder {
+public class NullSafeBuilder {
     public static BooleanBuilder build(Supplier<BooleanExpression> f) {
         try {
             return new BooleanBuilder(f.get());

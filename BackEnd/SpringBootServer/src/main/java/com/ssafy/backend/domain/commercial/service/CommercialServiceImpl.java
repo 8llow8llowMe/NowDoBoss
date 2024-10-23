@@ -39,6 +39,7 @@ import com.ssafy.backend.global.util.CoordinateConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -91,6 +92,7 @@ public class CommercialServiceImpl implements CommercialService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "Contents", key = "'administrativeAreas:' + #districtCode", cacheManager = "contentCacheManager")
     public List<CommercialAdministrationResponse> getAdministrativeAreasByDistrict(String districtCode) {
         List<AreaCommercial> areaCommercialList = areaCommercialRepository.findAllByDistrictCode(districtCode);
 
@@ -121,6 +123,7 @@ public class CommercialServiceImpl implements CommercialService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "Contents", key = "'commercialAreas:' + #administrationCode", cacheManager = "contentCacheManager")
     public List<CommercialAreaResponse> getCommercialAreasByAdministrationCode(String administrationCode) {
         List<AreaCommercial> areaCommercialList = areaCommercialRepository.findByAdministrationCode(administrationCode);
         return areaCommercialList.stream()

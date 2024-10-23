@@ -1,6 +1,5 @@
 package com.ssafy.backend.global.util;
 
-import com.ssafy.backend.domain.commercial.exception.CoordinateTransformationException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
@@ -13,8 +12,6 @@ import org.opengis.referencing.operation.MathTransform;
 
 
 public class CoordinateConverter {
-    private static final GeometryFactory geometryFactory = new GeometryFactory();
-
     public static Point transform(double x, double y) throws Exception {
         CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:5181");
         CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4326");
