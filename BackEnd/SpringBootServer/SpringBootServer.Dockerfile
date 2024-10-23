@@ -24,5 +24,5 @@ RUN chmod -R 777 /app/logs
 
 RUN mkdir /app/videos
 
-# Spring Boot 애플리케이션 실행을 위한 명령 설정
-ENTRYPOINT ["java", "-Dspring.profiles.active=dev", "-jar", "/app/app.jar"]
+# JVM 옵션을 포함하여 Spring Boot 애플리케이션 실행
+ENTRYPOINT ["java", "-Xlog:gc*,gc+heap=debug,gc+age=trace:file=/app/logs/gc.log:time,uptime", "-XX:+HeapDumpOnOutOfMemoryError", "-XX:HeapDumpPath=/app/logs/heapdump.hprof", "-Dspring.profiles.active=dev", "-jar", "/app/app.jar"]
