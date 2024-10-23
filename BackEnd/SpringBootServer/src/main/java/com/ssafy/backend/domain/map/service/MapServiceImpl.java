@@ -129,39 +129,40 @@ public class MapServiceImpl implements MapService{
         return new MapResponse(districtCodes, res);
     }
 
-
-
-    public void loadAndCacheCoords(String type) throws Exception {
+    private void loadAndCacheCoords(String type) {
         JSONParser parser = new JSONParser();
-        Reader reader = new FileReader("src/main/resources/area/" + type + ".json");
-        JSONArray dataArray = (JSONArray) parser.parse(reader);
-        Map<String, List<List<Double>>> allCoords = new LinkedHashMap<>();
-        Map<String, List<Double>> map = new LinkedHashMap<>();
+        // try-with-resources 구문을 사용하여 파일을 안전하게 열고 자동으로 닫기
+        try (Reader reader = new FileReader("src/main/resources/area/" + type + ".json")) {
+            JSONArray dataArray = (JSONArray) parser.parse(reader);
+            Map<String, List<List<Double>>> allCoords = new LinkedHashMap<>();
+            Map<String, List<Double>> map = new LinkedHashMap<>();
 
-        for (Object element : dataArray) {
-            JSONObject dto = (JSONObject) element;
-            String dtoCodeName = (String) dto.get(type + "_code_name");
-            JSONArray areaCoords = (JSONArray) dto.get("area_coords");
-            List<List<Double>> coords = new ArrayList<>();
-            double i = 0;
-            for (Object coordObject : areaCoords) {
-                JSONArray coordArray = (JSONArray) coordObject;
-                double x = ((Number) coordArray.get(0)).doubleValue();
-                double y = ((Number) coordArray.get(1)).doubleValue();
-                coords.add(Arrays.asList(x, y, i++));
+            for (Object element : dataArray) {
+                JSONObject dto = (JSONObject) element;
+                String dtoCodeName = (String) dto.get(type + "_code_name");
+                JSONArray areaCoords = (JSONArray) dto.get("area_coords");
+                List<List<Double>> coords = new ArrayList<>();
+                double i = 0;
+                for (Object coordObject : areaCoords) {
+                    JSONArray coordArray = (JSONArray) coordObject;
+                    double x = ((Number) coordArray.get(0)).doubleValue();
+                    double y = ((Number) coordArray.get(1)).doubleValue();
+                    coords.add(Arrays.asList(x, y, i++));
+                }
+                JSONArray center = (JSONArray) dto.get("center_coords");
+                double x = ((Number) center.get(0)).doubleValue();
+                double y = ((Number) center.get(1)).doubleValue();
+                double districtCode = Double.parseDouble((String)dto.get(type + "_code"));
+                coords.sort(Comparator.comparingDouble(a -> a.get(0)));
+                coords.add(0, Arrays.asList(x, y, districtCode));
+                allCoords.put(dtoCodeName, coords);
             }
-            JSONArray center = (JSONArray) dto.get("center_coords");
-            double x = ((Number) center.get(0)).doubleValue();
-            double y = ((Number) center.get(1)).doubleValue();
-            double districtCode = Double.parseDouble((String)dto.get(type + "_code"));
-            // 경도 기준으로 정렬
-            coords.sort(Comparator.comparingDouble(a -> a.get(0)));
-            coords.add(0, Arrays.asList(x, y, districtCode));
-            allCoords.put(dtoCodeName, coords);
-        }
 
-        // Redis에 상권 코드별로 정렬된 좌표 저장
-        redisTemplate.opsForValue().set(type, allCoords, 7, TimeUnit.DAYS);
+            // 데이터를 Redis에 캐싱
+            redisTemplate.opsForValue().set(type, allCoords, 7, TimeUnit.DAYS);
+        } catch (Exception e) {
+            throw new RuntimeException("파일 읽기 중 오류 발생", e);
+        }
     }
 
     private List<List<Double>> filterCoordsByRange(List<List<Double>> coords, double minLng, double maxLng, double minLat, double maxLat) {
