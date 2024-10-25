@@ -5,8 +5,8 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
 
@@ -22,15 +22,15 @@ public class FirebaseConfig {
     @Value("${app.firebase-project-id}")
     private String projectId;
 
-    private final ResourceLoader resourceLoader;
+    private final ApplicationContext applicationContext;
 
     /**
      * FirebaseConfig 클래스의 생성자입니다.
      *
-     * @param resourceLoader 리소스를 로드하는데 사용되는 리소스 로더
+     * @param applicationContext Spring 애플리케이션 컨텍스트로, Firebase 설정 파일을 로드하는 데 사용됩니다.
      */
-    public FirebaseConfig(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
+    public FirebaseConfig(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     /**
@@ -55,7 +55,7 @@ public class FirebaseConfig {
      */
     private FirebaseOptions createFirebaseOptions() throws IOException {
         return FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(resourceLoader.getResource(firebaseConfigPath).getInputStream()))
+                .setCredentials(GoogleCredentials.fromStream(applicationContext.getResource(firebaseConfigPath).getInputStream()))
                 .setProjectId(projectId)
                 .build();
     }
