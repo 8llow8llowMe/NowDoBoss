@@ -38,20 +38,20 @@ pipeline {
             }
         }
 
-        // 빌드 단계: JAR 파일을 생성하고 아티팩트로 저장
-        // stage('Build') {
-        //     steps {
-        //         dir('BackEnd/SpringBootServer') {
-        //             sh "chmod +x ./gradlew"
-        //             sh "./gradlew clean bootJar"  // 프로젝트를 Fat JAR로 빌드
-        //         }
-        //     }
-        //     post {
-        //         success {
-        //             archiveArtifacts artifacts: '**/build/libs/*.jar', allowEmptyArchive: true  // 빌드 아티팩트를 저장
-        //         }
-        //     }
-        // }
+        빌드 단계: JAR 파일을 생성하고 아티팩트로 저장
+        stage('Build') {
+            steps {
+                dir('BackEnd/SpringBootServer') {
+                    sh "chmod +x ./gradlew"
+                    sh "./gradlew clean bootJar"  // 프로젝트를 Fat JAR로 빌드
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: '**/build/libs/*.jar', allowEmptyArchive: true  // 빌드 아티팩트를 저장
+                }
+            }
+        }
 
         stage('Deploy with Docker Compose') {  // 'Deploy with Docker Compose'라는 이름의 단계를 정의합니다. 이 단계에서는 Docker Compose를 사용한 배포가 이루어집니다.
             steps {
