@@ -1,8 +1,9 @@
 package com.ssafy.backend.domain.map.service;
 
 import com.ssafy.backend.domain.map.dto.response.MapResponse;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
+import java.io.FileReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,13 +12,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -90,42 +89,39 @@ public class MapServiceImpl implements MapService {
 
     private void loadAndCacheCoords(String type) {
         JSONParser parser = new JSONParser();
-        Map<String, List<List<Double>>> allCoords = new LinkedHashMap<>();
+        // 파일 전체를 JSONArray로 읽기
+        try (Reader reader = new FileReader("src/main/resources/area/" + type + ".json")) {
+            JSONArray dataArray = (JSONArray) parser.parse(reader);
+            Map<String, List<List<Double>>> allCoords = new LinkedHashMap<>();
 
-        try (Stream<String> stream = Files.lines(
-            Paths.get("src/main/resources/area/" + type + ".json"))) {
-            stream.forEach(line -> {
-                try {
-                    JSONObject dto = (JSONObject) parser.parse(line);
-                    String dtoCodeName = (String) dto.get(type + "_code_name");
-                    JSONArray areaCoords = (JSONArray) dto.get("area_coords");
+            for (Object element : dataArray) {
+                JSONObject dto = (JSONObject) element;
+                String dtoCodeName = (String) dto.get(type + "_code_name");
+                JSONArray areaCoords = (JSONArray) dto.get("area_coords");
 
-                    List<List<Double>> coords = new ArrayList<>();
-                    double i = 0;
-                    for (Object coordObject : areaCoords) {
-                        JSONArray coordArray = (JSONArray) coordObject;
-                        double x = ((Number) coordArray.get(0)).doubleValue();
-                        double y = ((Number) coordArray.get(1)).doubleValue();
-                        coords.add(Arrays.asList(x, y, i++));
-                    }
-
-                    JSONArray center = (JSONArray) dto.get("center_coords");
-                    double x = ((Number) center.get(0)).doubleValue();
-                    double y = ((Number) center.get(1)).doubleValue();
-                    double districtCode = Double.parseDouble((String) dto.get(type + "_code"));
-                    coords.add(0, Arrays.asList(x, y, districtCode));
-
-                    allCoords.put(dtoCodeName, coords);
-                } catch (ParseException e) {
-                    log.error("JSON 파싱 오류: {}", e.getMessage());
+                List<List<Double>> coords = new ArrayList<>();
+                double i = 0;
+                for (Object coordObject : areaCoords) {
+                    JSONArray coordArray = (JSONArray) coordObject;
+                    double x = ((Number) coordArray.get(0)).doubleValue();
+                    double y = ((Number) coordArray.get(1)).doubleValue();
+                    coords.add(Arrays.asList(x, y, i++));
                 }
-            });
+
+                JSONArray center = (JSONArray) dto.get("center_coords");
+                double x = ((Number) center.get(0)).doubleValue();
+                double y = ((Number) center.get(1)).doubleValue();
+                double districtCode = Double.parseDouble((String) dto.get(type + "_code"));
+                coords.add(0, Arrays.asList(x, y, districtCode));
+
+                allCoords.put(dtoCodeName, coords);
+            }
+
+            // 데이터를 Redis에 캐싱
+            redisTemplate.opsForValue().set(type, allCoords, 7, TimeUnit.DAYS);
         } catch (Exception e) {
             throw new RuntimeException("파일 읽기 중 오류 발생", e);
         }
-
-        // 데이터를 Redis에 캐싱
-        redisTemplate.opsForValue().set(type, allCoords, 7, TimeUnit.DAYS);
     }
 
     private List<List<Double>> filterCoordsByRange(List<List<Double>> coords, double minLng,
