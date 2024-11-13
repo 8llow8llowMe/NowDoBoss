@@ -38,7 +38,7 @@ pipeline {
             }
         }
 
-        빌드 단계: JAR 파일을 생성하고 아티팩트로 저장
+        // 빌드 단계: JAR 파일을 생성하고 아티팩트로 저장
         stage('Build') {
             steps {
                 dir('BackEnd/SpringBootServer') {
