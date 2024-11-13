@@ -172,18 +172,14 @@ public class CommercialServiceImpl implements CommercialService {
         String administrationCode) {
         return areaCommercialRepository.findByAdministrationCode(administrationCode).stream()
             .map(ac -> {
-                Point transformedPoint = transformCoordinates(ac.getX(), ac.getY());
-                // 변환된 좌표가 null인 경우 기본값을 설정
-                double x = (transformedPoint != null) ? transformedPoint.getX() : 0;
-                double y = (transformedPoint != null) ? transformedPoint.getY() : 0;
-
+                Point transformedPoint = transformCoordinates(ac.getX().doubleValue(), ac.getY().doubleValue());
                 return new CommercialAreaResponse(
                     ac.getCommercialCode(),
                     ac.getCommercialCodeName(),
                     ac.getCommercialClassificationCode(),
                     ac.getCommercialClassificationCodeName(),
-                    x,
-                    y
+                    transformedPoint.getX(),
+                    transformedPoint.getY()
                 );
             })
             .toList();
