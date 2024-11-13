@@ -22,8 +22,8 @@ public class CoordinateConverter {
     @PostConstruct
     public void init() {
         try {
-            CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:5181", true);
-            CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
+            CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:5181");
+            CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326");
             transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
         } catch (Exception e) {
             throw new CoordinateTransformationException("좌표 변환 초기화 실패", e);
