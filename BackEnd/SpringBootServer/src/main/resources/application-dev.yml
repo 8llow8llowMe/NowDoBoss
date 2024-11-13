@@ -79,6 +79,9 @@ spring:
 
   # flyway setting
   flyway:
+    url: ${MYSQL_DB_URL}
+    user: ${MYSQL_DB_USERNAME}
+    password: ${MYSQL_DB_PASSWORD}
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
@@ -118,7 +121,7 @@ oauth:
       - profile_nickname
       - profile_image
       - account_email
-#      - name
+  #      - name
 
   naver:
     client-id: ${OAUTH_NAVER_CLIENT_ID}
