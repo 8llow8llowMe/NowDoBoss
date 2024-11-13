@@ -35,19 +35,6 @@ public class RedisKeyExpirationListener implements MessageListener {
         if ("Contents::districts:top10".equals(expiredKey)) {
             log.info("======================= Reloading cache for key: {}", expiredKey);
             districtService.getTopTenDistricts(); // 캐시를 다시 로드하는 메서드 호출
-        } else if (expiredKey.startsWith("Contents::administrativeAreas:")) {
-            String districtCode = expiredKey.split("Contents::administrativeAreas:")[1];
-            log.info("======================= Reloading cache for districtCode: {}", districtCode);
-
-            commercialService.getAdministrativeAreasByDistrict(districtCode);
-        } else if (expiredKey.startsWith("Contents::commercialAreas:")) {
-            String administrationCode = expiredKey.split("Contents::commercialAreas:")[1];
-            log.info("======================= Reloading cache for administrationCode: {}",
-                administrationCode);
-
-            commercialService.getCommercialAreasByAdministrationCode(administrationCode);
-        } else {
-            log.warn("Unrecognized expired key pattern: {}", expiredKey);
         }
     }
 }

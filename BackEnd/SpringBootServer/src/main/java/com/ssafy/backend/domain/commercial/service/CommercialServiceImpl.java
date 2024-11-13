@@ -145,7 +145,6 @@ public class CommercialServiceImpl implements CommercialService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "Contents", key = "'administrativeAreas:' + #districtCode", cacheManager = "contentCacheManager")
     public List<CommercialAdministrationResponse> getAdministrativeAreasByDistrict(
         String districtCode) {
         List<AreaCommercial> areaCommercialList = areaCommercialRepository.findAllByDistrictCode(
@@ -169,7 +168,6 @@ public class CommercialServiceImpl implements CommercialService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "Contents", key = "'commercialAreas:' + #administrationCode", cacheManager = "contentCacheManager")
     public List<CommercialAreaResponse> getCommercialAreasByAdministrationCode(
         String administrationCode) {
         return areaCommercialRepository.findByAdministrationCode(administrationCode).stream()
