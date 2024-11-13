@@ -91,6 +91,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Point;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -740,7 +741,9 @@ public class CommercialServiceImpl implements CommercialService {
 
     private Point transformCoordinates(double x, double y) {
         try {
-            return coordinateConverter.transform(x, y);
+            Point result = coordinateConverter.transform(x, y);
+            CRS.reset("all");
+            return result;
         } catch (Exception e) {
             throw new CoordinateTransformationException("좌표 변환에 실패하였습니다.", e);
         }
