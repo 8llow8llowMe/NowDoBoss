@@ -2,8 +2,9 @@ package com.ssafy.backend.domain.map.service;
 
 import com.ssafy.backend.domain.map.dto.response.MapResponse;
 
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -90,7 +92,8 @@ public class MapServiceImpl implements MapService {
     private void loadAndCacheCoords(String type) {
         JSONParser parser = new JSONParser();
         // 파일 전체를 JSONArray로 읽기
-        try (Reader reader = new FileReader("src/main/resources/area/" + type + ".json")) {
+        try (Reader reader = new InputStreamReader(
+                new ClassPathResource("area/" + type + ".json").getInputStream(), StandardCharsets.UTF_8)) {
             JSONArray dataArray = (JSONArray) parser.parse(reader);
             Map<String, List<List<Double>>> allCoords = new LinkedHashMap<>();
 
