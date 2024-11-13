@@ -39,7 +39,7 @@ public class MapServiceImpl implements MapService {
     @Override
     public MapResponse getAdministrationAreaCoords(double ax, double ay, double bx, double by)
         throws Exception {
-        return getAreaCoords("commercial", ax, ay, bx, by);
+        return getAreaCoords("administration", ax, ay, bx, by);
     }
 
     @Override
@@ -76,15 +76,10 @@ public class MapServiceImpl implements MapService {
     }
 
     private Map<String, List<List<Double>>> getCoordsFromCache(String key) {
-        Map<String, List<List<Double>>> coordsMap = (Map<String, List<List<Double>>>) redisTemplate.opsForValue()
-            .get(key);
+        Map<String, List<List<Double>>> coordsMap = (Map<String, List<List<Double>>>) redisTemplate.opsForValue().get(key);
         if (coordsMap == null) {
+            loadAndCacheCoords(key);
             coordsMap = (Map<String, List<List<Double>>>) redisTemplate.opsForValue().get(key);
-            if (coordsMap == null) {
-                log.info("첫 {} 영역 요청!", key);
-                loadAndCacheCoords(key);
-                coordsMap = (Map<String, List<List<Double>>>) redisTemplate.opsForValue().get(key);
-            }
         }
         return coordsMap;
     }
