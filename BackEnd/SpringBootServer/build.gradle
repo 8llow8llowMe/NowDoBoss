@@ -81,9 +81,6 @@ dependencies {
     implementation 'org.flywaydb:flyway-mysql'
     implementation 'org.flywaydb:flyway-core'
 
-    // MySQL Connector (Flyway랑 같이 사용하기 위해서는 runtimeOnly 대신 implementation으로 설정해야 오류 안남)
-    implementation 'com.mysql:mysql-connector-j'
-
     // kafka streams
     implementation 'org.apache.kafka:kafka-streams'
 
@@ -98,6 +95,7 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

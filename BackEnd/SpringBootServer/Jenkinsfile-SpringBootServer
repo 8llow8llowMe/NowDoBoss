@@ -43,7 +43,7 @@ pipeline {
             steps {
                 dir('BackEnd/SpringBootServer') {
                     sh "chmod +x ./gradlew"
-                    sh "./gradlew clean build"  // 프로젝트 빌드
+                    sh "./gradlew clean bootJar"  // 프로젝트를 Fat JAR로 빌드
                 }
             }
             post {
