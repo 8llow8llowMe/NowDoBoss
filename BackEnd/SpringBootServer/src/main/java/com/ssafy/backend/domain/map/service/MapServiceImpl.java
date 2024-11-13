@@ -32,37 +32,7 @@ public class MapServiceImpl implements MapService {
 
     @Override
     public MapResponse getCommercialAreaCoords(double ax, double ay, double bx, double by) {
-        System.out.println("서비스임플안!");
-        Map<String, Map<String, Object>> commercialCodes = new LinkedHashMap<>();
-        Map<String, List<List<Double>>> coordsMap = (Map<String, List<List<Double>>>) redisTemplate.opsForValue().get("commercial");
-        if (coordsMap == null) {
-            log.info("첫 상권 영역 요청!");
-            loadAndCacheCoords("commercial");
-            coordsMap = (Map<String, List<List<Double>>>) redisTemplate.opsForValue().get("commercial");
-        }
-        Map<String, List<List<Double>>> res = new LinkedHashMap<>();
-        for (Map.Entry<String, List<List<Double>>> entry : coordsMap.entrySet()) {
-            String commercialCodeName = entry.getKey();
-            List<List<Double>> coords = entry.getValue();
-            List<Double> center = coords.get(0);
-            int code = center.get(2).intValue();
-            center.remove(2);
-            coords.remove(0);
-            List<List<Double>> filteredCoords = filterCoordsByRange(coords, ax, bx, ay, by);
-
-            if (filteredCoords == null){
-                return null;
-            }
-            if (!filteredCoords.isEmpty()) {
-                filteredCoords.sort(Comparator.comparingDouble(a -> a.get(2)));
-                res.put(commercialCodeName, filteredCoords);
-                Map<String, Object> m = new LinkedHashMap<>();
-                m.put("code", code);
-                m.put("center", center);
-                commercialCodes.put(commercialCodeName, m);
-            }
-        }
-        return new MapResponse(commercialCodes, res);
+        return getAreaCoords("commercial", ax, ay, bx, by);
     }
 
     @Override
