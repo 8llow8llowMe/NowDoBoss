@@ -79,10 +79,10 @@ import com.ssafy.backend.domain.district.repository.SalesDistrictRepository;
 import com.ssafy.backend.global.common.document.DataDocument;
 import com.ssafy.backend.global.common.dto.PageResponse;
 import com.ssafy.backend.global.common.repository.DataRepository;
+import com.ssafy.backend.global.component.geotools.CoordinateConverter;
 import com.ssafy.backend.global.component.kafka.KafkaConstants;
 import com.ssafy.backend.global.component.kafka.dto.info.DataInfo;
 import com.ssafy.backend.global.component.kafka.producer.KafkaProducer;
-import com.ssafy.backend.global.util.CoordinateConverter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -122,6 +122,7 @@ public class CommercialServiceImpl implements CommercialService {
     private final CommercialAnalysisRepository commercialAnalysisRepository;
     private final KafkaProducer kafkaProducer;
     private final DataRepository dataRepository;
+    private final CoordinateConverter coordinateConverter;
 
     @Override
     @Transactional(readOnly = true)
@@ -148,16 +149,19 @@ public class CommercialServiceImpl implements CommercialService {
         String districtCode) {
         List<AreaCommercial> areaCommercialList = areaCommercialRepository.findAllByDistrictCode(
             districtCode);
-
         Set<String> seenAdministrationCodes = new HashSet<>();
+
         return areaCommercialList.stream()
             .filter(ac -> seenAdministrationCodes.add(ac.getAdministrationCode()))
-            .map(ac -> new CommercialAdministrationResponse(
-                ac.getAdministrationCodeName(),
-                ac.getAdministrationCode(),
-                transformCoordinates(ac.getX(), ac.getY()).getX(),
-                transformCoordinates(ac.getX(), ac.getY()).getY()
-            ))
+            .map(ac -> {
+                Point transformedPoint = transformCoordinates(ac.getX(), ac.getY());
+                return new CommercialAdministrationResponse(
+                    ac.getAdministrationCodeName(),
+                    ac.getAdministrationCode(),
+                    transformedPoint.getX(),
+                    transformedPoint.getY()
+                );
+            })
             .toList();
     }
 
@@ -168,14 +172,17 @@ public class CommercialServiceImpl implements CommercialService {
     public List<CommercialAreaResponse> getCommercialAreasByAdministrationCode(
         String administrationCode) {
         return areaCommercialRepository.findByAdministrationCode(administrationCode).stream()
-            .map(ac -> new CommercialAreaResponse(
-                ac.getCommercialCode(),
-                ac.getCommercialCodeName(),
-                ac.getCommercialClassificationCode(),
-                ac.getCommercialClassificationCodeName(),
-                transformCoordinates(ac.getX().doubleValue(), ac.getY().doubleValue()).getX(),
-                transformCoordinates(ac.getX().doubleValue(), ac.getY().doubleValue()).getY()
-            ))
+            .map(ac -> {
+                Point transformedPoint = transformCoordinates(ac.getX(), ac.getY());
+                return new CommercialAreaResponse(
+                    ac.getCommercialCode(),
+                    ac.getCommercialCodeName(),
+                    ac.getCommercialClassificationCode(),
+                    ac.getCommercialClassificationCodeName(),
+                    transformedPoint.getX(),
+                    transformedPoint.getY()
+                );
+            })
             .toList();
     }
 
@@ -733,9 +740,9 @@ public class CommercialServiceImpl implements CommercialService {
 
     private Point transformCoordinates(double x, double y) {
         try {
-            return CoordinateConverter.transform(x, y);
+            return coordinateConverter.transform(x, y);
         } catch (Exception e) {
-            throw new CoordinateTransformationException("좌표 변환에 실패했습니다.", e);
+            throw new CoordinateTransformationException("좌표 변환에 실패하였습니다.", e);
         }
     }
 
