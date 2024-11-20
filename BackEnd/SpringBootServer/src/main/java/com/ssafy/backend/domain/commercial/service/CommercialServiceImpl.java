@@ -12,21 +12,14 @@ import com.ssafy.backend.domain.commercial.document.CommercialAnalysis;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGroupFootTrafficInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAnnualQuarterIncomeInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialAnnualQuarterSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAvgIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialDayOfWeekFootTrafficInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialDaySalesCountInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialDaySalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialFranchiseeStoreInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialGenderSalesCountInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialOpenAndCloseStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialPopulationInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSameStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSchoolInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSalesCountInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSlotFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTotalIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTotalSalesInfo;
@@ -58,6 +51,7 @@ import com.ssafy.backend.domain.commercial.entity.StoreCommercial;
 import com.ssafy.backend.domain.commercial.exception.CommercialErrorCode;
 import com.ssafy.backend.domain.commercial.exception.CommercialException;
 import com.ssafy.backend.domain.commercial.exception.CoordinateTransformationException;
+import com.ssafy.backend.domain.commercial.mapper.CommercialMapper;
 import com.ssafy.backend.domain.commercial.repository.AreaCommercialRepository;
 import com.ssafy.backend.domain.commercial.repository.CommercialAnalysisRepository;
 import com.ssafy.backend.domain.commercial.repository.FacilityCommercialRepository;
@@ -93,7 +87,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Point;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -124,6 +117,8 @@ public class CommercialServiceImpl implements CommercialService {
     private final KafkaProducer kafkaProducer;
     private final DataRepository dataRepository;
     private final CoordinateConverter coordinateConverter;
+
+    private final CommercialMapper commercialMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -172,7 +167,8 @@ public class CommercialServiceImpl implements CommercialService {
         String administrationCode) {
         return areaCommercialRepository.findByAdministrationCode(administrationCode).stream()
             .map(ac -> {
-                Point transformedPoint = transformCoordinates(ac.getX().doubleValue(), ac.getY().doubleValue());
+                Point transformedPoint = transformCoordinates(ac.getX().doubleValue(),
+                    ac.getY().doubleValue());
                 return new CommercialAreaResponse(
                     ac.getCommercialCode(),
                     ac.getCommercialCodeName(),
@@ -250,83 +246,94 @@ public class CommercialServiceImpl implements CommercialService {
                 periodCode, commercialCode, serviceCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_SALES));
 
-        CommercialTimeSalesInfo timeSales = new CommercialTimeSalesInfo(
-            salesCommercial.getSales00(),
-            salesCommercial.getSales06(),
-            salesCommercial.getSales11(),
-            salesCommercial.getSales14(),
-            salesCommercial.getSales17(),
-            salesCommercial.getSales21()
-        );
+//        CommercialTimeSalesInfo timeSales = new CommercialTimeSalesInfo(
+//            salesCommercial.getSales00(),
+//            salesCommercial.getSales06(),
+//            salesCommercial.getSales11(),
+//            salesCommercial.getSales14(),
+//            salesCommercial.getSales17(),
+//            salesCommercial.getSales21()
+//        );
+//
+//        CommercialDaySalesInfo daySales = new CommercialDaySalesInfo(
+//            salesCommercial.getMonSales(),
+//            salesCommercial.getTueSales(),
+//            salesCommercial.getWedSales(),
+//            salesCommercial.getThuSales(),
+//            salesCommercial.getFriSales(),
+//            salesCommercial.getSatSales(),
+//            salesCommercial.getSunSales()
+//        );
+//
+//        CommercialAgeSalesInfo ageSales = new CommercialAgeSalesInfo(
+//            salesCommercial.getTeenSales(),
+//            salesCommercial.getTwentySales(),
+//            salesCommercial.getThirtySales(),
+//            salesCommercial.getFortySales(),
+//            salesCommercial.getFiftySales(),
+//            salesCommercial.getSixtySales()
+//        );
+//
+//        CommercialAgeGenderPercentSalesInfo ageGenderPercentSales = calculateAgeGenderPercentSales(
+//            salesCommercial);
+//
+//        CommercialDaySalesCountInfo daySalesCount = new CommercialDaySalesCountInfo(
+//            salesCommercial.getMonSalesCount(),
+//            salesCommercial.getTueSalesCount(),
+//            salesCommercial.getWedSalesCount(),
+//            salesCommercial.getThuSalesCount(),
+//            salesCommercial.getFriSalesCount(),
+//            salesCommercial.getSatSalesCount(),
+//            salesCommercial.getSunSalesCount()
+//        );
+//
+//        CommercialTimeSalesCountInfo timeSalesCount = new CommercialTimeSalesCountInfo(
+//            salesCommercial.getSalesCount00(),
+//            salesCommercial.getSalesCount06(),
+//            salesCommercial.getSalesCount11(),
+//            salesCommercial.getSalesCount14(),
+//            salesCommercial.getSalesCount17(),
+//            salesCommercial.getSalesCount21()
+//        );
+//
+//        CommercialGenderSalesCountInfo genderSalesCount = new CommercialGenderSalesCountInfo(
+//            salesCommercial.getMaleSalesCount(),
+//            salesCommercial.getFemaleSalesCount()
+//        );
+//
+//        // 최근 4분기의 기간 코드를 계산
+//        List<String> periodCodes = calculateLastFourQuarters(periodCode);
+//
+//        List<SalesCommercial> salesCommercials = salesCommercialRepository.findByCommercialCodeAndServiceCodeAndPeriodCodeIn(
+//            commercialCode, serviceCode, periodCodes);
+//
+//        List<CommercialAnnualQuarterSalesInfo> annualQuarterSalesInfos = salesCommercials.stream()
+//            .map(sales -> new CommercialAnnualQuarterSalesInfo(
+//                sales.getPeriodCode(),
+//                salesCommercial.getMonthSales())
+//            ).toList();
+//
+//        return new CommercialSalesResponse(
+//            timeSales,
+//            daySales,
+//            ageSales,
+//            ageGenderPercentSales,
+//            daySalesCount,
+//            timeSalesCount,
+//            genderSalesCount,
+//            annualQuarterSalesInfos
+//        );
 
-        CommercialDaySalesInfo daySales = new CommercialDaySalesInfo(
-            salesCommercial.getMonSales(),
-            salesCommercial.getTueSales(),
-            salesCommercial.getWedSales(),
-            salesCommercial.getThuSales(),
-            salesCommercial.getFriSales(),
-            salesCommercial.getSatSales(),
-            salesCommercial.getSunSales()
-        );
-
-        CommercialAgeSalesInfo ageSales = new CommercialAgeSalesInfo(
-            salesCommercial.getTeenSales(),
-            salesCommercial.getTwentySales(),
-            salesCommercial.getThirtySales(),
-            salesCommercial.getFortySales(),
-            salesCommercial.getFiftySales(),
-            salesCommercial.getSixtySales()
-        );
-
-        CommercialAgeGenderPercentSalesInfo ageGenderPercentSales = calculateAgeGenderPercentSales(
-            salesCommercial);
-
-        CommercialDaySalesCountInfo daySalesCount = new CommercialDaySalesCountInfo(
-            salesCommercial.getMonSalesCount(),
-            salesCommercial.getTueSalesCount(),
-            salesCommercial.getWedSalesCount(),
-            salesCommercial.getThuSalesCount(),
-            salesCommercial.getFriSalesCount(),
-            salesCommercial.getSatSalesCount(),
-            salesCommercial.getSunSalesCount()
-        );
-
-        CommercialTimeSalesCountInfo timeSalesCount = new CommercialTimeSalesCountInfo(
-            salesCommercial.getSalesCount00(),
-            salesCommercial.getSalesCount06(),
-            salesCommercial.getSalesCount11(),
-            salesCommercial.getSalesCount14(),
-            salesCommercial.getSalesCount17(),
-            salesCommercial.getSalesCount21()
-        );
-
-        CommercialGenderSalesCountInfo genderSalesCount = new CommercialGenderSalesCountInfo(
-            salesCommercial.getMaleSalesCount(),
-            salesCommercial.getFemaleSalesCount()
-        );
-
-        // 최근 4분기의 기간 코드를 계산
         List<String> periodCodes = calculateLastFourQuarters(periodCode);
 
-        List<SalesCommercial> salesCommercials = salesCommercialRepository.findByCommercialCodeAndServiceCodeAndPeriodCodeIn(
+        List<SalesCommercial> salesCommercialList = salesCommercialRepository.findByCommercialCodeAndServiceCodeAndPeriodCodeIn(
             commercialCode, serviceCode, periodCodes);
 
-        List<CommercialAnnualQuarterSalesInfo> annualQuarterSalesInfos = salesCommercials.stream()
-            .map(sales -> new CommercialAnnualQuarterSalesInfo(
-                sales.getPeriodCode(),
-                salesCommercial.getMonthSales())
-            ).toList();
+        CommercialAgeGenderPercentSalesInfo ageGenderPercentSaleList = calculateAgeGenderPercentSales(
+            salesCommercial);
 
-        return new CommercialSalesResponse(
-            timeSales,
-            daySales,
-            ageSales,
-            ageGenderPercentSales,
-            daySalesCount,
-            timeSalesCount,
-            genderSalesCount,
-            annualQuarterSalesInfos
-        );
+        return commercialMapper.toCommercialSalesResponse(salesCommercial, salesCommercialList,
+            ageGenderPercentSaleList);
     }
 
     @Override
