@@ -11,16 +11,13 @@ import com.ssafy.backend.domain.administration.repository.SalesAdministrationRep
 import com.ssafy.backend.domain.commercial.document.CommercialAnalysis;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentSalesInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGroupFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAnnualQuarterIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAvgIncomeInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialDayOfWeekFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialFranchiseeStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialOpenAndCloseStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialPopulationInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSameStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSchoolInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSlotFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTotalIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTotalSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTypeIncomeInfo;
@@ -82,7 +79,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.referencing.CRS;
@@ -185,43 +181,47 @@ public class CommercialServiceImpl implements CommercialService {
     @Transactional(readOnly = true)
     public CommercialFootTrafficResponse getFootTrafficByPeriodAndCommercialCode(String periodCode,
         String commercialCode) {
+
         FootTrafficCommercial footTrafficCommercial = footTrafficCommercialRepository.findByPeriodCodeAndCommercialCode(
                 periodCode, commercialCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_FOOT_TRAFFIC));
 
-        CommercialTimeSlotFootTrafficInfo timeSlotFootTraffic = new CommercialTimeSlotFootTrafficInfo(
-            footTrafficCommercial.getFootTraffic00(),
-            footTrafficCommercial.getFootTraffic06(),
-            footTrafficCommercial.getFootTraffic11(),
-            footTrafficCommercial.getFootTraffic14(),
-            footTrafficCommercial.getFootTraffic17(),
-            footTrafficCommercial.getFootTraffic21()
-        );
-
-        CommercialDayOfWeekFootTrafficInfo dayOfWeekFootTraffic = new CommercialDayOfWeekFootTrafficInfo(
-            footTrafficCommercial.getMonFootTraffic(),
-            footTrafficCommercial.getTueFootTraffic(),
-            footTrafficCommercial.getWedFootTraffic(),
-            footTrafficCommercial.getThuFootTraffic(),
-            footTrafficCommercial.getFriFootTraffic(),
-            footTrafficCommercial.getSatFootTraffic(),
-            footTrafficCommercial.getSunFootTraffic()
-        );
-
-        CommercialAgeGroupFootTrafficInfo ageGroupFootTraffic = new CommercialAgeGroupFootTrafficInfo(
-            footTrafficCommercial.getTeenFootTraffic(),
-            footTrafficCommercial.getTwentyFootTraffic(),
-            footTrafficCommercial.getThirtyFootTraffic(),
-            footTrafficCommercial.getFortyFootTraffic(),
-            footTrafficCommercial.getFiftyFootTraffic(),
-            footTrafficCommercial.getSixtyFootTraffic()
-        );
+//        CommercialTimeSlotFootTrafficInfo timeSlotFootTraffic = new CommercialTimeSlotFootTrafficInfo(
+//            footTrafficCommercial.getFootTraffic00(),
+//            footTrafficCommercial.getFootTraffic06(),
+//            footTrafficCommercial.getFootTraffic11(),
+//            footTrafficCommercial.getFootTraffic14(),
+//            footTrafficCommercial.getFootTraffic17(),
+//            footTrafficCommercial.getFootTraffic21()
+//        );
+//
+//        CommercialDayOfWeekFootTrafficInfo dayOfWeekFootTraffic = new CommercialDayOfWeekFootTrafficInfo(
+//            footTrafficCommercial.getMonFootTraffic(),
+//            footTrafficCommercial.getTueFootTraffic(),
+//            footTrafficCommercial.getWedFootTraffic(),
+//            footTrafficCommercial.getThuFootTraffic(),
+//            footTrafficCommercial.getFriFootTraffic(),
+//            footTrafficCommercial.getSatFootTraffic(),
+//            footTrafficCommercial.getSunFootTraffic()
+//        );
+//
+//        CommercialAgeGroupFootTrafficInfo ageGroupFootTraffic = new CommercialAgeGroupFootTrafficInfo(
+//            footTrafficCommercial.getTeenFootTraffic(),
+//            footTrafficCommercial.getTwentyFootTraffic(),
+//            footTrafficCommercial.getThirtyFootTraffic(),
+//            footTrafficCommercial.getFortyFootTraffic(),
+//            footTrafficCommercial.getFiftyFootTraffic(),
+//            footTrafficCommercial.getSixtyFootTraffic()
+//        );
 
         CommercialAgeGenderPercentFootTrafficInfo ageGenderPercentFootTraffic = calculateAgeGenderPercentFootTraffic(
             footTrafficCommercial);
 
-        return new CommercialFootTrafficResponse(timeSlotFootTraffic, dayOfWeekFootTraffic,
-            ageGroupFootTraffic, ageGenderPercentFootTraffic);
+//        return new CommercialFootTrafficResponse(timeSlotFootTraffic, dayOfWeekFootTraffic,
+//            ageGroupFootTraffic, ageGenderPercentFootTraffic);
+
+        return commercialMapper.toCommercialFootTrafficResponse(
+            footTrafficCommercial, ageGenderPercentFootTraffic);
     }
 
     @Override
@@ -235,7 +235,7 @@ public class CommercialServiceImpl implements CommercialService {
                 projection.getServiceCodeName(),
                 projection.getServiceType())
             )
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

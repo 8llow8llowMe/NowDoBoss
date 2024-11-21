@@ -1,5 +1,6 @@
 package com.ssafy.backend.domain.commercial.mapper;
 
+import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGroupFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeSalesInfo;
@@ -11,6 +12,7 @@ import com.ssafy.backend.domain.commercial.dto.info.CommercialGenderSalesCountIn
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSalesCountInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSlotFootTrafficInfo;
+import com.ssafy.backend.domain.commercial.dto.response.CommercialFootTrafficResponse;
 import com.ssafy.backend.domain.commercial.dto.response.CommercialSalesResponse;
 import com.ssafy.backend.domain.commercial.entity.FootTrafficCommercial;
 import com.ssafy.backend.domain.commercial.entity.SalesCommercial;
@@ -64,6 +66,18 @@ public interface CommercialMapper {
             .annualQuarterSalesInfos(quarterlySales.stream()
                 .map(this::entityToAnnualQuarterSalesInfo)
                 .toList())
+            .build();
+    }
+
+    default CommercialFootTrafficResponse toCommercialFootTrafficResponse(
+        FootTrafficCommercial footTrafficCommercial,
+        CommercialAgeGenderPercentFootTrafficInfo ageGenderPercentFootTrafficInfo) {
+
+        return CommercialFootTrafficResponse.builder()
+            .timeSlotFootTraffic(entityToTimeSlotFootTrafficInfo(footTrafficCommercial))
+            .dayOfWeekFootTraffic(entityToDayOfWeekFootTrafficInfo(footTrafficCommercial))
+            .ageGroupFootTraffic(entityToAgeGroupFootTrafficInfo(footTrafficCommercial))
+            .ageGenderPercentFootTraffic(ageGenderPercentFootTrafficInfo)
             .build();
     }
 
