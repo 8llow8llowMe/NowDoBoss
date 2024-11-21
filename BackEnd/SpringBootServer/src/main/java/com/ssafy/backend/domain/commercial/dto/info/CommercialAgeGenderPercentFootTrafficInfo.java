@@ -8,18 +8,18 @@ import lombok.Builder;
  */
 @Builder
 public record CommercialAgeGenderPercentFootTrafficInfo(
-    Double maleTeenFootTrafficPercent,   // 10대 남성의 유동 인구 비율
-    Double femaleTeenFootTrafficPercent, // 10대 여성의 유동 인구 비율
-    Double maleTwentyFootTrafficPercent, // 20대 남성의 유동 인구 비율
-    Double femaleTwentyFootTrafficPercent, // 20대 여성의 유동 인구 비율
-    Double maleThirtyFootTrafficPercent, // 30대 남성의 유동 인구 비율
-    Double femaleThirtyFootTrafficPercent, // 30대 여성의 유동 인구 비율
-    Double maleFortyFootTrafficPercent,  // 40대 남성의 유동 인구 비율
-    Double femaleFortyFootTrafficPercent, // 40대 여성의 유동 인구 비율
-    Double maleFiftyFootTrafficPercent,  // 50대 남성의 유동 인구 비율
-    Double femaleFiftyFootTrafficPercent, // 50대 여성의 유동 인구 비율
-    Double maleSixtyFootTrafficPercent, // 60대 이상 남성의 유동 인구 비율
-    Double femaleSixtyFootTrafficPercent // 60대 이상 여성의 유동 인구 비율
+    double maleTeenFootTrafficPercent,   // 10대 남성의 유동 인구 비율
+    double femaleTeenFootTrafficPercent, // 10대 여성의 유동 인구 비율
+    double maleTwentyFootTrafficPercent, // 20대 남성의 유동 인구 비율
+    double femaleTwentyFootTrafficPercent, // 20대 여성의 유동 인구 비율
+    double maleThirtyFootTrafficPercent, // 30대 남성의 유동 인구 비율
+    double femaleThirtyFootTrafficPercent, // 30대 여성의 유동 인구 비율
+    double maleFortyFootTrafficPercent,  // 40대 남성의 유동 인구 비율
+    double femaleFortyFootTrafficPercent, // 40대 여성의 유동 인구 비율
+    double maleFiftyFootTrafficPercent,  // 50대 남성의 유동 인구 비율
+    double femaleFiftyFootTrafficPercent, // 50대 여성의 유동 인구 비율
+    double maleSixtyFootTrafficPercent, // 60대 이상 남성의 유동 인구 비율
+    double femaleSixtyFootTrafficPercent // 60대 이상 여성의 유동 인구 비율
 ) {
 
 }

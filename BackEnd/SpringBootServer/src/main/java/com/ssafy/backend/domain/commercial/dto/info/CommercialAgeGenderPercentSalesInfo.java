@@ -7,18 +7,18 @@ import lombok.Builder;
  */
 @Builder
 public record CommercialAgeGenderPercentSalesInfo(
-    Double maleTeenSalesPercent,   // 10대 남성의 매출액 비율
-    Double femaleTeenSalesPercent, // 10대 여성의 매출액 비율
-    Double maleTwentySalesPercent, // 20대 남성의 매출액 비율
-    Double femaleTwentySalesPercent, // 20대 여성의 매출액 비율
-    Double maleThirtySalesPercent, // 30대 남성의 매출액 비율
-    Double femaleThirtySalesPercent, // 30대 여성의 매출액 비율
-    Double maleFortySalesPercent,  // 40대 남성의 매출액 비율
-    Double femaleFortySalesPercent, // 40대 여성의 매출액 비율
-    Double maleFiftySalesPercent,  // 50대 남성의 매출액 비율
-    Double femaleFiftySalesPercent, // 50대 여성의 매출액 비율
-    Double maleSixtySalesPercent, // 60대 이상 남성의 매출액 비율
-    Double femaleSixtySalesPercent // 60대 이상 여성의 매출액 비율
+    double maleTeenSalesPercent,   // 10대 남성의 매출액 비율
+    double femaleTeenSalesPercent, // 10대 여성의 매출액 비율
+    double maleTwentySalesPercent, // 20대 남성의 매출액 비율
+    double femaleTwentySalesPercent, // 20대 여성의 매출액 비율
+    double maleThirtySalesPercent, // 30대 남성의 매출액 비율
+    double femaleThirtySalesPercent, // 30대 여성의 매출액 비율
+    double maleFortySalesPercent,  // 40대 남성의 매출액 비율
+    double femaleFortySalesPercent, // 40대 여성의 매출액 비율
+    double maleFiftySalesPercent,  // 50대 남성의 매출액 비율
+    double femaleFiftySalesPercent, // 50대 여성의 매출액 비율
+    double maleSixtySalesPercent, // 60대 이상 남성의 매출액 비율
+    double femaleSixtySalesPercent // 60대 이상 여성의 매출액 비율
 ) {
 
 }

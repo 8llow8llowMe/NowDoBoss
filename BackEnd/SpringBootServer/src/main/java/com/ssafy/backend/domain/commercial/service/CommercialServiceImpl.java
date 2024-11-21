@@ -224,11 +224,11 @@ public class CommercialServiceImpl implements CommercialService {
         List<SalesCommercial> salesCommercialList = salesCommercialRepository.findByCommercialCodeAndServiceCodeAndPeriodCodeIn(
             commercialCode, serviceCode, periodCodes);
 
-        CommercialAgeGenderPercentSalesInfo ageGenderPercentSaleList = calculateAgeGenderPercentSales(
+        CommercialAgeGenderPercentSalesInfo ageGenderPercentSalesInfo = salesCommercialMapper.toCommercialAgeGenderPercentSalesInfo(
             salesCommercial);
 
         return salesCommercialMapper.toCommercialSalesResponse(salesCommercial, salesCommercialList,
-            ageGenderPercentSaleList);
+            ageGenderPercentSalesInfo);
     }
 
     @Override
@@ -503,46 +503,6 @@ public class CommercialServiceImpl implements CommercialService {
             ));
 
         return PageResponse.of(responsePage);
-    }
-    
-    private CommercialAgeGenderPercentSalesInfo calculateAgeGenderPercentSales(
-        com.ssafy.backend.domain.commercial.entity.SalesCommercial salesCommercial) {
-        Long total = salesCommercial.getMaleSales() + salesCommercial.getFemaleSales();
-
-        return new CommercialAgeGenderPercentSalesInfo(
-            calculatePercent(salesCommercial.getTeenSales(), salesCommercial.getMaleSales(), total),
-            calculatePercent(salesCommercial.getTeenSales(), salesCommercial.getFemaleSales(),
-                total),
-            calculatePercent(salesCommercial.getTwentySales(), salesCommercial.getMaleSales(),
-                total),
-            calculatePercent(salesCommercial.getTwentySales(), salesCommercial.getFemaleSales(),
-                total),
-            calculatePercent(salesCommercial.getThirtySales(), salesCommercial.getMaleSales(),
-                total),
-            calculatePercent(salesCommercial.getThirtySales(), salesCommercial.getFemaleSales(),
-                total),
-            calculatePercent(salesCommercial.getFortySales(), salesCommercial.getMaleSales(),
-                total),
-            calculatePercent(salesCommercial.getFortySales(), salesCommercial.getFemaleSales(),
-                total),
-            calculatePercent(salesCommercial.getFiftySales(), salesCommercial.getMaleSales(),
-                total),
-            calculatePercent(salesCommercial.getFiftySales(), salesCommercial.getFemaleSales(),
-                total),
-            calculatePercent(salesCommercial.getSixtySales(), salesCommercial.getMaleSales(),
-                total),
-            calculatePercent(salesCommercial.getSixtySales(), salesCommercial.getFemaleSales(),
-                total)
-        );
-    }
-
-    private double calculatePercent(Long ageGroupCount, Long genderCount, Long total) {
-        if (total == 0) {
-            return 0.0;
-        }
-        double percent =
-            100.0 * (ageGroupCount.doubleValue() * (genderCount.doubleValue() / total)) / total;
-        return Math.round(percent * 100.0) / 100.0;
     }
 
     private List<String> calculateLastFourQuarters(String currentPeriod) {
