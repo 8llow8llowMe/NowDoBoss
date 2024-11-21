@@ -189,7 +189,7 @@ public class CommercialServiceImpl implements CommercialService {
                 periodCode, commercialCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_FOOT_TRAFFIC));
 
-        CommercialAgeGenderPercentFootTrafficInfo ageGenderPercentFootTraffic = calculateAgeGenderPercentFootTraffic(
+        CommercialAgeGenderPercentFootTrafficInfo ageGenderPercentFootTraffic = footTrafficCommercialMapper.toCommercialAgeGenderPercentFootTrafficInfo(
             footTrafficCommercial);
 
         return footTrafficCommercialMapper.toCommercialFootTrafficResponse(
@@ -504,40 +504,7 @@ public class CommercialServiceImpl implements CommercialService {
 
         return PageResponse.of(responsePage);
     }
-
-
-    private CommercialAgeGenderPercentFootTrafficInfo calculateAgeGenderPercentFootTraffic(
-        FootTrafficCommercial trafficCommercial) {
-        Long total = trafficCommercial.getTotalFootTraffic();
-
-        return new CommercialAgeGenderPercentFootTrafficInfo(
-            calculatePercent(trafficCommercial.getTeenFootTraffic(),
-                trafficCommercial.getMaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getTeenFootTraffic(),
-                trafficCommercial.getFemaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getTwentyFootTraffic(),
-                trafficCommercial.getMaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getTwentyFootTraffic(),
-                trafficCommercial.getFemaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getThirtyFootTraffic(),
-                trafficCommercial.getMaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getThirtyFootTraffic(),
-                trafficCommercial.getFemaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getFortyFootTraffic(),
-                trafficCommercial.getMaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getFortyFootTraffic(),
-                trafficCommercial.getFemaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getFiftyFootTraffic(),
-                trafficCommercial.getMaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getFiftyFootTraffic(),
-                trafficCommercial.getFemaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getSixtyFootTraffic(),
-                trafficCommercial.getMaleFootTraffic(), total),
-            calculatePercent(trafficCommercial.getSixtyFootTraffic(),
-                trafficCommercial.getFemaleFootTraffic(), total)
-        );
-    }
-
+    
     private CommercialAgeGenderPercentSalesInfo calculateAgeGenderPercentSales(
         com.ssafy.backend.domain.commercial.entity.SalesCommercial salesCommercial) {
         Long total = salesCommercial.getMaleSales() + salesCommercial.getFemaleSales();
