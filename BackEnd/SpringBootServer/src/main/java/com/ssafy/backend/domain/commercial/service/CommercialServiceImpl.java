@@ -10,8 +10,6 @@ import com.ssafy.backend.domain.commercial.document.CommercialAnalysis;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAnnualQuarterIncomeInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialFranchiseStoreInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialOpenAndCloseStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSameStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.request.CommercialAnalysisKafkaRequest;
 import com.ssafy.backend.domain.commercial.dto.request.CommercialAnalysisSaveRequest;
@@ -45,6 +43,7 @@ import com.ssafy.backend.domain.commercial.mapper.FootTrafficCommercialMapper;
 import com.ssafy.backend.domain.commercial.mapper.IncomeCommercialMapper;
 import com.ssafy.backend.domain.commercial.mapper.PopulationCommercialMapper;
 import com.ssafy.backend.domain.commercial.mapper.SalesCommercialMapper;
+import com.ssafy.backend.domain.commercial.mapper.StoreCommercialMapper;
 import com.ssafy.backend.domain.commercial.repository.AreaCommercialRepository;
 import com.ssafy.backend.domain.commercial.repository.CommercialAnalysisRepository;
 import com.ssafy.backend.domain.commercial.repository.FacilityCommercialRepository;
@@ -113,6 +112,7 @@ public class CommercialServiceImpl implements CommercialService {
     private final PopulationCommercialMapper populationCommercialMapper;
     private final FacilityCommercialMapper facilityCommercialMapper;
     private final IncomeCommercialMapper incomeCommercialMapper;
+    private final StoreCommercialMapper storeCommercialMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -302,48 +302,22 @@ public class CommercialServiceImpl implements CommercialService {
     @Transactional(readOnly = true)
     public CommercialStoreResponse getStoreByPeriodAndCommercialCodeAndServiceCode(
         String periodCode, String commercialCode, String serviceCode) {
+
         ServiceType serviceType = storeCommercialRepository.findServiceTypeByPeriodCodeAndCommercialCodeAndServiceCode(
             periodCode, commercialCode, serviceCode);
 
         List<StoreCommercial> otherStores = storeCommercialRepository.findOtherServicesInSameCategory(
             periodCode, commercialCode, serviceType);
 
-        List<CommercialSameStoreInfo> sameStores = otherStores.stream()
-            .map(store -> new CommercialSameStoreInfo(
-                store.getServiceCodeName(),
-                store.getTotalStore())
-            ).toList();
-
-        long sameTotalStore = sameStores.stream()
-            .mapToLong(CommercialSameStoreInfo::totalStore)
-            .sum();
+        List<CommercialSameStoreInfo> sameStoreInfos = otherStores.stream()
+            .map(storeCommercialMapper::entityToSameStoreInfo)
+            .toList();
 
         StoreCommercial storeCommercial = storeCommercialRepository.findByPeriodCodeAndCommercialCodeAndServiceCode(
                 periodCode, commercialCode, serviceCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_STORE));
 
-        long totalStores = storeCommercial.getTotalStore() + storeCommercial.getFranchiseStore();
-        double normalStorePercentage = totalStores > 0 ?
-            Math.round((double) storeCommercial.getTotalStore() / totalStores * 100.0 * 100.0)
-                / 100.0 : 0.0;
-        double franchiseStorePercentage = totalStores > 0 ?
-            Math.round((double) storeCommercial.getFranchiseStore() / totalStores * 100.0 * 100.0)
-                / 100.0 : 0.0;
-
-        CommercialFranchiseStoreInfo franchiseeStore = new CommercialFranchiseStoreInfo(
-            storeCommercial.getTotalStore(),
-            storeCommercial.getFranchiseStore(),
-            normalStorePercentage,
-            franchiseStorePercentage
-        );
-
-        CommercialOpenAndCloseStoreInfo openAndCloseStore = new CommercialOpenAndCloseStoreInfo(
-            storeCommercial.getOpenedRate(),
-            storeCommercial.getClosedRate()
-        );
-
-        return new CommercialStoreResponse(sameStores, sameTotalStore, franchiseeStore,
-            openAndCloseStore);
+        return storeCommercialMapper.toCommercialStoreResponse(sameStoreInfos, storeCommercial);
     }
 
     @Override
