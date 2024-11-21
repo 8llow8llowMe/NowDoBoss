@@ -173,11 +173,11 @@ export type SameStoreInfoType = {
   totalStore: number
 }
 
-export type FranchiseeStoreInfoType = {
+export type FranchiseStoreInfoType = {
   normalStore: number
-  franchiseeStore: number
+  franchiseStore: number
   normalStorePercentage: number
-  franchiseePercentage: number
+  franchisePercentage: number
 }
 
 export type OpenAndCloseStoreInfoType = {
@@ -188,7 +188,7 @@ export type OpenAndCloseStoreInfoType = {
 export type StoreCountDataBodyType = {
   sameStoreInfos: SameStoreInfoType[]
   sameTotalStore: number
-  franchiseeStoreInfo: FranchiseeStoreInfoType
+  franchiseStoreInfo: FranchiseStoreInfoType
   openAndCloseStoreInfo: OpenAndCloseStoreInfoType
 }
 
