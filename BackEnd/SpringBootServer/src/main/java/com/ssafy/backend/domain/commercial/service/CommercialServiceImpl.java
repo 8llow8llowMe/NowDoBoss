@@ -1,6 +1,5 @@
 package com.ssafy.backend.domain.commercial.service;
 
-import com.ssafy.backend.domain.administration.dto.info.AdministrationTotalSalesInfo;
 import com.ssafy.backend.domain.administration.entity.IncomeAdministration;
 import com.ssafy.backend.domain.administration.entity.SalesAdministration;
 import com.ssafy.backend.domain.administration.exception.AdministrationErrorCode;
@@ -15,7 +14,6 @@ import com.ssafy.backend.domain.commercial.dto.info.CommercialAvgIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialFranchiseeStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialOpenAndCloseStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSameStoreInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialTotalSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTypeIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.request.CommercialAnalysisKafkaRequest;
 import com.ssafy.backend.domain.commercial.dto.request.CommercialAnalysisSaveRequest;
@@ -58,7 +56,6 @@ import com.ssafy.backend.domain.commercial.repository.PopulationCommercialReposi
 import com.ssafy.backend.domain.commercial.repository.SalesCommercialRepository;
 import com.ssafy.backend.domain.commercial.repository.ServiceCodeProjection;
 import com.ssafy.backend.domain.commercial.repository.StoreCommercialRepository;
-import com.ssafy.backend.domain.district.dto.info.DistrictTotalSalesInfo;
 import com.ssafy.backend.domain.district.entity.IncomeDistrict;
 import com.ssafy.backend.domain.district.entity.SalesDistrict;
 import com.ssafy.backend.domain.district.entity.enums.ServiceType;
@@ -247,24 +244,6 @@ public class CommercialServiceImpl implements CommercialService {
                 periodCode, commercialCode, serviceCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_SALES));
 
-        DistrictTotalSalesInfo districtTotalSalesInfo = new DistrictTotalSalesInfo(
-            salesDistrict.getDistrictCode(),
-            salesDistrict.getDistrictCodeName(),
-            salesDistrict.getMonthSales()
-        );
-
-        AdministrationTotalSalesInfo administrationTotalSalesInfo = new AdministrationTotalSalesInfo(
-            salesAdministration.getAdministrationCode(),
-            salesAdministration.getAdministrationCodeName(),
-            salesAdministration.getMonthSales()
-        );
-
-        CommercialTotalSalesInfo commercialTotalSalesInfo = new CommercialTotalSalesInfo(
-            salesCommercial.getCommercialCode(),
-            salesCommercial.getCommercialCodeName(),
-            salesCommercial.getMonthSales()
-        );
-
         // 카프카 토픽에 메시지 저장하기 위해 변환
         CommercialAnalysisKafkaRequest analysisKafkaRequest = new CommercialAnalysisKafkaRequest(
             salesDistrict.getDistrictCodeName(),
@@ -286,8 +265,8 @@ public class CommercialServiceImpl implements CommercialService {
             dataRepository.save(dataDocument);
         }
 
-        return new AllSalesResponse(districtTotalSalesInfo, administrationTotalSalesInfo,
-            commercialTotalSalesInfo);
+        return salesCommercialMapper.mapToAllSalesResponse(
+            salesDistrict, salesAdministration, salesCommercial);
     }
 
     @Override
