@@ -10,7 +10,7 @@ import com.ssafy.backend.domain.commercial.document.CommercialAnalysis;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAnnualQuarterIncomeInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialFranchiseeStoreInfo;
+import com.ssafy.backend.domain.commercial.dto.info.CommercialFranchiseStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialOpenAndCloseStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSameStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.request.CommercialAnalysisKafkaRequest;
@@ -330,7 +330,7 @@ public class CommercialServiceImpl implements CommercialService {
             Math.round((double) storeCommercial.getFranchiseStore() / totalStores * 100.0 * 100.0)
                 / 100.0 : 0.0;
 
-        CommercialFranchiseeStoreInfo franchiseeStore = new CommercialFranchiseeStoreInfo(
+        CommercialFranchiseStoreInfo franchiseeStore = new CommercialFranchiseStoreInfo(
             storeCommercial.getTotalStore(),
             storeCommercial.getFranchiseStore(),
             normalStorePercentage,
