@@ -7,8 +7,8 @@ import lombok.Builder;
  */
 @Builder
 public record CommercialSchoolInfo(
-    Long totalSchoolsCount, // 총 학교 수 (초등 + 중등 + 고등)
-    Long universityCount // 대학교 수
+    long totalSchoolsCount, // 총 학교 수 (초등 + 중등 + 고등)
+    long universityCount // 대학교 수
 ) {
 
 }
