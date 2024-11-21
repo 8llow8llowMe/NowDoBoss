@@ -47,6 +47,8 @@ import com.ssafy.backend.domain.commercial.exception.CommercialErrorCode;
 import com.ssafy.backend.domain.commercial.exception.CommercialException;
 import com.ssafy.backend.domain.commercial.exception.CoordinateTransformationException;
 import com.ssafy.backend.domain.commercial.mapper.CommercialMapper;
+import com.ssafy.backend.domain.commercial.mapper.FootTrafficCommercialMapper;
+import com.ssafy.backend.domain.commercial.mapper.SalesCommercialMapper;
 import com.ssafy.backend.domain.commercial.repository.AreaCommercialRepository;
 import com.ssafy.backend.domain.commercial.repository.CommercialAnalysisRepository;
 import com.ssafy.backend.domain.commercial.repository.FacilityCommercialRepository;
@@ -112,7 +114,10 @@ public class CommercialServiceImpl implements CommercialService {
     private final DataRepository dataRepository;
     private final CoordinateConverter coordinateConverter;
 
+
     private final CommercialMapper commercialMapper;
+    private final SalesCommercialMapper salesCommercialMapper;
+    private final FootTrafficCommercialMapper footTrafficCommercialMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -187,7 +192,7 @@ public class CommercialServiceImpl implements CommercialService {
         CommercialAgeGenderPercentFootTrafficInfo ageGenderPercentFootTraffic = calculateAgeGenderPercentFootTraffic(
             footTrafficCommercial);
 
-        return commercialMapper.toCommercialFootTrafficResponse(
+        return footTrafficCommercialMapper.toCommercialFootTrafficResponse(
             footTrafficCommercial, ageGenderPercentFootTraffic);
     }
 
@@ -222,7 +227,7 @@ public class CommercialServiceImpl implements CommercialService {
         CommercialAgeGenderPercentSalesInfo ageGenderPercentSaleList = calculateAgeGenderPercentSales(
             salesCommercial);
 
-        return commercialMapper.toCommercialSalesResponse(salesCommercial, salesCommercialList,
+        return salesCommercialMapper.toCommercialSalesResponse(salesCommercial, salesCommercialList,
             ageGenderPercentSaleList);
     }
 
