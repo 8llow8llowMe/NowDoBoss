@@ -1,6 +1,5 @@
 package com.ssafy.backend.domain.commercial.service;
 
-import com.ssafy.backend.domain.administration.dto.info.AdministrationTotalIncomeInfo;
 import com.ssafy.backend.domain.administration.dto.info.AdministrationTotalSalesInfo;
 import com.ssafy.backend.domain.administration.entity.IncomeAdministration;
 import com.ssafy.backend.domain.administration.entity.SalesAdministration;
@@ -16,7 +15,6 @@ import com.ssafy.backend.domain.commercial.dto.info.CommercialAvgIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialFranchiseeStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialOpenAndCloseStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSameStoreInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialTotalIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTotalSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTypeIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.request.CommercialAnalysisKafkaRequest;
@@ -46,8 +44,10 @@ import com.ssafy.backend.domain.commercial.entity.StoreCommercial;
 import com.ssafy.backend.domain.commercial.exception.CommercialErrorCode;
 import com.ssafy.backend.domain.commercial.exception.CommercialException;
 import com.ssafy.backend.domain.commercial.exception.CoordinateTransformationException;
-import com.ssafy.backend.domain.commercial.mapper.CommercialMapper;
+import com.ssafy.backend.domain.commercial.mapper.FacilityCommercialMapper;
 import com.ssafy.backend.domain.commercial.mapper.FootTrafficCommercialMapper;
+import com.ssafy.backend.domain.commercial.mapper.IncomeCommercialMapper;
+import com.ssafy.backend.domain.commercial.mapper.PopulationCommercialMapper;
 import com.ssafy.backend.domain.commercial.mapper.SalesCommercialMapper;
 import com.ssafy.backend.domain.commercial.repository.AreaCommercialRepository;
 import com.ssafy.backend.domain.commercial.repository.CommercialAnalysisRepository;
@@ -58,7 +58,6 @@ import com.ssafy.backend.domain.commercial.repository.PopulationCommercialReposi
 import com.ssafy.backend.domain.commercial.repository.SalesCommercialRepository;
 import com.ssafy.backend.domain.commercial.repository.ServiceCodeProjection;
 import com.ssafy.backend.domain.commercial.repository.StoreCommercialRepository;
-import com.ssafy.backend.domain.district.dto.info.DistrictTotalIncomeInfo;
 import com.ssafy.backend.domain.district.dto.info.DistrictTotalSalesInfo;
 import com.ssafy.backend.domain.district.entity.IncomeDistrict;
 import com.ssafy.backend.domain.district.entity.SalesDistrict;
@@ -114,10 +113,11 @@ public class CommercialServiceImpl implements CommercialService {
     private final DataRepository dataRepository;
     private final CoordinateConverter coordinateConverter;
 
-
-    private final CommercialMapper commercialMapper;
     private final SalesCommercialMapper salesCommercialMapper;
     private final FootTrafficCommercialMapper footTrafficCommercialMapper;
+    private final PopulationCommercialMapper populationCommercialMapper;
+    private final FacilityCommercialMapper facilityCommercialMapper;
+    private final IncomeCommercialMapper incomeCommercialMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -299,7 +299,7 @@ public class CommercialServiceImpl implements CommercialService {
                 periodCode, commercialCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_POPULATION));
 
-        return commercialMapper.toCommercialPopulationResponse(populationCommercial);
+        return populationCommercialMapper.toCommercialPopulationResponse(populationCommercial);
     }
 
     @Override
@@ -310,7 +310,7 @@ public class CommercialServiceImpl implements CommercialService {
                 periodCode, commercialCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_FACILITY));
 
-        return commercialMapper.toCommercialFacilityResponse(facilityCommercial);
+        return facilityCommercialMapper.toCommercialFacilityResponse(facilityCommercial);
     }
 
     @Override
@@ -429,26 +429,8 @@ public class CommercialServiceImpl implements CommercialService {
                 periodCode, commercialCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_INCOME));
 
-        DistrictTotalIncomeInfo districtTotalIncomeInfo = new DistrictTotalIncomeInfo(
-            incomeDistrict.getDistrictCode(),
-            incomeDistrict.getDistrictCodeName(),
-            incomeDistrict.getTotalPrice()
-        );
-
-        AdministrationTotalIncomeInfo administrationTotalIncomeInfo = new AdministrationTotalIncomeInfo(
-            incomeAdministration.getAdministrationCode(),
-            incomeAdministration.getAdministrationCodeName(),
-            incomeAdministration.getTotalPrice()
-        );
-
-        CommercialTotalIncomeInfo commercialTotalIncomeInfo = new CommercialTotalIncomeInfo(
-            incomeCommercial.getCommercialCode(),
-            incomeCommercial.getCommercialCodeName(),
-            incomeCommercial.getTotalPrice()
-        );
-
-        return new AllIncomeResponse(districtTotalIncomeInfo, administrationTotalIncomeInfo,
-            commercialTotalIncomeInfo);
+        return incomeCommercialMapper.toAllIncomeResponse(
+            incomeDistrict, incomeAdministration, incomeCommercial);
     }
 
     @Override
