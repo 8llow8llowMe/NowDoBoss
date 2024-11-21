@@ -151,11 +151,11 @@ export const initialTotalSalesDataBody: TotalSalesDataBodyType = {
 const initialStoreCountDataBody: StoreCountDataBodyType = {
   sameStoreInfos: [],
   sameTotalStore: 0,
-  franchiseeStoreInfo: {
+  franchiseStoreInfo: {
     normalStore: 0,
-    franchiseeStore: 0,
+    franchiseStore: 0,
     normalStorePercentage: 0,
-    franchiseePercentage: 0,
+    franchisePercentage: 0,
   },
   openAndCloseStoreInfo: {
     openedRate: 0,
