@@ -10,11 +10,9 @@ import com.ssafy.backend.domain.commercial.document.CommercialAnalysis;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentFootTrafficInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAnnualQuarterIncomeInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialAvgIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialFranchiseeStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialOpenAndCloseStoreInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialSameStoreInfo;
-import com.ssafy.backend.domain.commercial.dto.info.CommercialTypeIncomeInfo;
 import com.ssafy.backend.domain.commercial.dto.request.CommercialAnalysisKafkaRequest;
 import com.ssafy.backend.domain.commercial.dto.request.CommercialAnalysisSaveRequest;
 import com.ssafy.backend.domain.commercial.dto.request.ConversionCodeNameRequest;
@@ -351,45 +349,23 @@ public class CommercialServiceImpl implements CommercialService {
     @Transactional(readOnly = true)
     public CommercialIncomeResponse getIncomeByPeriodCodeAndCommercialCode(String periodCode,
         String commercialCode) {
+
         IncomeCommercial incomeCommercial = incomeCommercialRepository.findByPeriodCodeAndCommercialCode(
                 periodCode, commercialCode)
             .orElseThrow(() -> new CommercialException(CommercialErrorCode.NOT_INCOME));
 
-        CommercialAvgIncomeInfo avgIncome = new CommercialAvgIncomeInfo(
-            incomeCommercial.getMonthAvgIncome(),
-            incomeCommercial.getIncomeSectionCode()
-        );
-
         // 최근 4분기의 기간 코드를 계산
         List<String> periodCodes = calculateLastFourQuarters(periodCode);
 
-        List<IncomeCommercial> incomeCommercials = incomeCommercialRepository.findByCommercialCodeAndPeriodCodeInOrderByPeriodCode(
-            commercialCode, periodCodes);
-
-        List<CommercialAnnualQuarterIncomeInfo> annualQuarterIncomeInfos = incomeCommercials.stream()
-            .map(income -> new CommercialAnnualQuarterIncomeInfo(
-                income.getPeriodCode(),
-                income.getTotalPrice()
-            ))
+        // 최근 4분기 데이터 조회 및 매핑
+        List<CommercialAnnualQuarterIncomeInfo> annualQuarterIncomeInfos = incomeCommercialRepository
+            .findByCommercialCodeAndPeriodCodeInOrderByPeriodCode(commercialCode, periodCodes)
+            .stream()
+            .map(incomeCommercialMapper::entityToCommercialAnnualQuarterIncomeInfo)
             .toList();
 
-        CommercialTypeIncomeInfo typeIncome = new CommercialTypeIncomeInfo(
-            incomeCommercial.getGroceryPrice(),
-            incomeCommercial.getClothesPrice(),
-            incomeCommercial.getMedicalPrice(),
-            incomeCommercial.getLifePrice(),
-            incomeCommercial.getTrafficPrice(),
-            incomeCommercial.getLeisurePrice(),
-            incomeCommercial.getCulturePrice(),
-            incomeCommercial.getEducationPrice(),
-            incomeCommercial.getLuxuryPrice()
-        );
-
-        return new CommercialIncomeResponse(
-            avgIncome,
-            annualQuarterIncomeInfos,
-            typeIncome
-        );
+        return incomeCommercialMapper.toCommercialIncomeResponse(
+            incomeCommercial, annualQuarterIncomeInfos);
     }
 
     @Override

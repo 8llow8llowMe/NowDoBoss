@@ -1,12 +1,13 @@
 package com.ssafy.backend.domain.commercial.dto.info;
 
 public record CommercialDaySalesCountInfo(
-    Long monSalesCount,
-    Long tueSalesCount,
-    Long wedSalesCount,
-    Long thuSalesCount,
-    Long friSalesCount,
-    Long satSalesCount,
-    Long sunSalesCount
+    long monSalesCount,
+    long tueSalesCount,
+    long wedSalesCount,
+    long thuSalesCount,
+    long friSalesCount,
+    long satSalesCount,
+    long sunSalesCount
 ) {
+
 }

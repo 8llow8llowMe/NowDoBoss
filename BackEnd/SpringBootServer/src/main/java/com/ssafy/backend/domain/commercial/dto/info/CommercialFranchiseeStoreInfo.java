@@ -1,9 +1,10 @@
 package com.ssafy.backend.domain.commercial.dto.info;
 
 public record CommercialFranchiseeStoreInfo(
-        Long normalStore,
-        Long franchiseeStore,
-        Double normalStorePercentage,
-        Double franchiseePercentage
+    long normalStore,
+    long franchiseeStore,
+    double normalStorePercentage,
+    double franchiseePercentage
 ) {
+
 }
