@@ -197,11 +197,11 @@ public class CommercialServiceImpl implements CommercialService {
             commercialCode);
 
         return serviceCodeProjectionList.stream()
-            .map(projection -> new CommercialServiceResponse(
-                projection.getServiceCode(),
-                projection.getServiceCodeName(),
-                projection.getServiceType())
-            )
+            .map(projection -> CommercialServiceResponse.builder()
+                .serviceCode(projection.getServiceCode())
+                .serviceCodeName(projection.getServiceCodeName())
+                .serviceType(projection.getServiceType())
+                .build())
             .toList();
     }
 
