@@ -163,14 +163,15 @@ public class CommercialServiceImpl implements CommercialService {
             .map(ac -> {
                 Point transformedPoint = transformCoordinates(ac.getX().doubleValue(),
                     ac.getY().doubleValue());
-                return new CommercialAreaResponse(
-                    ac.getCommercialCode(),
-                    ac.getCommercialCodeName(),
-                    ac.getCommercialClassificationCode(),
-                    ac.getCommercialClassificationCodeName(),
-                    transformedPoint.getX(),
-                    transformedPoint.getY()
-                );
+
+                return CommercialAreaResponse.builder()
+                    .commercialCode(ac.getCommercialCode())
+                    .commercialCodeName(ac.getCommercialCodeName())
+                    .commercialClassificationCode(ac.getCommercialClassificationCode())
+                    .commercialClassificationCodeName(ac.getCommercialClassificationCodeName())
+                    .centerLat(transformedPoint.getX())
+                    .centerLng(transformedPoint.getY())
+                    .build();
             })
             .toList();
     }
