@@ -1,5 +1,6 @@
 package com.ssafy.backend.domain.commercial.mapper;
 
+import com.ssafy.backend.domain.administration.entity.SalesAdministration;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeGenderPercentSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAgeSalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialAnnualQuarterSalesInfo;
@@ -8,8 +9,10 @@ import com.ssafy.backend.domain.commercial.dto.info.CommercialDaySalesInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialGenderSalesCountInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSalesCountInfo;
 import com.ssafy.backend.domain.commercial.dto.info.CommercialTimeSalesInfo;
+import com.ssafy.backend.domain.commercial.dto.response.AllSalesResponse;
 import com.ssafy.backend.domain.commercial.dto.response.CommercialSalesResponse;
 import com.ssafy.backend.domain.commercial.entity.SalesCommercial;
+import com.ssafy.backend.domain.district.entity.SalesDistrict;
 import com.ssafy.backend.global.util.PercentCalculator;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -34,6 +37,18 @@ public interface SalesCommercialMapper {
     @Mapping(target = "totalSales", source = "monthSales")
     CommercialAnnualQuarterSalesInfo entityToAnnualQuarterSalesInfo(
         SalesCommercial salesCommercial);
+
+    @Mapping(target = "districtTotalSalesInfo.districtCode", source = "salesDistrict.districtCode")
+    @Mapping(target = "districtTotalSalesInfo.districtCodeName", source = "salesDistrict.districtCodeName")
+    @Mapping(target = "districtTotalSalesInfo.totalSales", source = "salesDistrict.monthSales")
+    @Mapping(target = "administrationTotalSalesInfo.administrationCode", source = "salesAdministration.administrationCode")
+    @Mapping(target = "administrationTotalSalesInfo.administrationCodeName", source = "salesAdministration.administrationCodeName")
+    @Mapping(target = "administrationTotalSalesInfo.totalSales", source = "salesAdministration.monthSales")
+    @Mapping(target = "commercialTotalSalesInfo.commercialCode", source = "salesCommercial.commercialCode")
+    @Mapping(target = "commercialTotalSalesInfo.commercialCodeName", source = "salesCommercial.commercialCodeName")
+    @Mapping(target = "commercialTotalSalesInfo.totalSales", source = "salesCommercial.monthSales")
+    AllSalesResponse mapToAllSalesResponse(SalesDistrict salesDistrict,
+        SalesAdministration salesAdministration, SalesCommercial salesCommercial);
 
     default CommercialSalesResponse toCommercialSalesResponse(SalesCommercial salesCommercial,
         List<SalesCommercial> quarterlySales,
