@@ -1,0 +1,3 @@
+[submodule "env-config"]
+	path = env-config
+	url = https://github.com/8llow8llowMe/NowDoBoss-env.git
