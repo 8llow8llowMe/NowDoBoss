@@ -104,7 +104,7 @@ jwt:
 
 # firebase setting
 app:
-  firebase-configuration-file: classpath:serviceAccountKey.json
+  firebase-configuration-file: classpath:backend-env/serviceAccountKey.json
   firebase-bucket: ${FIREBASE_BUCKET}
   firebase-project-id: ${FIREBASE_PROJECT_ID}
 

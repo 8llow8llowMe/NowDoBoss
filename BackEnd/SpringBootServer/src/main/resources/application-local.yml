@@ -31,15 +31,15 @@ spring:
     password: ENC(8ZO2KjT7dEI3sWWMRNGIfg==)                     # 데이터베이스 계정 비밀번호
 
   # data_테이블명.sql 관련 실행 setting (더미데이터)
-#  sql:
-#    init:
-#      mode: always
-#      data-locations:
-#        - 'classpath:/db/dummy/FOREIGN_KEY_CHECKS_0.sql'
-#        - 'classpath:/db/dummy/db_dump.sql'
-#        - 'classpath:/db/dummy/db_dump1.sql'
-#        - 'classpath:/db/dummy/db_dump2.sql'
-#        - 'classpath:/db/dummy/FOREIGN_KEY_CHECKS_1.sql'
+  #  sql:
+  #    init:
+  #      mode: always
+  #      data-locations:
+  #        - 'classpath:/db/dummy/FOREIGN_KEY_CHECKS_0.sql'
+  #        - 'classpath:/db/dummy/db_dump.sql'
+  #        - 'classpath:/db/dummy/db_dump1.sql'
+  #        - 'classpath:/db/dummy/db_dump2.sql'
+  #        - 'classpath:/db/dummy/FOREIGN_KEY_CHECKS_1.sql'
 
   # NoSQL setting
   data:
@@ -113,7 +113,7 @@ jwt:
 
 # firebase setting
 app:
-  firebase-configuration-file: classpath:serviceAccountKey.json
+  firebase-configuration-file: classpath:backend-env/serviceAccountKey.json
   firebase-bucket: ENC(kEjE5eNrPFCEldmd4VOt0mXnXI2qkPVNJIhOBdW8K60=)
   firebase-project-id: nowdoboss
 
