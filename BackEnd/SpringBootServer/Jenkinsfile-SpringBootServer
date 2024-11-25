@@ -27,6 +27,15 @@ pipeline {
             }
         }
 
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout scm
+                    sh 'git submodule update --init --recursive'
+                }
+            }
+        }
+
         stage('Verify Webhook Payload') {
             steps {
                 script {
