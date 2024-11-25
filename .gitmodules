@@ -1,3 +1,3 @@
-[submodule "env-config"]
-	path = env-config
+[submodule "BackEnd/springbootserver/src/main/resources/backend-env"]
+	path = BackEnd/springbootserver/src/main/resources/backend-env
 	url = https://github.com/8llow8llowMe/NowDoBoss-env.git
