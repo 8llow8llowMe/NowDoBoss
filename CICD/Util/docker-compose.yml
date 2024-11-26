@@ -1,3 +1,15 @@
+kafka_common_env: &kafka_environment
+  KAFKA_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_CLIENT_PORT}
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+  KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+  KAFKA_DEFAULT_REPLICATION_FACTOR: ${KAFKA_DEFAULT_REPLICATION_FACTOR}
+  KAFKA_NUM_PARTITIONS: ${KAFKA_NUM_PARTITIONS}
+  KAFKA_LOG_RETENTION_HOURS: ${KAFKA_LOG_RETENTION_HOURS}
+  KAFKA_COMPRESSION_TYPE: ${KAFKA_COMPRESSION_TYPE}
+  KAFKA_SEGMENT_BYTES: ${KAFKA_SEGMENT_BYTES}
+  KAFKA_HEAP_OPTS: ${KAFKA_HEAP_OPTS}
+  TZ: ${TZ}
+
 services:
   # Redis 설정
   nowdoboss_redis_service:
@@ -16,7 +28,7 @@ services:
     container_name: sonarqube
     restart: always
     ports:
-      - "9000:9000"
+      - "${SONARQUBE_PORT}:${SONARQUBE_PORT}"
     networks:
       - nowdoboss-net
 
@@ -40,20 +52,10 @@ services:
       - zookeeper
     ports:
       - "${KAFKA_1_PORT}:${KAFKA_1_PORT}"
-    environment: 
-      &kafka_environment  # 앵커 정의
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:29092,EXTERNAL://localhost:9092
-      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
-      KAFKA_NUM_PARTITIONS: 3
-      KAFKA_LOG_RETENTION_HOURS: 24
-      KAFKA_COMPRESSION_TYPE: gzip
-      KAFKA_SEGMENT_BYTES: 1073741824
-      KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m"
-      TZ: Asia/Seoul
+    environment:
+      <<: *kafka_environment  # Kafka 관련 공통 설정값 가져오기
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID_1}
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:${KAFKA_INTERNAL_PORT_1},EXTERNAL://localhost:${KAFKA_1_PORT}
     networks:
       - nowdoboss-net
 
@@ -65,8 +67,10 @@ services:
       - zookeeper
     ports:
       - "${KAFKA_2_PORT}:${KAFKA_2_PORT}"
-    environment: 
-      *kafka_environment  # 별칭으로 재사용
+    environment:
+      <<: *kafka_environment  # Kafka 관련 공통 설정값 가져오기
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID_2}
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:${KAFKA_INTERNAL_PORT_2},EXTERNAL://localhost:${KAFKA_2_PORT}
     networks:
       - nowdoboss-net
 
@@ -78,8 +82,10 @@ services:
       - zookeeper
     ports:
       - "${KAFKA_3_PORT}:${KAFKA_3_PORT}"
-    environment: 
-      *kafka_environment
+    environment:
+      <<: *kafka_environment  # Kafka 관련 공통 설정값 가져오기
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID_3}
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:${KAFKA_INTERNAL_PORT_3},EXTERNAL://localhost:${KAFKA_3_PORT}
     networks:
       - nowdoboss-net
 
@@ -134,7 +140,7 @@ services:
     container_name: fail2ban
     restart: always
     cap_add:
-      - "${FAIL2BAN_CAP_ADD}"  # 네트워크 관리를 위한 권한 추가 (필수)
+      - NET_ADMIN  # 네트워크 관리를 위한 권한 추가 (필수)
     volumes:
       - /var/log:/var/log:ro  # 호스트 로그 파일을 읽기 전용으로 마운트
       - /var/run/docker.sock:/var/run/docker.sock  # Docker 소켓 (컨테이너 차단 시 필요)
