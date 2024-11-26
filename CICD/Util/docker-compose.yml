@@ -175,7 +175,7 @@ services:
     ports: 
       - "${GRAFANA_PORT}:${GRAFANA_PORT}"
     environment:
-      GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}  # 기본 관리자 패스워드 설정
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}  # 기본 관리자 패스워드 설정
     volumes:
       - grafana_data:/var/lib/grafana  # Grafana 데이터 저장소
     networks:
