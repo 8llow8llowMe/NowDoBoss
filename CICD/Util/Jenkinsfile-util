@@ -92,7 +92,7 @@ pipeline {
 
                     if (isRedisRunning == "") {
                         echo "redis 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d nowdoboss_redis_service"
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d nowdoboss_redis_service"
                     }
 
                     // if (isSonarQubeRunning == "") {
@@ -103,32 +103,32 @@ pipeline {
                     // kafka 분산 클러스터 구성
                     if (isZookeeperRunning == "" || isKafkaRunning_1 == "" || isKafkaRunning_2 == "" || isKafkaRunning_3 == "" || isKafkaUiRunning == "") {
                         echo "zookeeper 및 kafka, kafka-ui 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d zookeeper kafka-1 kafka-2 kafka-3 kafka-ui"
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d zookeeper kafka-1 kafka-2 kafka-3 kafka-ui"
                     }
 
                     if (isMongoDBRunning == "") {
                         echo "MongoDB 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d mongodb_service"
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d mongodb_service"
                     }
 
                     if (isPortainerRunning == "") {
                         echo "Portainer 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d portainer_service"
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d portainer_service"
                     }
 
                     if (isFail2BanRunning == "") {
                         echo "Fail2Ban 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d fail2ban_service"
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d fail2ban_service"
                     }
 
                     if (isPrometheusRunning == "") {
                         echo "Prometheus 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d prometheus_service"
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d prometheus_service"
                     }
 
                     if (isGrafanaRunning == "") {
                         echo "Prometheus 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d grafana_service"
+                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d grafana_service"
                     }
                 }
             }
