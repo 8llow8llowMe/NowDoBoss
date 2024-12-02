@@ -1,3 +1,6 @@
 [submodule "BackEnd/SpringBootServer/src/main/resources/backend-env"]
     path = BackEnd/SpringBootServer/src/main/resources/backend-env
     url = https://github.com/8llow8llowMe/NowDoBoss-env.git
+[submodule "CICD/Util/infra-env"]
+	path = CICD/Util/infra-env
+	url = https://github.com/8llow8llowMe/NowDoBoss-env.git
