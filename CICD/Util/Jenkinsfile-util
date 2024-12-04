@@ -97,7 +97,7 @@ pipeline {
                     dir('CICD/Util') {
                         if (isRedisRunning == "") {
                             echo "redis 관련 dockerfile 빌드..."
-                            sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d nowdoboss_redis_service"
+                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d nowdoboss_redis_service"
                         }
 
                         // kafka 분산 클러스터 구성
