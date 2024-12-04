@@ -89,46 +89,47 @@ pipeline {
                     def isGrafanaRunning = sh(script: "docker ps --filter name=grafana --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Grafana 실행 상태: ${isGrafanaRunning}"
 
-
-                    if (isRedisRunning == "") {
-                        echo "redis 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d nowdoboss_redis_service"
-                    }
-
                     // if (isSonarQubeRunning == "") {
                     //     echo "sonarqube 관련 dockerfile 빌드..."
                     //     sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d sonarqube"
                     // }
 
-                    // kafka 분산 클러스터 구성
-                    if (isZookeeperRunning == "" || isKafkaRunning_1 == "" || isKafkaRunning_2 == "" || isKafkaRunning_3 == "" || isKafkaUiRunning == "") {
-                        echo "zookeeper 및 kafka, kafka-ui 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d zookeeper kafka-1 kafka-2 kafka-3 kafka-ui"
-                    }
+                    dir('CICD/Util') {
+                        if (isRedisRunning == "") {
+                            echo "redis 관련 dockerfile 빌드..."
+                            sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d nowdoboss_redis_service"
+                        }
 
-                    if (isMongoDBRunning == "") {
-                        echo "MongoDB 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d mongodb_service"
-                    }
+                        // kafka 분산 클러스터 구성
+                        if (isZookeeperRunning == "" || isKafkaRunning_1 == "" || isKafkaRunning_2 == "" || isKafkaRunning_3 == "" || isKafkaUiRunning == "") {
+                            echo "zookeeper 및 kafka, kafka-ui 관련 dockerfile 빌드..."
+                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d zookeeper kafka-1 kafka-2 kafka-3 kafka-ui"
+                        }
 
-                    if (isPortainerRunning == "") {
-                        echo "Portainer 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d portainer_service"
-                    }
+                        if (isMongoDBRunning == "") {
+                            echo "MongoDB 관련 dockerfile 빌드..."
+                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d mongodb_service"
+                        }
 
-                    if (isFail2BanRunning == "") {
-                        echo "Fail2Ban 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d fail2ban_service"
-                    }
+                        if (isPortainerRunning == "") {
+                            echo "Portainer 관련 dockerfile 빌드..."
+                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d portainer_service"
+                        }
 
-                    if (isPrometheusRunning == "") {
-                        echo "Prometheus 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d prometheus_service"
-                    }
+                        if (isFail2BanRunning == "") {
+                            echo "Fail2Ban 관련 dockerfile 빌드..."
+                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d fail2ban_service"
+                        }
 
-                    if (isGrafanaRunning == "") {
-                        echo "Prometheus 관련 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/Util/docker-compose.yml --env-file infra-env/.env-infra up --build -d grafana_service"
+                        if (isPrometheusRunning == "") {
+                            echo "Prometheus 관련 dockerfile 빌드..."
+                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d prometheus_service"
+                        }
+
+                        if (isGrafanaRunning == "") {
+                            echo "Prometheus 관련 dockerfile 빌드..."
+                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d grafana_service"
+                        }
                     }
                 }
             }
