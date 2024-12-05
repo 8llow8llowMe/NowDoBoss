@@ -11,25 +11,39 @@ import com.ssafy.backend.domain.commercial.repository.AreaCommercialRepository;
 import com.ssafy.backend.domain.district.dto.info.FootTrafficDistrictListByInfo;
 import com.ssafy.backend.domain.district.dto.info.SalesDistrictMonthSalesTopFiveInfo;
 import com.ssafy.backend.domain.district.dto.info.StoreDistrictTotalTopEightInfo;
-import com.ssafy.backend.domain.district.dto.response.*;
-import com.ssafy.backend.domain.district.repository.*;
+import com.ssafy.backend.domain.district.dto.response.ChangeIndicatorDistrictResponse;
+import com.ssafy.backend.domain.district.dto.response.ClosedStoreDistrictTopTenResponse;
+import com.ssafy.backend.domain.district.dto.response.DistrictAreaResponse;
+import com.ssafy.backend.domain.district.dto.response.DistrictDetailResponse;
+import com.ssafy.backend.domain.district.dto.response.DistrictTopTenResponse;
+import com.ssafy.backend.domain.district.dto.response.FootTrafficDistrictDetailResponse;
+import com.ssafy.backend.domain.district.dto.response.FootTrafficDistrictTopTenResponse;
+import com.ssafy.backend.domain.district.dto.response.OpenedStoreDistrictTopTenResponse;
+import com.ssafy.backend.domain.district.dto.response.SalesDistrictDetailResponse;
+import com.ssafy.backend.domain.district.dto.response.SalesDistrictTopTenResponse;
+import com.ssafy.backend.domain.district.dto.response.StoreDistrictDetailResponse;
 import com.ssafy.backend.domain.district.entity.ChangeDistrict;
 import com.ssafy.backend.domain.district.entity.FootTrafficDistrict;
+import com.ssafy.backend.domain.district.repository.AreaDistrictRepository;
 import com.ssafy.backend.domain.district.repository.ChangeDistrictRepository;
 import com.ssafy.backend.domain.district.repository.FootTrafficDistrictRepository;
 import com.ssafy.backend.domain.district.repository.SalesDistrictRepository;
 import com.ssafy.backend.domain.district.repository.StoreDistrictRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class DistrictServiceImpl implements DistrictService {
+
     private final FootTrafficDistrictRepository footTrafficDistrictRepository;
     private final SalesDistrictRepository salesDistrictRepository;
     private final StoreDistrictRepository storeDistrictRepository;
@@ -53,41 +67,50 @@ public class DistrictServiceImpl implements DistrictService {
 
         log.info("========================= 자치구 Top 10");
 
-        return new DistrictTopTenResponse(footTrafficInfoList, salesInfoList, openedStoreInfoList, closedStoreInfoList);
+        return new DistrictTopTenResponse(footTrafficInfoList, salesInfoList, openedStoreInfoList,
+            closedStoreInfoList);
     }
 
     @Override
     public DistrictDetailResponse getDistrictDetail(String districtCode) {
         String periodCode = "20233";
         // 상권 변화 지표 관련
-        ChangeIndicatorDistrictResponse changeIndicatorDistrictResponse = getChangeIndicatorDistrict(periodCode, districtCode);
+        ChangeIndicatorDistrictResponse changeIndicatorDistrictResponse = getChangeIndicatorDistrict(
+            periodCode, districtCode);
         // 유동인구 관련
-        FootTrafficDistrictDetailResponse footTrafficDistrictDetailResponse = getFootTrafficDetails(districtCode, periodCode);
+        FootTrafficDistrictDetailResponse footTrafficDistrictDetailResponse = getFootTrafficDetails(
+            districtCode, periodCode);
         // 점포 관련
-        StoreDistrictDetailResponse storeDistrictDetailResponse = getStoreDetails(districtCode, periodCode);
+        StoreDistrictDetailResponse storeDistrictDetailResponse = getStoreDetails(districtCode,
+            periodCode);
         // 매출 관련 상세 분석
-        SalesDistrictDetailResponse salesDistrictDetailResponse = getSalesDetails(districtCode, periodCode);
+        SalesDistrictDetailResponse salesDistrictDetailResponse = getSalesDetails(districtCode,
+            periodCode);
 
-        return new DistrictDetailResponse(changeIndicatorDistrictResponse, footTrafficDistrictDetailResponse, storeDistrictDetailResponse, salesDistrictDetailResponse);
+        return new DistrictDetailResponse(changeIndicatorDistrictResponse,
+            footTrafficDistrictDetailResponse, storeDistrictDetailResponse,
+            salesDistrictDetailResponse);
     }
 
     @Override
     public List<DistrictAreaResponse> getAllDistricts() {
         return areaDistrictRepository.findAll().stream()
-                .map(ad -> new DistrictAreaResponse(ad.getDistrictCode(), ad.getDistrictCodeName()))
-                .collect(Collectors.toList());
+            .map(ad -> new DistrictAreaResponse(ad.getDistrictCode(), ad.getDistrictCodeName()))
+            .toList();
     }
 
     @Override
-    public List<CommercialAdministrationAreaResponse> getAdministrativeAreasByDistrict(String districtCode) {
-        List<AreaCommercial> areaCommercialList = areaCommercialRepository.findAllByDistrictCode(districtCode);
+    public List<CommercialAdministrationAreaResponse> getAdministrativeAreasByDistrict(
+        String districtCode) {
+        List<AreaCommercial> areaCommercialList = areaCommercialRepository.findAllByDistrictCode(
+            districtCode);
         return areaCommercialList.stream()
-                .map(ac -> new CommercialAdministrationAreaResponse(
-                        ac.getAdministrationCodeName(),
-                        ac.getAdministrationCode())
-                )
-                .distinct() // 중복 제거
-                .collect(Collectors.toList());
+            .map(ac -> new CommercialAdministrationAreaResponse(
+                ac.getAdministrationCodeName(),
+                ac.getAdministrationCode())
+            )
+            .distinct() // 중복 제거
+            .toList();
     }
 
     @Override
@@ -106,43 +129,57 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     @Override
-    public List<ClosedStoreAdministrationTopFiveInfo> getDistrictClosedStoreDetail(String districtCode) {
+    public List<ClosedStoreAdministrationTopFiveInfo> getDistrictClosedStoreDetail(
+        String districtCode) {
         // 지역구 코드로 해당 지역구에 속하는 행정동 코드 리스트 가져오기
         List<String> allAdministrationCodes = getAdministrationCodes(districtCode);
-        return storeAdministrationRepository.getTopFiveClosedRateAdministration(allAdministrationCodes, "20233");
+        return storeAdministrationRepository.getTopFiveClosedRateAdministration(
+            allAdministrationCodes, "20233");
     }
 
     @Override
-    public List<OpenedStoreAdministrationTopFiveInfo> getDistrictOpenedStoreDetail(String districtCode) {
+    public List<OpenedStoreAdministrationTopFiveInfo> getDistrictOpenedStoreDetail(
+        String districtCode) {
         // 지역구 코드로 해당 지역구에 속하는 행정동 코드 리스트 가져오기
         List<String> allAdministrationCodes = getAdministrationCodes(districtCode);
-        return storeAdministrationRepository.getTopFiveOpenedRateAdministration(allAdministrationCodes, "20233");
+        return storeAdministrationRepository.getTopFiveOpenedRateAdministration(
+            allAdministrationCodes, "20233");
     }
 
     @Override
-    public List<SalesDistrictMonthSalesTopFiveInfo> getDistrictSalesDetailByServiceCode(String districtCode) {
+    public List<SalesDistrictMonthSalesTopFiveInfo> getDistrictSalesDetailByServiceCode(
+        String districtCode) {
         return salesDistrictRepository.getTopFiveMonthSalesByServiceCode(districtCode, "20233");
     }
 
     @Override
-    public List<SalesAdministrationTopFiveInfo> getDistrictSalesDetailByAdministrationCode(String districtCode) {
+    public List<SalesAdministrationTopFiveInfo> getDistrictSalesDetailByAdministrationCode(
+        String districtCode) {
         // 지역구 코드로 해당 지역구에 속하는 행정동 코드 리스트 가져오기
         List<String> allAdministrationCodes = getAdministrationCodes(districtCode);
-        return salesAdministrationRepository.getTopFiveSalesAdministrationByAdministrationCode(allAdministrationCodes, "20233");
+        return salesAdministrationRepository.getTopFiveSalesAdministrationByAdministrationCode(
+            allAdministrationCodes, "20233");
     }
 
-    private ChangeIndicatorDistrictResponse getChangeIndicatorDistrict(String periodCode, String districtCode) {
-        ChangeDistrict changeDistrict = changeDistrictRepository.findByPeriodCodeAndDistrictCode(periodCode, districtCode);
-        return new ChangeIndicatorDistrictResponse(changeDistrict.getChangeIndicator(), changeDistrict.getChangeIndicatorName(), changeDistrict.getOpenedMonths(), changeDistrict.getClosedMonths());
+    private ChangeIndicatorDistrictResponse getChangeIndicatorDistrict(String periodCode,
+        String districtCode) {
+        ChangeDistrict changeDistrict = changeDistrictRepository.findByPeriodCodeAndDistrictCode(
+            periodCode, districtCode);
+        return new ChangeIndicatorDistrictResponse(changeDistrict.getChangeIndicator(),
+            changeDistrict.getChangeIndicatorName(), changeDistrict.getOpenedMonths(),
+            changeDistrict.getClosedMonths());
     }
 
-    private FootTrafficDistrictDetailResponse getFootTrafficDetails(String districtCode, String periodCode) {
+    private FootTrafficDistrictDetailResponse getFootTrafficDetails(String districtCode,
+        String periodCode) {
         List<String> periodCodes = Arrays.asList("20224", "20231", "20232", "20233");
-        List<FootTrafficDistrict> footTrafficDetailList = footTrafficDistrictRepository.findByPeriodCodeInAndDistrictCodeOrderByPeriodCode(periodCodes, districtCode);
+        List<FootTrafficDistrict> footTrafficDetailList = footTrafficDistrictRepository.findByPeriodCodeInAndDistrictCodeOrderByPeriodCode(
+            periodCodes, districtCode);
         return getFootTrafficDataDetail(footTrafficDetailList, periodCode);
     }
 
-    private FootTrafficDistrictDetailResponse getFootTrafficDataDetail(List<FootTrafficDistrict> footTrafficDetailList, String periodCode) {
+    private FootTrafficDistrictDetailResponse getFootTrafficDataDetail(
+        List<FootTrafficDistrict> footTrafficDetailList, String periodCode) {
         Map<String, Long> periodData = new LinkedHashMap<>();
 
         FootTrafficDistrictListByInfo time = null;
@@ -150,11 +187,12 @@ public class DistrictServiceImpl implements DistrictService {
         FootTrafficDistrictListByInfo age = null;
         FootTrafficDistrictListByInfo day = null;
 
-        for (FootTrafficDistrict footTrafficDistrict: footTrafficDetailList){
+        for (FootTrafficDistrict footTrafficDistrict : footTrafficDetailList) {
             // 총 유동인구
-            periodData.put(footTrafficDistrict.getPeriodCode(), footTrafficDistrict.getTotalFootTraffic());
+            periodData.put(footTrafficDistrict.getPeriodCode(),
+                footTrafficDistrict.getTotalFootTraffic());
 
-            if (footTrafficDistrict.getPeriodCode().equals(periodCode)){
+            if (footTrafficDistrict.getPeriodCode().equals(periodCode)) {
 
                 // 시간대별
                 Map<String, Long> timeData = new LinkedHashMap<>();
@@ -172,7 +210,7 @@ public class DistrictServiceImpl implements DistrictService {
                 genderData.put("male", footTrafficDistrict.getMaleFootTraffic());
                 genderData.put("female", footTrafficDistrict.getFemaleFootTraffic());
                 String maxKey = null;
-                if (genderData.get("male") > genderData.get("female")){
+                if (genderData.get("male") > genderData.get("female")) {
                     maxKey = "male";
                 } else {
                     maxKey = "female";
@@ -205,14 +243,15 @@ public class DistrictServiceImpl implements DistrictService {
         }
 
         String maxKey = null;
-        if (periodData.get("20232") > periodData.get("20233")){
+        if (periodData.get("20232") > periodData.get("20233")) {
             maxKey = "감소";
-        } else if (periodData.get("20232") < periodData.get("20233")){
+        } else if (periodData.get("20232") < periodData.get("20233")) {
             maxKey = "증가";
         } else {
             maxKey = "정체";
         }
-        FootTrafficDistrictListByInfo period = new FootTrafficDistrictListByInfo(maxKey, periodData);
+        FootTrafficDistrictListByInfo period = new FootTrafficDistrictListByInfo(maxKey,
+            periodData);
 
         return new FootTrafficDistrictDetailResponse(period, time, gender, age, day);
     }
@@ -220,27 +259,34 @@ public class DistrictServiceImpl implements DistrictService {
     private StoreDistrictDetailResponse getStoreDetails(String districtCode, String periodCode) {
         // 점포 관련
         // 점포 수 Top 8 서비스 업종, 업종 코드명, 점포 개수
-        List<StoreDistrictTotalTopEightInfo> storeDistrictTotalTopEightList = storeDistrictRepository.getTopEightTotalStoreByServiceCode(periodCode, districtCode);
+        List<StoreDistrictTotalTopEightInfo> storeDistrictTotalTopEightList = storeDistrictRepository.getTopEightTotalStoreByServiceCode(
+            periodCode, districtCode);
         // 지역구 코드로 해당 지역구에 속하는 행정동 코드 리스트 가져오기
         List<String> allAdministrationCodes = getAdministrationCodes(districtCode);
         // 개업률 top 5 행정동
-        List<OpenedStoreAdministrationTopFiveInfo> openedStoreAdministrationTopFiveList = storeAdministrationRepository.getTopFiveOpenedRateAdministration(allAdministrationCodes, periodCode);
+        List<OpenedStoreAdministrationTopFiveInfo> openedStoreAdministrationTopFiveList = storeAdministrationRepository.getTopFiveOpenedRateAdministration(
+            allAdministrationCodes, periodCode);
         // 폐업률 top 5 행정동
-        List<ClosedStoreAdministrationTopFiveInfo> closedStoreAdministrationTopFiveList = storeAdministrationRepository.getTopFiveClosedRateAdministration(allAdministrationCodes, periodCode);
+        List<ClosedStoreAdministrationTopFiveInfo> closedStoreAdministrationTopFiveList = storeAdministrationRepository.getTopFiveClosedRateAdministration(
+            allAdministrationCodes, periodCode);
 
-        return new StoreDistrictDetailResponse(storeDistrictTotalTopEightList, openedStoreAdministrationTopFiveList, closedStoreAdministrationTopFiveList);
+        return new StoreDistrictDetailResponse(storeDistrictTotalTopEightList,
+            openedStoreAdministrationTopFiveList, closedStoreAdministrationTopFiveList);
     }
 
     private SalesDistrictDetailResponse getSalesDetails(String districtCode, String periodCode) {
         // 매출 관련 상세 분석
         // 서비스 업종별 매출 Top 5
-        List<SalesDistrictMonthSalesTopFiveInfo> salesDistrictMonthSalesTopFiveInfoList = salesDistrictRepository.getTopFiveMonthSalesByServiceCode(districtCode, periodCode);
+        List<SalesDistrictMonthSalesTopFiveInfo> salesDistrictMonthSalesTopFiveInfoList = salesDistrictRepository.getTopFiveMonthSalesByServiceCode(
+            districtCode, periodCode);
         // 지역구 코드로 해당 지역구에 속하는 행정동 코드 리스트 가져오기
         List<String> allAdministrationCodes = getAdministrationCodes(districtCode);
         // 해당 자치구 행정동 매출 Top 5
-        List<SalesAdministrationTopFiveInfo> salesAdministrationTopFiveList = salesAdministrationRepository.getTopFiveSalesAdministrationByAdministrationCode(allAdministrationCodes, periodCode);
+        List<SalesAdministrationTopFiveInfo> salesAdministrationTopFiveList = salesAdministrationRepository.getTopFiveSalesAdministrationByAdministrationCode(
+            allAdministrationCodes, periodCode);
 
-        return new SalesDistrictDetailResponse(salesDistrictMonthSalesTopFiveInfoList, salesAdministrationTopFiveList);
+        return new SalesDistrictDetailResponse(salesDistrictMonthSalesTopFiveInfoList,
+            salesAdministrationTopFiveList);
     }
 
     private FootTrafficDistrictListByInfo findMaxEntry(Map<String, Long> data) {
@@ -255,11 +301,12 @@ public class DistrictServiceImpl implements DistrictService {
         return new FootTrafficDistrictListByInfo(maxKey, data);
     }
 
-    private List<String> getAdministrationCodes(String districtCode){
+    private List<String> getAdministrationCodes(String districtCode) {
         // 지역구 코드로 해당 지역구에 속하는 행정동 코드 리스트 가져오기
         List<String> allAdministrationCodes = new ArrayList<>();
-        List<CommercialAdministrationAreaResponse> adminResponses = getAdministrativeAreasByDistrict(districtCode);
-        for (CommercialAdministrationAreaResponse dto: adminResponses){
+        List<CommercialAdministrationAreaResponse> adminResponses = getAdministrativeAreasByDistrict(
+            districtCode);
+        for (CommercialAdministrationAreaResponse dto : adminResponses) {
             allAdministrationCodes.add(dto.administrationCode());
         }
         return allAdministrationCodes;
