@@ -1,7 +1,12 @@
 package com.ssafy.backend.domain.member.service;
 
 import com.ssafy.backend.domain.commercial.repository.CommercialAnalysisRepository;
-import com.ssafy.backend.domain.member.dto.*;
+import com.ssafy.backend.domain.member.dto.MemberInfo;
+import com.ssafy.backend.domain.member.dto.MemberLoginRequest;
+import com.ssafy.backend.domain.member.dto.MemberLoginResponse;
+import com.ssafy.backend.domain.member.dto.MemberPasswordChangeRequest;
+import com.ssafy.backend.domain.member.dto.MemberSignupRequest;
+import com.ssafy.backend.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.backend.domain.member.entity.Member;
 import com.ssafy.backend.domain.member.exception.MemberErrorCode;
 import com.ssafy.backend.domain.member.exception.MemberException;
@@ -10,13 +15,12 @@ import com.ssafy.backend.domain.recommendation.repository.RecommendationReposito
 import com.ssafy.backend.domain.simulation.repository.SimulationRepository;
 import com.ssafy.backend.global.component.jwt.repository.RefreshTokenRepository;
 import com.ssafy.backend.global.component.jwt.service.JwtTokenService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -74,13 +78,13 @@ public class MemberServiceImpl implements MemberService {
         Member member = findMemberById(memberId);
 
         return new MemberInfo(
-                member.getId(),
-                member.getEmail(),
-                member.getName(),
-                member.getNickname(),
-                member.getProfileImage(),
-                member.getRole(),
-                member.getOAuthDomain()
+            member.getId(),
+            member.getEmail(),
+            member.getName(),
+            member.getNickname(),
+            member.getProfileImage(),
+            member.getRole(),
+            member.getOAuthDomain()
         );
     }
 
@@ -96,14 +100,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateProfileImageAndNickNameMember(Long memberId, MemberUpdateRequest updateRequest) {
+    public void updateProfileImageAndNickNameMember(Long memberId,
+        MemberUpdateRequest updateRequest) {
         Member member = findMemberById(memberId);
 
         member.updateProfileImageAndNickname(updateRequest);
     }
 
     @Override
-    public void updatePasswordMember(Long memberId, MemberPasswordChangeRequest passwordChangeRequest) {
+    public void updatePasswordMember(Long memberId,
+        MemberPasswordChangeRequest passwordChangeRequest) {
         Member member = findMemberById(memberId);
 
         String realPassword = member.getPassword();
@@ -119,7 +125,8 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // 비밀번호 변경과 비밀번호 변경 확인 서로 같은지 확인 (다른 경우 Exception 발생)
-        if (!passwordChangeRequest.changePassword().equals(passwordChangeRequest.changePasswordCheck())) {
+        if (!passwordChangeRequest.changePassword()
+            .equals(passwordChangeRequest.changePasswordCheck())) {
             throw new MemberException(MemberErrorCode.PASSWORD_CONFIRMATION_MISMATCH);
         }
 
@@ -128,11 +135,11 @@ public class MemberServiceImpl implements MemberService {
 
     private Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+            .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
     }
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+            .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
     }
 }
