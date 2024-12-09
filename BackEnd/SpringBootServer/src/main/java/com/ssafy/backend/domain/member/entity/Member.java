@@ -9,12 +9,25 @@ import com.ssafy.backend.domain.member.entity.enums.MemberRole;
 import com.ssafy.backend.global.common.entity.BaseEntity;
 import com.ssafy.backend.global.component.firebase.entity.DeviceToken;
 import com.ssafy.backend.global.component.oauth.vendor.enums.OAuthDomain;
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Comment;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -22,7 +35,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-        @Index(name = "idx_email", columnList = "email")
+    @Index(name = "idx_email", columnList = "email")
 })
 public class Member extends BaseEntity {
 
