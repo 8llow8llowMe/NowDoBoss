@@ -95,7 +95,7 @@ public class DistrictController {
         @PathVariable String districtCode) {
         List<OpenedStoreAdministrationTopFiveInfo> openedStoreAdministrationTopFiveInfoList = districtService.getDistrictOpenedStoreDetail(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(openedStoreAdministrationTopFiveInfoList)));
+        return ResponseEntity.ok().body(Message.success(openedStoreAdministrationTopFiveInfoList));
     }
 
     @Operation(
@@ -105,9 +105,9 @@ public class DistrictController {
     @GetMapping("/detail/store/closed/{districtCode}")
     public ResponseEntity<Message<List<ClosedStoreAdministrationTopFiveInfo>>> getDistrictStoreDetail(
         @PathVariable String districtCode) {
-        System.out.println("해당 자치구 상세 분석 가져오기!");
-        return ResponseEntity.ok()
-            .body(Message.success(districtService.getDistrictClosedStoreDetail(districtCode)));
+        List<ClosedStoreAdministrationTopFiveInfo> closedStoreAdministrationTopFiveInfoList = districtService.getDistrictClosedStoreDetail(
+            districtCode);
+        return ResponseEntity.ok().body(Message.success(closedStoreAdministrationTopFiveInfoList));
     }
 
     @Operation(
@@ -117,9 +117,9 @@ public class DistrictController {
     @GetMapping("/detail/sales/service/{districtCode}")
     public ResponseEntity<Message<List<SalesDistrictMonthSalesTopFiveInfo>>> getDistrictSalesDetailByServiceCode(
         @PathVariable String districtCode) {
-
-        return ResponseEntity.ok().body(
-            Message.success(districtService.getDistrictSalesDetailByServiceCode(districtCode)));
+        List<SalesDistrictMonthSalesTopFiveInfo> salesDistrictMonthSalesTopFiveInfoList = districtService.getDistrictSalesDetailByServiceCode(
+            districtCode);
+        return ResponseEntity.ok().body(Message.success(salesDistrictMonthSalesTopFiveInfoList));
     }
 
     @Operation(
@@ -129,9 +129,9 @@ public class DistrictController {
     @GetMapping("/detail/sales/administration/{districtCode}")
     public ResponseEntity<Message<List<SalesAdministrationTopFiveInfo>>> getDistrictSalesDetailByAdministrationCode(
         @PathVariable String districtCode) {
-        System.out.println("해당 자치구 상세 분석 가져오기!");
-        return ResponseEntity.ok().body(Message.success(
-            districtService.getDistrictSalesDetailByAdministrationCode(districtCode)));
+        List<SalesAdministrationTopFiveInfo> salesAdministrationTopFiveInfoList = districtService.getDistrictSalesDetailByAdministrationCode(
+            districtCode);
+        return ResponseEntity.ok().body(Message.success(salesAdministrationTopFiveInfoList));
     }
 
     @Operation(
