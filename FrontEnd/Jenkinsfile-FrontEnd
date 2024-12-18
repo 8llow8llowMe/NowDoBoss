@@ -9,7 +9,7 @@ pipeline {
                 [key: 'LABEL', value: '$.pull_request.labels[*].name', expressionType: 'JSONPath']
             ],
             causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
-            token: 'nowdoboss-fe-react',
+            token: 'nowdoboss-fe',
             printContributedVariables: false,
             printPostContent: false,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
@@ -82,7 +82,7 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis - ReactServer') {
+        // stage('SonarQube Analysis - React') {
         //     steps {
         //         dir('FrontEnd') {    
         //             withSonarQubeEnv('SonarQube Server') {
