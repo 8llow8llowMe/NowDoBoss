@@ -6,7 +6,7 @@ services:
     container_name: nowdoboss-react  # React 빌드 관련 컨테이너 이름을 설정합니다.
     build:
       context: .  # Dockerfile이 위치한 디렉토리 경로입니다.
-      dockerfile: ReactServer.Dockerfile  # React 애플리케이션 빌드를 위한 Dockerfile입니다.
+      dockerfile: React.Dockerfile  # React 애플리케이션 빌드를 위한 Dockerfile입니다.
     image: nowdoboss-frontend-img  # 빌드된 Docker 이미지를 정의합니다.
     volumes:
       - nowdoboss_react_build:/usr/src/app/dist  # 빌드된 React 정적 파일을 로컬 볼륨에 저장합니다.
