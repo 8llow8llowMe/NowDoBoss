@@ -47,27 +47,31 @@ pipeline {
                     echo "certbot 컨테이너 실행 상태 확인 중..."
                     def isCertBotRunning = sh(script: "docker ps --filter name=nowdoboss-certbot --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "certbot 실행 상태: ${isCertBotRunning}"
-                    if (isCertBotRunning == "") {
-                        echo "certbot dockerfile 빌드..."
-                        sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d nowdoboss_certbot_service"
-                    }
 
                     echo "geoip 컨테이너 실행 상태 확인 중..."
                     def isGeoIPRunning = sh(script: "docker ps --filter name=geoip --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "geoip 실행 상태: ${isGeoIPRunning}"
-                    if (isGeoIPRunning == "") {
-                        echo "geoip dockerfile 빌드..."
-                        // sh "docker-compose --env-file ./FrontEnd/.env-docker-compose-geoip -f ./FrontEnd/docker-compose-frontend.yml up --build -d geoip_service"
-                        sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d geoip_service"
-                    }
                     
-                    // React Nginx 컨테이너를 종료하고 관련 볼륨을 삭제합니다. 이 단계는 이전에 생성된 데이터를 클리어하고 새로운 정적 파일을 적용하기 위해 필요합니다. (서비스명)
-                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml down --volumes nowdoboss_react_service nowdoboss_frontend_service"
-                    // React Nginx 컨테이너를 재빌드하고 백그라운드에서 실행합니다. `--build` 옵션은 이미지를 다시 빌드하고, `-d`는 백그라운드 모드에서 실행합니다. (서비스명)
-                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d nowdoboss_react_service nowdoboss_frontend_service"
+                    dir('FrontEnd') {
+                        if (isCertBotRunning == "") {
+                            echo "certbot dockerfile 빌드..."
+                            sh "docker-compose -f docker-compose-frontend.yml up --build -d nowdoboss_certbot_service"
+                        }
 
-                    // React 컨테이너가 빌드 작업을 완료한 후에는 종료해야 합니다. (서비스명)
-                    sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml stop nowdoboss_react_service"
+                        if (isGeoIPRunning == "") {
+                            echo "geoip dockerfile 빌드..."
+                            // sh "docker-compose --env-file ./FrontEnd/.env-docker-compose-geoip -f ./FrontEnd/docker-compose-frontend.yml up --build -d geoip_service"
+                            sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d geoip_service"
+                        }
+
+                        // React Nginx 컨테이너를 종료하고 관련 볼륨을 삭제합니다. 이 단계는 이전에 생성된 데이터를 클리어하고 새로운 정적 파일을 적용하기 위해 필요합니다. (서비스명)
+                        sh "docker-compose -f docker-compose-frontend.yml down --volumes nowdoboss_react_service nowdoboss_frontend_service"
+                        // React Nginx 컨테이너를 재빌드하고 백그라운드에서 실행합니다. `--build` 옵션은 이미지를 다시 빌드하고, `-d`는 백그라운드 모드에서 실행합니다. (서비스명)
+                        sh "docker-compose -f docker-compose-frontend.yml up --build -d nowdoboss_react_service nowdoboss_frontend_service"
+
+                        // React 컨테이너가 빌드 작업을 완료한 후에는 종료해야 합니다. (서비스명)
+                        sh "docker-compose -f docker-compose-frontend.yml stop nowdoboss_react_service"
+                    }
                 }
             }
         }
