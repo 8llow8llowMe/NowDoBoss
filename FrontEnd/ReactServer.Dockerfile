@@ -13,8 +13,8 @@ RUN npm install
 # 나머지 애플리케이션 코드 복사
 COPY . .
 
-# .env 파일 변경
-COPY .env-dev .env
+# 서브모듈에서 환경변수 파일 복사
+COPY frontend-env/.env-frontend-dev .env
 
 # 프론트엔드 코드 빌드
 RUN npm run build
