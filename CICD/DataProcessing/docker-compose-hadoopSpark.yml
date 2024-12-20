@@ -1,5 +1,3 @@
-version: "3.8"  # Docker Compose 파일 버전을 지정합니다. "3.8"은 사용 가능한 최신 버전 중 하나입니다.
-
 services:
   master1:
     build: 

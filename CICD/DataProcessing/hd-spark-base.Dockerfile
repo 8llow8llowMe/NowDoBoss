@@ -79,8 +79,5 @@ RUN chmod +x /usr/local/bin/worker/setup-worker-hadoop-env.sh
 # SSH 구성
 RUN service ssh start
 
-# 포트 설정
-EXPOSE 9870 8088 19888 7077 8080 18080
-
 # SSH 데몬 실행
 CMD ["/usr/sbin/sshd", "-D"]
