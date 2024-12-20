@@ -1,19 +1,17 @@
-version: "3.8"  # Docker Compose 파일 버전을 지정합니다. "3.8"은 사용 가능한 최신 버전 중 하나입니다.
-
 services:
-  nowdoboss_backend_fastapi:
-    container_name: nowdoboss_backend_fastapi  # 컨테이너의 이름을 설정합니다.
-    build:  # 도커 이미지 빌드 관련 설정입니다.
-      context: .  # Dockerfile이 위치한 디렉토리 경로입니다. (현재 docker-compose 파일이 있는 경로와 Dockerfile 경로 같이 비교)
-      dockerfile: FastApiServer.Dockerfile  # 사용할 Dockerfile의 이름입니다.
-    image: nowdoboss_backend_fastapi_img  # 빌드된 이미지의 이름을 설정합니다.
-    restart: always  # 컨테이너가 항상 재시작되도록 설정합니다.
+  nowdoboss_backend_fastapi_service:
+    container_name: nowdoboss-backend-fastapi
+    build: 
+      context: .
+      dockerfile: FastApiServer.Dockerfile
+    image: nowdoboss-backend-fastapi-img 
+    restart: always
     ports:
-      - "8000:8000"  # 호스트의 8000 포트를 컨테이너의 8000 포트에 바인딩합니다.
+      - "8000:8000"
     networks:
-      - nowdoboss_data_net  # 사용할 네트워크를 지정합니다.
+      - nowdoboss-net
 
 networks:
-  nowdoboss_data_net:  # 사용할 네트워크를 정의합니다. 여기서는 기본 설정을 사용합니다.
-    name: nowdoboss_data_net
+  nowdoboss-net:
+    name: nowdoboss-net
     driver: bridge
