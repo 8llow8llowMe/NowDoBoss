@@ -10,6 +10,8 @@ services:
       - "8080:8080"  # 호스트의 8080 포트를 컨테이너의 8080 포트에 바인딩합니다.
     environment:
       - TZ=Asia/Seoul # 해당 백엔드 서버의 시간을 아시아/서울로 설정합니다.
+      - SERVER_HTTPS_URL=${SERVER_HTTPS_URL}
+      - SERVER_FAST_API_URL=${SERVER_FAST_API_URL}
       - MYSQL_DB_URL=${MYSQL_DB_URL}
       - MYSQL_DB_USERNAME=${MYSQL_DB_USERNAME}
       - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}

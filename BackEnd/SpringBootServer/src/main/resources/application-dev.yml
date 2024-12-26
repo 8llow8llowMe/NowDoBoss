@@ -1,6 +1,6 @@
 server:
-  https-url: https://www.nowdoboss.com
-  fastapi-url: http://13.124.23.220:8000
+  https-url: ${SERVER_HTTPS_URL}
+  fast-api-url: ${SERVER_FAST_API_URL}
 
 spring:
   servlet:
