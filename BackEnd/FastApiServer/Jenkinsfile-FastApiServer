@@ -47,7 +47,8 @@ pipeline {
                                             docker-compose -f docker-compose-fastapi.yml up --build -d
                                         ''' // Sub Server에서 실행할 명령어
                                     )
-                                ]
+                                ],
+                                verbose: true // 상세 로그 활성화
                             )
                         ]
                     )
