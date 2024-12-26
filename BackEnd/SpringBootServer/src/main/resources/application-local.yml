@@ -1,6 +1,6 @@
 server:
   base-url: localhost
-  fastapi-url: http://localhost:8001
+  fast-api-url: http://localhost:8001
 
 spring:
   servlet:
