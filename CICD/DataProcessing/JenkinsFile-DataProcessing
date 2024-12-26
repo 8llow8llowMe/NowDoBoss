@@ -1,19 +1,19 @@
 pipeline {
-    agent any  // 이 파이프라인이 실행될 Jenkins 에이전트를 지정합니다. 'any'는 사용 가능한 임의의 에이전트에서 실행될 수 있음을 의미합니다.
+    agent any  // Jenkins 파이프라인이 실행될 에이전트를 지정
     triggers {
         GenericTrigger(
             genericVariables: [
-                [key: 'USER_NAME', value: '$.user.name', expressionType: 'JSONPath'],
-                [key: 'IF_MERGED', value: '$.object_attributes.state', expressionType: 'JSONPath'],
-                [key: 'BASE_BRANCH', value: '$.object_attributes.target_branch', expressionType: 'JSONPath'],
-                [key: 'LABEL', value: '$.labels[*].title', expressionType: 'JSONPath']
+                [key: 'USER_NAME', value: '$.pull_request.user.login', expressionType: 'JSONPath'],
+                [key: 'IF_MERGED', value: '$.pull_request.merged', expressionType: 'JSONPath'],
+                [key: 'BASE_BRANCH', value: '$.pull_request.base.ref', expressionType: 'JSONPath'],
+                [key: 'LABEL', value: '$.pull_request.labels[*].name', expressionType: 'JSONPath']
             ],
-            causeString: 'Triggered by GitLab Merge Request by ${USER_NAME}',
-            token: 'dataProcessing',
-            printContributedVariables: true,
-            printPostContent: true,
+            causeString: 'Triggered by GitHub Pull Request by ${USER_NAME}',
+            token: 'nowdoboss-data-processing',
+            printContributedVariables: false,
+            printPostContent: false,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
-            regexpFilterExpression: '(?=.*merged)(?=.*develop)(?=.*CICD-DataProcessing)'
+            regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*Data-Processing)'
         )
     }
 
@@ -21,31 +21,50 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    // 빌드 설명 설정
                     currentBuild.description = "Merge requested by: ${env.USER_NAME}"
                 }
             }
         }
 
-        stage('Build and Deploy Hadoop And Spark') {
+        stage('Transfer, Deploy, and Build Hadoop and Spark') {
             steps {
                 script {
-                    echo "하둡 + 스파크 (masater1) 컨테이너 구성 실행 상태 확인 중..."
-                    def isHadoopRunning_master1 = sh(script: "docker ps --filter name=master1 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
-                    echo "Kafka-1 실행 상태: ${isHadoopRunning_master1}"
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'Sub Server SSH', // Sub Server 설정 이름
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'CICD/DataProcessing/**/*', // Sub Server로 전송할 파일
+                                        remoteDirectory: 'develop/infra/jenkins', // 작업 디렉터리
+                                        execCommand: '''
+                                            cd develop/infra/jenkins/CICD/DataProcessing
 
-                    echo "하둡 + 스파크 (worker1) 컨테이너 구성 실행 상태 확인 중..."
-                    def isHadoopRunning_worker1 = sh(script: "docker ps --filter name=worker1 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
-                    echo "Kafka-1 실행 상태: ${isHadoopRunning_worker1}"
+                                            echo "하둡 + 스파크 (masater1) 컨테이너 구성 실행 상태 확인 중..."
+                                            isHadoopRunning_master1=$(docker ps --filter name=master1 --filter status=running --format '{{.Names}}')
+                                            echo "마스터 노드 실행 상태: ${isHadoopRunning_master1}"
 
-                    echo "하둡 + 스파크 (worker2) 컨테이너 구성 실행 상태 확인 중..."
-                    def isHadoopRunning_worker2 = sh(script: "docker ps --filter name=worker2 --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
-                    echo "Kafka-1 실행 상태: ${isHadoopRunning_worker2}"
+                                            echo "하둡 + 스파크 (worker1) 컨테이너 구성 실행 상태 확인 중..."
+                                            isHadoopRunning_worker1=$(docker ps --filter name=worker1 --filter status=running --format '{{.Names}}')
+                                            echo "워커 노드-1 실행 상태: ${isHadoopRunning_worker1}"
 
-                    if (isHadoopRunning_master1 == "" || isHadoopRunning_master1 == "" || isHadoopRunning_master1 == "") {
-                        echo "하둡 + 스파크 dockerfile 빌드..."
-                        sh "docker-compose -f ./CICD/DataProcessing/docker-compose-hadoopSpark.yml up --build -d"   
-                    }
+                                            echo "하둡 + 스파크 (worker2) 컨테이너 구성 실행 상태 확인 중..."
+                                            isHadoopRunning_worker2=$(docker ps --filter name=worker2 --filter status=running --format '{{.Names}}')
+                                            echo "워커 노드-2 실행 상태: ${isHadoopRunning_worker2}"
+
+                                            if [ -z "$isHadoopRunning_master1" ] || [ -z "$isHadoopRunning_worker1" ] || [ -z "$isHadoopRunning_worker2" ]; then
+                                                echo "하둡 + 스파크 클러스터 빌드중..."
+                                                docker-compose -f docker-compose-hadoop-spark.yml up --build -d
+                                            else
+                                                echo "하둡 스파크 클러스터가 이미 실행중입니다!"
+                                            fi
+                                        ''', // Sub Server에서 실행할 명령어
+                                        verbose: true // 상세 로그 활성화
+                                    )
+                                ]
+                            )
+                        ]
+                    )
                 }
             }
         }
