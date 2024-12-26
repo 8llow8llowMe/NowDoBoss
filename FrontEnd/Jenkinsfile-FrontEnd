@@ -66,11 +66,8 @@ pipeline {
                         // React 빌드 볼륨 삭제
                         sh "docker volume rm nowdoboss_react_build || true"
 
-                        // React 빌드 및 Nginx 재시작
+                        // React 빌드 및 Nginx 서비스 시작
                         sh "docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend up --build -d nowdoboss_react_service nowdoboss_frontend_service"
-
-                        // React 빌드 컨테이너 종료 (서비스명)
-                        sh "docker-compose -f docker-compose-frontend.yml stop nowdoboss_react_service"
                     }
                 }
             }
