@@ -41,6 +41,9 @@ pipeline {
                                         remoteDirectory: 'develop/infra/jenkins', // Sub Server에서 작업할 디렉터리
                                         execCommand: '''
                                             cd BackEnd/FastApiServer
+                                            echo "Setting file permissions..."
+                                            chmod -R 755 .
+                                            echo "File permissions set. Executing docker-compose..."
                                             docker-compose -f docker-compose-fastapi.yml up --build -d
                                         ''' // Sub Server에서 실행할 명령어
                                     )
