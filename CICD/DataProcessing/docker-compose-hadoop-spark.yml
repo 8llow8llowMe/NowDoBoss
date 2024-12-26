@@ -1,0 +1,77 @@
+services:
+  master1:
+    build: 
+      context: .
+      dockerfile: hd-spark-base.Dockerfile
+    container_name: master1
+    hostname: master1
+    ports:
+      - "9870:9870"    # Hadoop NameNode Web UI
+      - "8088:8088"    # Hadoop ResourceManager Web UI
+      - "19888:19888"  # Hadoop MapReduce JobHistory Server Web UI
+      - "7077:7077"    # Spark Master Port
+      - "8870:8080"    # Spark Master Web UI
+      - "18080:18080"  # Spark History Server
+    volumes:
+      - shared_keys:/shared_keys
+    networks:
+      nowdoboss_net:
+    command: >
+      /bin/bash -c "
+      /usr/local/bin/setup-hadoop.sh &&
+      /usr/local/bin/update-hosts.sh &&
+      /usr/local/bin/init-ssh-keys.sh &&
+      /usr/local/bin/collect-ssh-keys.sh 3 &&
+      /usr/local/bin/master/setup-master-hadoop-env.sh &&
+      /usr/local/bin/create-hdfs-log-dir.sh &&
+      /usr/local/bin/start-master.sh &&
+      /usr/local/bin/start-history-server.sh
+      "
+
+  worker1:
+    build: 
+      context: .
+      dockerfile: hd-spark-base.Dockerfile
+    container_name: worker1
+    hostname: worker1
+    volumes:
+      - shared_keys:/shared_keys
+    networks:
+      nowdoboss_net:
+    command: >
+      /bin/bash -c "
+      /usr/local/bin/setup-hadoop.sh &&
+      /usr/local/bin/update-hosts.sh &&
+      /usr/local/bin/init-ssh-keys.sh &&
+      /usr/local/bin/collect-ssh-keys.sh 5 &&
+      /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
+      /usr/local/bin/start-slave.sh
+      "
+
+  worker2:
+    build: 
+      context: .
+      dockerfile: hd-spark-base.Dockerfile
+    container_name: worker2
+    hostname: worker2
+    volumes:
+      - shared_keys:/shared_keys
+    networks:
+      nowdoboss_net:
+    command: >
+      /bin/bash -c "
+      /usr/local/bin/setup-hadoop.sh &&
+      /usr/local/bin/update-hosts.sh &&
+      /usr/local/bin/init-ssh-keys.sh &&
+      /usr/local/bin/collect-ssh-keys.sh 7 &&
+      /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
+      /usr/local/bin/start-slave.sh
+      "
+
+networks:
+  nowdoboss_net:  # 사용할 네트워크를 정의합니다.
+    name: nowdoboss_net
+    driver: bridge
+
+volumes:
+  shared_keys:
