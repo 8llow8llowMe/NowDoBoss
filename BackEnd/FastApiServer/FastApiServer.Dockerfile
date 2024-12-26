@@ -25,13 +25,6 @@ COPY . /app
 # pip, setuptools, wheel을 업그레이드합니다
 RUN pip install --upgrade pip setuptools wheel
 
-# 빌드 의존성을 설치합니다
-RUN apt-get update && apt-get install -y \
-    python3-dev \
-    --fix-missing \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
 # requirements.txt에 명시된 필요한 패키지를 설치합니다
 RUN pip install --no-cache-dir -r requirements.txt
 
