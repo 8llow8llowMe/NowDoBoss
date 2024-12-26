@@ -22,8 +22,8 @@ services:
       - ./certbot/www:/var/www/certbot  # Certbot 인증 파일을 저장할 경로를 Nginx와 공유합니다.
       - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스를 공유합니다.
     ports:
-      - "${NGINX_HTTP_PORT}:${NGINX_HTTP_PORT}"  # Nginx의 HTTP 트래픽을 포트 80에서 처리합니다.
-      - "${NGINX_HTTPS_PORT}:${NGINX_HTTPS_PORT}"  # Nginx의 HTTPS 트래픽을 포트 443에서 처리합니다.
+      - "${NGINX_HTTP_PORT}:${NGINX_HTTP_PORT}"  # Nginx의 HTTP 트래픽을 포트
+      - "${NGINX_HTTPS_PORT}:${NGINX_HTTPS_PORT}"  # Nginx의 HTTPS 트래픽을 포트
     networks:
       - nowdoboss-net  # 애플리케이션 서비스들이 같은 네트워크에 연결되도록 설정합니다.
     depends_on:
