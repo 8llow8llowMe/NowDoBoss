@@ -40,7 +40,10 @@ pipeline {
                                         sourceFiles: 'BackEnd/FastApiServer/**/*', // Sub Server로 전송할 파일
                                         remoteDirectory: 'develop/infra/jenkins', // Sub Server에서 작업할 디렉터리
                                         execCommand: '''
-                                            cd develop/infra/jenkins
+                                            echo "Current Directory:"
+                                            pwd
+                                            echo "Files in Directory:"
+                                            ls -l
                                             docker-compose -f docker-compose-fastapi.yml up --build -d
                                         ''' // Sub Server에서 실행할 명령어
                                     )
