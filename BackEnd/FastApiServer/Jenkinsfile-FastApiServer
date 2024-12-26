@@ -34,7 +34,7 @@ pipeline {
                     sshPublisher(
                         publishers: [
                             sshPublisherDesc(
-                                configName: 'Sub Server SSH Key', // Publish Over SSH에서 설정한 Sub Server 이름
+                                configName: 'Sub Server SSH', // Publish Over SSH에서 설정한 Sub Server 이름
                                 transfers: [
                                     sshTransfer(
                                         sourceFiles: 'BackEnd/FastApiServer/**/*', // Sub Server로 전송할 파일
