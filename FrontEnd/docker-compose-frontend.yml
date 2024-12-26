@@ -1,5 +1,3 @@
-version: "3.8"  # Docker Compose 파일 버전을 지정합니다. "3.8"은 Docker Compose의 최신 버전 중 하나입니다.
-
 services:
   # React 빌드 서비스
   nowdoboss_react_service:
@@ -24,8 +22,8 @@ services:
       - ./certbot/www:/var/www/certbot  # Certbot 인증 파일을 저장할 경로를 Nginx와 공유합니다.
       - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스를 공유합니다.
     ports:
-      - "80:80"  # Nginx의 HTTP 트래픽을 포트 80에서 처리합니다.
-      - "443:443"  # Nginx의 HTTPS 트래픽을 포트 443에서 처리합니다.
+      - "${NGINX_HTTP_PORT}:${NGINX_HTTP_PORT}"  # Nginx의 HTTP 트래픽을 포트 80에서 처리합니다.
+      - "${NGINX_HTTPS_PORT}:${NGINX_HTTPS_PORT}"  # Nginx의 HTTPS 트래픽을 포트 443에서 처리합니다.
     networks:
       - nowdoboss-net  # 애플리케이션 서비스들이 같은 네트워크에 연결되도록 설정합니다.
     depends_on:
@@ -49,10 +47,10 @@ services:
     image: maxmindinc/geoipupdate:latest
     container_name: geoip
     environment:
-      GEOIPUPDATE_ACCOUNT_ID: 1069136
-      GEOIPUPDATE_LICENSE_KEY: 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
-      GEOIPUPDATE_EDITION_IDS: GeoLite2-Country GeoLite2-City GeoLite2-ASN
-      GEOIPUPDATE_FREQUENCY: 24
+      GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID}
+      GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY}
+      GEOIPUPDATE_EDITION_IDS: ${GEOIPUPDATE_EDITION_IDS}
+      GEOIPUPDATE_FREQUENCY: ${GEOIPUPDATE_FREQUENCY}
     volumes:
       - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스 공유
 
