@@ -7,7 +7,7 @@ services:
     image: nowdoboss-backend-springboot-img  # 빌드된 이미지의 이름을 설정합니다.
     restart: always  # 컨테이너가 항상 재시작되도록 설정합니다.
     ports:
-      - "8080:8080"  # 호스트의 8080 포트를 컨테이너의 8080 포트에 바인딩합니다.
+      - "${SPRING_BOOT_PORT}:${SPRING_BOOT_PORT}"  # 호스트의 8080 포트를 컨테이너의 8080 포트에 바인딩합니다.
     environment:
       - TZ=Asia/Seoul # 해당 백엔드 서버의 시간을 아시아/서울로 설정합니다.
       - SERVER_HTTPS_URL=${SERVER_HTTPS_URL}
