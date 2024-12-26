@@ -60,16 +60,16 @@ pipeline {
 
                         if (isGeoIPRunning == "") {
                             echo "geoip dockerfile 빌드..."
-                            // sh "docker-compose --env-file ./FrontEnd/.env-docker-compose-geoip -f ./FrontEnd/docker-compose-frontend.yml up --build -d geoip_service"
-                            sh "docker-compose -f ./FrontEnd/docker-compose-frontend.yml up --build -d geoip_service"
+                            sh "docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend up --build -d geoip_service"
                         }
 
-                        // React Nginx 컨테이너를 종료하고 관련 볼륨을 삭제합니다. 이 단계는 이전에 생성된 데이터를 클리어하고 새로운 정적 파일을 적용하기 위해 필요합니다. (서비스명)
-                        sh "docker-compose -f docker-compose-frontend.yml down --volumes nowdoboss_react_service nowdoboss_frontend_service"
-                        // React Nginx 컨테이너를 재빌드하고 백그라운드에서 실행합니다. `--build` 옵션은 이미지를 다시 빌드하고, `-d`는 백그라운드 모드에서 실행합니다. (서비스명)
-                        sh "docker-compose -f docker-compose-frontend.yml up --build -d nowdoboss_react_service nowdoboss_frontend_service"
+                        // React 빌드 볼륨 삭제
+                        sh "docker volume rm nowdoboss_react_build || true"
 
-                        // React 컨테이너가 빌드 작업을 완료한 후에는 종료해야 합니다. (서비스명)
+                        // React 빌드 및 Nginx 재시작
+                        sh "docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend up --build -d nowdoboss_react_service nowdoboss_frontend_service"
+
+                        // React 빌드 컨테이너 종료 (서비스명)
                         sh "docker-compose -f docker-compose-frontend.yml stop nowdoboss_react_service"
                     }
                 }
@@ -79,9 +79,9 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    // nowdoboss-react 컨테이너를 종료하고 삭제합니다. (컨테이너명)
-                    sh "docker stop nowdoboss-react || true" // 컨테이너가 실행 중이지 않더라도 오류를 무시합니다.
-                    sh "docker rm nowdoboss-react || true" // 컨테이너를 삭제합니다.
+                    // React 빌드 컨테이너 정리
+                    sh "docker stop nowdoboss-react || true"
+                    sh "docker rm nowdoboss-react || true"
                 }
             }
         }
