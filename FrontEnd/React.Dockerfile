@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # 서브모듈에서 환경변수 파일 복사
-COPY frontend-env/.env-frontend-dev .env
+COPY frontend-env/.env-react-vite-dev .env
 
 # 프론트엔드 코드 빌드
 RUN npm run build
