@@ -41,11 +41,7 @@ pipeline {
                                         remoteDirectory: 'develop/infra/jenkins', // Sub Server에서 작업할 디렉터리
                                         execCommand: '''
                                             cd develop/infra/jenkins/BackEnd/FastApiServer
-                                            echo "현재 디렉토리:"
-                                            pwd
-                                            echo "파일 권한 설정중..."
                                             chmod -R 755 .
-                                            echo "파일 권한 설정 완료. 도커 컴포즈 실행중..."
                                             docker-compose -f docker-compose-fastapi.yml up --build -d
                                         ''' // Sub Server에서 실행할 명령어
                                     )
