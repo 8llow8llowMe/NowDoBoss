@@ -58,10 +58,10 @@ pipeline {
                                             else
                                                 echo "하둡 스파크 클러스터가 이미 실행중입니다!"
                                             fi
-                                        ''', // Sub Server에서 실행할 명령어
-                                        verbose: true // 상세 로그 활성화
+                                        '''
                                     )
-                                ]
+                                ],
+                                verbose: true // 상세 로그 활성화
                             )
                         ]
                     )
