@@ -1,15 +1,15 @@
 services:
   nowdoboss_springboot_service:
-    container_name: nowdoboss-backend-springboot  # 컨테이너의 이름을 설정합니다.
-    build:  # 도커 이미지 빌드 관련 설정입니다.
-      context: .  # Dockerfile이 위치한 디렉토리 경로입니다. (현재 docker-compose 파일이 있는 경로와 Dockerfile 경로 같이 비교)
-      dockerfile: SpringBootServer.Dockerfile  # 사용할 Dockerfile의 이름입니다.
-    image: nowdoboss-backend-springboot-img  # 빌드된 이미지의 이름을 설정합니다.
-    restart: always  # 컨테이너가 항상 재시작되도록 설정합니다.
+    container_name: nowdoboss-backend-springboot  # 컨테이너의 이름을 설정
+    build:  # 도커 이미지 빌드 관련 설정
+      context: .  # Dockerfile이 위치한 디렉토리 경로 (현재 docker-compose 파일이 있는 경로와 Dockerfile 경로 같이 비교)
+      dockerfile: SpringBootServer.Dockerfile
+    image: nowdoboss-backend-springboot-img
+    restart: always
     ports:
-      - "${SPRING_BOOT_PORT}:${SPRING_BOOT_PORT}"  # 호스트의 8080 포트를 컨테이너의 8080 포트에 바인딩합니다.
+      - "${SPRING_BOOT_PORT}:${SPRING_BOOT_PORT}"
     environment:
-      - TZ=Asia/Seoul # 해당 백엔드 서버의 시간을 아시아/서울로 설정합니다.
+      - TZ=Asia/Seoul
       - SERVER_HTTPS_URL=${SERVER_HTTPS_URL}
       - SERVER_FAST_API_URL=${SERVER_FAST_API_URL}
       - MYSQL_DB_URL=${MYSQL_DB_URL}
@@ -33,11 +33,11 @@ services:
       - OAUTH_NAVER_CLIENT_SECRET=${OAUTH_NAVER_CLIENT_SECRET}
       - OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID}
       - OAUTH_GOOGLE_CLIENT_SECRET=${OAUTH_GOOGLE_CLIENT_SECRET}
-      - JASYPT_ENCRYPTOR_KEY=${JASYPT_ENCRYPTOR_KEY} # 해당 값은 인코딩작업이 안된 민감정보이기 때문에 추후 Jenkins Credentials 이용해서 직접 주입할 예정
+      - JASYPT_ENCRYPTOR_KEY=${JASYPT_ENCRYPTOR_KEY} # 해당 값은 인코딩작업이 안된 민감정보이기 때문에 추후 Jenkins Credentials 이용해서 직접 주입할 예정 (지금은 git submodule 통해서 주입)
     networks:
-      - nowdoboss-net  # 사용할 네트워크를 지정합니다.
+      - nowdoboss-net  # 사용할 네트워크를 지정
 
 networks:
-  nowdoboss-net:  # 사용할 네트워크를 정의합니다.
+  nowdoboss-net:  # 사용할 네트워크를 정의
     name: nowdoboss-net
     driver: bridge
