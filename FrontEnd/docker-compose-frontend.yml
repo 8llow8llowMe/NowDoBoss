@@ -1,21 +1,23 @@
 services:
   # React 빌드 서비스
   nowdoboss_react_service:
-    container_name: nowdoboss-react  # React 빌드 관련 컨테이너 이름을 설정합니다.
+    container_name: nowdoboss-react
     build:
-      context: .  # Dockerfile이 위치한 디렉토리 경로입니다.
-      dockerfile: React.Dockerfile  # React 애플리케이션 빌드를 위한 Dockerfile입니다.
-    image: nowdoboss-frontend-img  # 빌드된 Docker 이미지를 정의합니다.
+      context: .
+      dockerfile: React.Dockerfile
+    image: nowdoboss-react-img
     volumes:
       - nowdoboss_react_build:/usr/src/app/dist  # 빌드된 React 정적 파일을 로컬 볼륨에 저장합니다.
     entrypoint: ["true"]  # 컨테이너가 빌드된 후 바로 종료되도록 설정합니다. 빌드만 수행하기 때문에 애플리케이션을 실행하지 않습니다.
 
   # Nginx WebServer 서비스
   nowdoboss_frontend_service:
-    container_name: nowdoboss-frontend  # Nginx 프론트엔드 서버 컨테이너 이름을 설정합니다.
+    container_name: nowdoboss-frontend
     build:
-      context: ../CICD/Nginx  # Nginx Dockerfile이 위치한 경로를 설정합니다.
-      dockerfile: Nginx.Dockerfile  # Nginx 서버를 위한 Dockerfile입니다.
+      context: ../CICD/Nginx
+      dockerfile: Nginx.Dockerfile
+    image: nowdoboss-frontend-img
+    restart: always
     volumes:
       - nowdoboss_react_build:/usr/share/nginx/html  # 빌드된 정적 파일을 Nginx가 서빙할 경로에 마운트합니다.
       - ./certbot/conf:/etc/letsencrypt  # Certbot이 사용하는 SSL 인증서 경로를 Nginx와 공유합니다.
@@ -35,6 +37,7 @@ services:
   nowdoboss_certbot_service:
     container_name: nowdoboss-certbot  # Certbot 컨테이너 이름을 설정합니다.
     image: certbot/certbot  # Let's Encrypt 인증서를 관리하기 위한 Certbot 이미지를 사용합니다.
+    restart: always
     volumes:
       - ./certbot/conf:/etc/letsencrypt  # Certbot이 사용하는 SSL 인증서 경로입니다.
       - ./certbot/www:/var/www/certbot  # Certbot의 인증 경로를 설정합니다.
@@ -46,6 +49,7 @@ services:
   geoip_service:
     image: maxmindinc/geoipupdate:latest
     container_name: geoip
+    restart: always
     environment:
       GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID}
       GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY}
@@ -55,10 +59,10 @@ services:
       - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스 공유
 
 volumes:
-  nowdoboss_react_build:  # React 빌드 결과를 저장할 공유 볼륨입니다.
+  nowdoboss_react_build:  # React 빌드 결과를 저장할 공유 볼륨
   geoip_data: # GeoIP 데이터 베이스 공유 볼륨
 
 networks:
-  nowdoboss-net:  # Nginx, React, Certbot이 사용할 네트워크를 정의합니다.
+  nowdoboss-net:
     name: nowdoboss-net
-    driver: bridge  # 기본 브리지 네트워크를 사용합니다.
+    driver: bridge

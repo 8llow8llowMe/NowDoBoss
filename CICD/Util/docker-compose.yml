@@ -11,6 +11,24 @@ x-kafka-environment: &kafka_environment
   TZ: ${TZ}
 
 services:
+  # MySQL 설정
+  mysql_service:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - nowdoboss-net
+
+
   # Redis 설정
   nowdoboss_redis_service:
     image: redis
@@ -36,6 +54,7 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest.arm64
     container_name: zookeeper
+    restart: always
     ports:
       - "${ZOOKEEPER_CLIENT_PORT}:${ZOOKEEPER_CLIENT_PORT}"
     environment:
@@ -48,6 +67,7 @@ services:
   kafka-1:
     image: confluentinc/cp-kafka:latest.arm64
     container_name: kafka-1
+    restart: always
     depends_on:
       - zookeeper
     ports:
@@ -63,6 +83,7 @@ services:
   kafka-2:
     image: confluentinc/cp-kafka:latest.arm64
     container_name: kafka-2
+    restart: always
     depends_on:
       - zookeeper
     ports:
@@ -182,6 +203,7 @@ services:
       - nowdoboss-net  # Prometheus와 같은 네트워크 사용
 
 volumes:
+  mysql_data:
   mongo_data:
   portainer_data:
   prometheus_data:
