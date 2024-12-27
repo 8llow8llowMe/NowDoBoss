@@ -28,7 +28,7 @@ RUN /opt/venv/bin/pip install --upgrade pip
 RUN /opt/venv/bin/pip install pyspark==3.4.0 numpy==1.26.4 pandas==2.0.3
 
 # 환경변수 설정
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64
 ENV HADOOP_HOME=/usr/local/hadoop
 ENV SPARK_HOME=/usr/local/spark
 ENV PYSPARK_PYTHON=/opt/venv/bin/python

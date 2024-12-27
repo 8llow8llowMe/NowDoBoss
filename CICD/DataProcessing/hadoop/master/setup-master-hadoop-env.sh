@@ -8,7 +8,7 @@ chmod 777 /usr/local/hadoop/hadoop_tmp/
 
 echo "master의 환경변수를 설정합니다."
 # 환경변수 설정
-echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64' >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64' >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 echo 'export HDFS_NAMENODE_USER=root' >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 echo 'export HDFS_DATANODE_USER=root' >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 echo 'export HDFS_SECONDARYNAMENODE_USER=root' >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh

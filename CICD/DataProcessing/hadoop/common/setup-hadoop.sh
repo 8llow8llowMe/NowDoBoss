@@ -2,7 +2,7 @@
 # setup-hadoop.sh
 
 # 환경변수 설정
-echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64' >> /root/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64' >> /root/.bashrc
 echo 'export HADOOP_HOME=/usr/local/hadoop' >> /root/.bashrc
 echo 'export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$JAVA_HOME/bin' >> /root/.bashrc
 echo 'export HADOOP_MAPRED_HOME=$HADOOP_HOME' >> /root/.bashrc
