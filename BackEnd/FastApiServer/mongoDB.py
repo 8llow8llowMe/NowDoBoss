@@ -5,9 +5,9 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 # 연결에 필요한 정보
 authenticationDatabase = "admin"
-username = "ssafy"
-password = "ssafy!2341234"
-host = "k10c208.p.ssafy.io"
+username = "8llow8llowme"
+password = "8llow8llowme"
+host = "192.168.0.25"
 port = 27017
 
 # MongoDB 연결 URL 설정
