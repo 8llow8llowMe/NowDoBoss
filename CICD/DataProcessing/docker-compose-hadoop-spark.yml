@@ -18,12 +18,18 @@ services:
       nowdoboss_net:
     command: >
       /bin/bash -c "
-      /usr/local/bin/setup-hadoop.sh &&
-      /usr/local/bin/update-hosts.sh &&
-      /usr/local/bin/init-ssh-keys.sh &&
-      /usr/local/bin/collect-ssh-keys.sh 3 &&
-      /usr/local/bin/master/setup-master-hadoop-env.sh &&
-      /usr/local/bin/create-hdfs-log-dir.sh &&
+      if [ ! -f /setup_completed ]; then
+          echo 'Performing initial setup...';
+          /usr/local/bin/setup-hadoop.sh &&
+          /usr/local/bin/update-hosts.sh &&
+          /usr/local/bin/init-ssh-keys.sh &&
+          /usr/local/bin/collect-ssh-keys.sh 3 &&
+          /usr/local/bin/master/setup-master-hadoop-env.sh &&
+          /usr/local/bin/create-hdfs-log-dir.sh &&
+          touch /setup_completed;
+      else
+          echo 'Skipping initial setup, already completed.';
+      fi;
       /usr/local/bin/start-master.sh &&
       /usr/local/bin/start-history-server.sh
       "
@@ -40,11 +46,17 @@ services:
       nowdoboss_net:
     command: >
       /bin/bash -c "
-      /usr/local/bin/setup-hadoop.sh &&
-      /usr/local/bin/update-hosts.sh &&
-      /usr/local/bin/init-ssh-keys.sh &&
-      /usr/local/bin/collect-ssh-keys.sh 5 &&
-      /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
+      if [ ! -f /setup_completed ]; then
+          echo 'Performing initial setup...';
+          /usr/local/bin/setup-hadoop.sh &&
+          /usr/local/bin/update-hosts.sh &&
+          /usr/local/bin/init-ssh-keys.sh &&
+          /usr/local/bin/collect-ssh-keys.sh 5 &&
+          /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
+          touch /setup_completed;
+      else
+          echo 'Skipping initial setup, already completed.';
+      fi;
       /usr/local/bin/start-slave.sh
       "
 
@@ -60,16 +72,22 @@ services:
       nowdoboss_net:
     command: >
       /bin/bash -c "
-      /usr/local/bin/setup-hadoop.sh &&
-      /usr/local/bin/update-hosts.sh &&
-      /usr/local/bin/init-ssh-keys.sh &&
-      /usr/local/bin/collect-ssh-keys.sh 7 &&
-      /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
+      if [ ! -f /setup_completed ]; then
+          echo 'Performing initial setup...';
+          /usr/local/bin/setup-hadoop.sh &&
+          /usr/local/bin/update-hosts.sh &&
+          /usr/local/bin/init-ssh-keys.sh &&
+          /usr/local/bin/collect-ssh-keys.sh 7 &&
+          /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
+          touch /setup_completed;
+      else
+          echo 'Skipping initial setup, already completed.';
+      fi;
       /usr/local/bin/start-slave.sh
       "
 
 networks:
-  nowdoboss_net:  # 사용할 네트워크를 정의합니다.
+  nowdoboss_net:
     name: nowdoboss_net
     driver: bridge
 
