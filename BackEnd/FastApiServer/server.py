@@ -56,10 +56,10 @@ def initialize_spark_session():
     return SparkSession.builder \
         .appName("RecommendationSystem") \
         .master("spark://master1:7077") \
-        .config("spark.executor.memory", "2g") \
-        .config("spark.executor.cores", "2") \
-        .config("spark.driver.memory", "2g") \
-        .config("spark.sql.shuffle.partitions", "100") \
+        .config("spark.executor.memory", "1g") \
+        .config("spark.executor.cores", "1") \
+        .config("spark.driver.memory", "1g") \
+        .config("spark.sql.shuffle.partitions", "50") \
         .getOrCreate()
 
 if __name__ == "__main__":
