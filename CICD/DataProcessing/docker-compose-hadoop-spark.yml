@@ -86,6 +86,32 @@ services:
       /usr/local/bin/start-slave.sh
       "
 
+  worker3:
+    build: 
+      context: .
+      dockerfile: hd-spark-base.Dockerfile
+    container_name: worker3
+    hostname: worker3
+    volumes:
+      - shared_keys:/shared_keys
+    networks:
+      nowdoboss-net:
+    command: >
+      /bin/bash -c "
+      if [ ! -f /setup_completed ]; then
+          echo 'Performing initial setup...';
+          /usr/local/bin/setup-hadoop.sh &&
+          /usr/local/bin/update-hosts.sh &&
+          /usr/local/bin/init-ssh-keys.sh &&
+          /usr/local/bin/collect-ssh-keys.sh 7 &&
+          /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
+          touch /setup_completed;
+      else
+          echo 'Skipping initial setup, already completed.';
+      fi;
+      /usr/local/bin/start-slave.sh
+      "
+
 networks:
   nowdoboss-net:
     name: nowdoboss-net
