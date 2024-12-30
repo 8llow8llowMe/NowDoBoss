@@ -52,7 +52,11 @@ pipeline {
                                             isHadoopRunning_worker2=$(docker ps --filter name=worker2 --filter status=running --format '{{.Names}}')
                                             echo "워커 노드-2 실행 상태: ${isHadoopRunning_worker2}"
 
-                                            if [ -z "$isHadoopRunning_master1" ] || [ -z "$isHadoopRunning_worker1" ] || [ -z "$isHadoopRunning_worker2" ]; then
+                                            echo "하둡 + 스파크 (worker3) 컨테이너 구성 실행 상태 확인 중..."
+                                            isHadoopRunning_worker3=$(docker ps --filter name=worker3 --filter status=running --format '{{.Names}}')
+                                            echo "워커 노드-3 실행 상태: ${isHadoopRunning_worker3}"
+
+                                            if [ -z "$isHadoopRunning_master1" ] || [ -z "$isHadoopRunning_worker1" ] || [ -z "$isHadoopRunning_worker2" ] || [ -z "$isHadoopRunning_worker3" ]; then
                                                 echo "하둡 + 스파크 클러스터 빌드중..."
                                                 docker-compose -f docker-compose-hadoop-spark.yml up --build -d
                                             else
