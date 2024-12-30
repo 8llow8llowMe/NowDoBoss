@@ -19,5 +19,8 @@ COPY . /app
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
     && pip install --no-cache-dir -r requirements.txt
 
+# gRPC Python 파일 생성 (recommendation.proto 파일 기준)
+RUN python -m grpc_tools.protoc -I./grpc --python_out=./grpc --grpc_python_out=./grpc ./grpc/recommendation.proto
+
 # 애플리케이션 실행
 CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
