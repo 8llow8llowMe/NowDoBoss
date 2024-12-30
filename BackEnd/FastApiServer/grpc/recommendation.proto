@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package grpc;
 
-option python_package = "FastApiServer.grpc";
-
 // gRPC 서비스 정의
 service RecommendationService {
   rpc GetRecommendations (RecommendationRequestProto) returns (RecommendationResponseProto);
