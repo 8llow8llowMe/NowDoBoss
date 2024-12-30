@@ -20,7 +20,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -75,19 +74,19 @@ public class Member extends BaseEntity {
     private OAuthDomain oAuthDomain;
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatMessage> chatMessages = new ArrayList<>();
+    private List<ChatMessage> chatMessages;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
+    private List<ChatRoomMember> chatRoomMembers;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeviceToken> deviceTokens = new ArrayList<>();
+    private List<DeviceToken> deviceTokens;
 
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Community> communities = new ArrayList<>();
+    private List<Community> communities;
 
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comments> comments = new ArrayList<>();
+    private List<Comments> comments;
 
     public void updateProfileImageAndNickname(MemberUpdateRequest updateRequest) {
         this.nickname = updateRequest.nickname();
