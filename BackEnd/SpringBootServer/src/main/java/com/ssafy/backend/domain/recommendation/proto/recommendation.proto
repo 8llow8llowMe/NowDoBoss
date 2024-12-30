@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option java_package = "com.ssafy.backend.recommendation"; // 생성될 Java 파일의 패키지 이름
+option java_outer_classname = "RecommendationProto"; // 생성될 Java 파일의 클래스 이름
+
+// gRPC 서비스 정의
+service RecommendationService {
+  rpc GetRecommendations (RecommendationRequestProto) returns (RecommendationResponseProto);
+}
+
+// 추천 정보 요청 메시지
+message RecommendationRequestProto {
+  string districtCode = 1;
+  string administrationCode = 2;
+  int64 userId = 3;
+}
+
+// BlueOcean 정보
+message BlueOceanInfoProto {
+  string serviceCodeName = 1;
+  int32 myStore = 2;
+  int32 totalStore = 3;
+  double storeRate = 4;
+}
+
+// 판매 상권 정보
+message SalesCommercialInfoProto {
+  int64 mySales = 1;
+  int64 administrationSales = 2;
+  int64 otherSales = 3;
+}
+
+// 유동인구 상권 정보
+message FootTrafficCommercialInfoProto {
+  int64 myFootTraffic = 1;
+  int64 administrationFootTraffic = 2;
+  int64 otherFootTraffic = 3;
+}
+
+// 상점 상권 정보
+message StoreCommercialInfoProto {
+  int32 myStores = 1;
+  int32 administrationStores = 2;
+  int32 otherStores = 3;
+}
+
+// 폐업률 상권 정보
+message ClosedRateCommercialInfoProto {
+  double myClosedRate = 1;
+  double administrationClosedRate = 2;
+  double otherClosedRate = 3;
+}
+
+// 단일 상권 추천 데이터
+message RecommendationResponseProto {
+  string commercialCode = 1;
+  string commercialCodeName = 2;
+  SalesCommercialInfoProto salesCommercialInfoProto = 3;
+  FootTrafficCommercialInfoProto footTrafficCommercialInfoProto = 4;
+  StoreCommercialInfoProto storeCommercialInfoProto = 5;
+  ClosedRateCommercialInfoProto closedRateCommercialInfoProto = 6;
+  repeated BlueOceanInfoProto blueOceanInfoProto = 7;
+}
