@@ -1,8 +1,19 @@
+buildscript {
+    ext {
+        protobufVersion = '4.28.2'
+        protobufPluginVersion = '0.9.4'
+        grpcVersion = '1.65.1'
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.4'
     id 'io.spring.dependency-management' version '1.1.4'
     id "org.sonarqube" version "4.3.1.3277"
+
+    // Protobuf 플러그인을 적용하여 .proto 파일을 컴파일할 수 있다. 여기서 버전은 ext에 정의된 protobufPluginVersion을 사용한다.
+    id 'com.google.protobuf' version "${protobufPluginVersion}"
 }
 
 group = 'com.ssafy'
@@ -98,11 +109,45 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
+    // grpc 프로토콜 버터를 사용하기 위한 핵심 라이브러리 (Protobuf 메시지의 직렬화 및 역직렬화를 지원합니다.)
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+
+    // gRPC Client
+    implementation 'net.devh:grpc-client-spring-boot-starter:3.1.0.RELEASE'
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+protobuf {
+    // Protobuf 컴파일러를 지정하여 .proto 파일을 컴파일합니다.
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+    // 생성된 파일을 정리합니다.
+    clean {
+        delete generatedFilesBaseDir
+    }
+    // gRPC 플러그인을 설정하여 Protobuf 파일로부터 gRPC 관련 코드를 생성합니다.
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    // 모든 프로토콜 버퍼 작업에 대해 gRPC 플러그인을 적용합니다.
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
 }
 
 tasks.named('test') {
