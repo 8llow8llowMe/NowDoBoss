@@ -58,14 +58,21 @@ async def recommend(spark, user_id, background_tasks):
         # 추천 데이터를 상권 데이터와 조합
         recommendations_df = recommendations.withColumn("recommendation", explode("recommendations")).select(
             col("userId"),
-            col("recommendation.commercialCode").alias("commercialCode"),
-            col("recommendation.rating").alias("rating")
+            col("recommendation.commercialCode").cast("string").alias("commercialCode"),
+            col("recommendation.rating").alias("finalRating")
         )
-        result_df = recommendations_df.join(commercial_df, on="commercialCode", how="inner").orderBy(desc("rating"))
 
-        # 결과 반환
-        result = result_df.toPandas().to_dict(orient="records")
-        return result
+        result_df = recommendations_df.join(commercial_df, on="commercialCode", how="inner").orderBy(desc("finalRating"))
+
+        # Java가 요구하는 데이터 구조로 변환
+        result = result_df.withColumn("openedRate", lit(None).cast("double")) \
+                          .withColumn("closedRate", lit(None).cast("double")) \
+                          .select("userId", "commercialCode", "totalTrafficFoot", "totalSales", "openedRate", 
+                                  "closedRate", "totalConsumption", "finalRating")
+
+        # Pandas DataFrame으로 변환 후 JSON으로 반환
+        result_json = result.toPandas().to_dict(orient="records")
+        return result_json
     finally:
         # 캐싱 해제
         user_df.unpersist()
