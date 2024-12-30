@@ -1,9 +1,11 @@
-from pyspark.sql.functions import col, explode, desc
+from pyspark.sql.functions import col, explode, desc, lit, when
 from pyspark.ml.recommendation import ALS, ALSModel
 import mongoDB
 import pandas as pd
 
 MODEL_PATH = "hdfs://master1:9000/models/recommendation_model"
+
+ACTION_WEIGHTS = {"click": 2, "search": 4, "analysis": 7, "save": 10}
 
 async def recommend(spark, user_id, background_tasks):
     """
@@ -17,8 +19,20 @@ async def recommend(spark, user_id, background_tasks):
         print("MongoDB에 사용자 데이터 없음.")
         return {"message": "No user data found in MongoDB."}
 
-    # MongoDB 데이터를 Spark DataFrame으로 변환
-    user_df = spark.createDataFrame(pd.DataFrame(mongo_data))
+    # MongoDB 데이터를 Pandas DataFrame으로 변환
+    mongo_df = pd.DataFrame(mongo_data)
+
+    # Spark DataFrame으로 변환
+    user_df = spark.createDataFrame(mongo_df)
+
+    # 사용자 행동 데이터를 가중치로 변환
+    user_df = user_df.withColumn("weight", 
+        when(col("action") == "click", lit(ACTION_WEIGHTS["click"]))
+        .when(col("action") == "search", lit(ACTION_WEIGHTS["search"]))
+        .when(col("action") == "analysis", lit(ACTION_WEIGHTS["analysis"]))
+        .when(col("action") == "save", lit(ACTION_WEIGHTS["save"]))
+        .otherwise(lit(1))
+    )
     user_df.show()
 
     # HDFS에서 상권 데이터 가져오기
