@@ -1,4 +1,4 @@
--- V4.2__Add_drop_indexes.sql
+-- V4.2__Drop_and_Add_indexes.sql
 
 -- 기존 단일 인덱스 삭제 및 필요한 복합 인덱스 추가
 
