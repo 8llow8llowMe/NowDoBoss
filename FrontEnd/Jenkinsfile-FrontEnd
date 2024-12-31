@@ -55,7 +55,7 @@ pipeline {
                     dir('FrontEnd') {
                         if (isCertBotRunning == "") {
                             echo "certbot dockerfile 빌드..."
-                            sh "docker-compose -f docker-compose-frontend.yml up --build -d nowdoboss_certbot_service"
+                            sh "docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend up --build -d nowdoboss_certbot_service"
                         }
 
                         if (isGeoIPRunning == "") {
