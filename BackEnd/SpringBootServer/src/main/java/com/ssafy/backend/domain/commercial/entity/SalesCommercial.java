@@ -1,8 +1,20 @@
 package com.ssafy.backend.domain.commercial.entity;
 
 import com.ssafy.backend.domain.district.entity.enums.ServiceType;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
@@ -11,11 +23,13 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-        @Index(name = "idx_period_code", columnList = "periodCode"),
-        @Index(name = "idx_commercial_code", columnList = "commercialCode"),
-        @Index(name = "idx_service_code", columnList = "serviceCode")
+    @Index(name = "idx_period_code", columnList = "periodCode"),
+    @Index(name = "idx_commercial_code", columnList = "commercialCode"),
+    @Index(name = "idx_service_code", columnList = "serviceCode"),
+    @Index(name = "idx_commercial_service", columnList = "periodCode, commercialCode, serviceCode")
 })
 public class SalesCommercial {
+
     @Id
     @Comment("추정매출_상권 아이디")
     @Column(columnDefinition = "INT UNSIGNED")
