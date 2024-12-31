@@ -9,6 +9,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false, // 탭 이동 시 쿼리 호출 방지
+      refetchOnReconnect: false, // 네트워크 재연결 시 자동 호출 방지 (필요에 따라 설정)
+      staleTime: 1000 * 60 * 5, // 5분 동안 데이터를 만료되지 않은 상태로 유지
     },
   },
 })
