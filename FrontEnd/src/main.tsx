@@ -5,7 +5,13 @@ import { BrowserRouter } from 'react-router-dom' // 전체 애플리케이션의
 import App from './App'
 // import './index.css'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // 탭 이동 시 쿼리 호출 방지
+    },
+  },
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
