@@ -255,14 +255,12 @@ public class CommercialServiceImpl implements CommercialService {
 
         // 추천용 데이터 카프카 토픽으로
         DataInfo dataInfo = new DataInfo(memberId, commercialCode, "analysis");
-        if (!dataInfo.commercialCode().equals("0")) {
-            DataDocument dataDocument = DataDocument.builder()
-                .userId(dataInfo.userId())
-                .commercialCode(Long.parseLong(dataInfo.commercialCode()))
-                .action(dataInfo.action())
-                .build();
-            dataRepository.save(dataDocument);
-        }
+        DataDocument dataDocument = DataDocument.builder()
+            .userId(dataInfo.userId())
+            .commercialCode(Long.parseLong(dataInfo.commercialCode()))
+            .action(dataInfo.action())
+            .build();
+        dataRepository.save(dataDocument);
 
         return salesCommercialMapper.mapToAllSalesResponse(
             salesDistrict, salesAdministration, salesCommercial);
