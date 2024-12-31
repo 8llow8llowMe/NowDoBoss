@@ -66,7 +66,6 @@ pipeline {
                         sh """
                             docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend stop nowdoboss_frontend_service
                             docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend rm -f nowdoboss_frontend_service
-                            docker volume rm nowdoboss_react_build || true
                         """
 
                         // React 빌드 및 Nginx 서비스 시작
