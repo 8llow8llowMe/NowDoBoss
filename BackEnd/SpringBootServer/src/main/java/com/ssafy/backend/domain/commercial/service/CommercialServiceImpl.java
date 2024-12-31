@@ -291,7 +291,7 @@ public class CommercialServiceImpl implements CommercialService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommercialAdministrationAreaResponse getAdministrationInfoByCommercialCode(Long memberId,
+    public CommercialAdministrationAreaResponse getAdministrationInfoByCommercialCode(
         String commercialCode) {
         return areaCommercialRepository.findByCommercialCode(commercialCode);
     }
