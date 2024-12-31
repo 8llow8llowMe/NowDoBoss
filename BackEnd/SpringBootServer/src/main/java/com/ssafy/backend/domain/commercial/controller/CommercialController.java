@@ -173,11 +173,9 @@ public class CommercialController {
     )
     @GetMapping("/{commercialCode}")
     public ResponseEntity<Message<CommercialAdministrationAreaResponse>> getAdministration(
-        @AuthenticationPrincipal MemberLoginActive loginActive,
         @PathVariable String commercialCode) {
-        Long memberId = Optional.ofNullable(loginActive).map(MemberLoginActive::id).orElse(0L);
         CommercialAdministrationAreaResponse administrationResponse = commercialService.getAdministrationInfoByCommercialCode(
-            memberId, commercialCode);
+            commercialCode);
         return ResponseEntity.ok().body(Message.success(administrationResponse));
     }
 

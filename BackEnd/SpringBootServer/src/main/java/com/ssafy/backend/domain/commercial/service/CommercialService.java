@@ -45,7 +45,7 @@ public interface CommercialService {
     CommercialFacilityResponse getFacilityByPeriodAndCommercialCode(String periodCode,
         String commercialCode);
 
-    CommercialAdministrationAreaResponse getAdministrationInfoByCommercialCode(Long memberId,
+    CommercialAdministrationAreaResponse getAdministrationInfoByCommercialCode(
         String commercialCode);
 
     CommercialStoreResponse getStoreByPeriodAndCommercialCodeAndServiceCode(String periodCode,
