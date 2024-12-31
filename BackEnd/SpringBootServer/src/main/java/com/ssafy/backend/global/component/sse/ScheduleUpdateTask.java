@@ -10,11 +10,14 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ScheduleUpdateTask {
+
     private final SseEmitterService sseEmitterService;
 
     @Scheduled(fixedDelay = 5 * 60 * 1000) // 5분 간격
     public void broadcastPeriodicUpdates() {
         log.info("===================SSE 통신 스케줄러 실행===================");
-        sseEmitterService.broadcastUpdates();
+        if (sseEmitterService.hasActiveEmitter()) {
+            sseEmitterService.broadcastUpdates();
+        }
     }
 }
