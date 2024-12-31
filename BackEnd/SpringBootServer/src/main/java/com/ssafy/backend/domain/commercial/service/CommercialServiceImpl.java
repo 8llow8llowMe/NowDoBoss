@@ -217,8 +217,8 @@ public class CommercialServiceImpl implements CommercialService {
 
         List<String> periodCodes = calculateLastFourQuarters(periodCode);
 
-        List<SalesCommercial> salesCommercialList = salesCommercialRepository.findByCommercialCodeAndServiceCodeAndPeriodCodeIn(
-            commercialCode, serviceCode, periodCodes);
+        List<SalesCommercial> salesCommercialList = salesCommercialRepository.findByPeriodCodeInAndCommercialCodeAndServiceCode(
+            periodCodes, commercialCode, serviceCode);
 
         CommercialAgeGenderPercentSalesInfo ageGenderPercentSalesInfo = salesCommercialMapper.toCommercialAgeGenderPercentSalesInfo(
             salesCommercial);
