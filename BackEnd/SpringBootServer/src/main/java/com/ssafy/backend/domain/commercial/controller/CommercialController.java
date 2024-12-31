@@ -124,7 +124,7 @@ public class CommercialController {
 
     @Operation(
         summary = "해당 자치구, 행정동, 상권의 업종 분기별 매출 총 금액 분석",
-        description = "주어진 자치구, 행정동, 상권 코드 및 서비스코드에 대해 해당 분기의 매출 촘 금액 데이터를 조회합니다. " +
+        description = "주어진 자치구, 행정동, 상권 코드 및 서비스코드에 대해 해당 분기의 매출 총 금액 데이터를 조회합니다. " +
             "기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
     @GetMapping("/sales/{districtCode}/{administrationCode}/{commercialCode}/{serviceCode}")
