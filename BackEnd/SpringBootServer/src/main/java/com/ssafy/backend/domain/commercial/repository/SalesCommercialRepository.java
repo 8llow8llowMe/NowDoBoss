@@ -22,7 +22,7 @@ public interface SalesCommercialRepository extends JpaRepository<SalesCommercial
     Optional<SalesCommercial> findByPeriodCodeAndCommercialCodeAndServiceCode(String periodCode,
         String commercialCode, String serviceCode);
 
-    List<SalesCommercial> findByCommercialCodeAndServiceCodeAndPeriodCodeIn(String commercialCode,
-        String serviceCode, List<String> periodCodes);
+    List<SalesCommercial> findByPeriodCodeInAndCommercialCodeAndServiceCode(
+        List<String> periodCodes, String commercialCode, String serviceCode);
 }
 
