@@ -1,7 +1,17 @@
 package com.ssafy.backend.domain.commercial.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
@@ -10,8 +20,9 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-        @Index(name = "idx_period_code", columnList = "periodCode"),
-        @Index(name = "idx_commercial_code", columnList = "commercialCode")
+    @Index(name = "idx_period_code", columnList = "periodCode"),
+    @Index(name = "idx_commercial_code", columnList = "commercialCode"),
+    @Index(name = "idx_period_commercial", columnList = "periodCode, commercialCode")
 })
 public class FootTrafficCommercial {
 
