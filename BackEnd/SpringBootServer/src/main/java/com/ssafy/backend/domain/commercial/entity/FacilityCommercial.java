@@ -20,8 +20,6 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-    @Index(name = "idx_period_code", columnList = "periodCode"),
-    @Index(name = "idx_commercial_code", columnList = "commercialCode"),
     @Index(name = "idx_period_commercial", columnList = "periodCode, commercialCode")
 })
 public class FacilityCommercial {
