@@ -1,7 +1,17 @@
 package com.ssafy.backend.domain.commercial.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
@@ -10,10 +20,12 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-        @Index(name = "idx_period_code", columnList = "periodCode"),
-        @Index(name = "idx_commercial_code", columnList = "commercialCode")
+    @Index(name = "idx_period_code", columnList = "periodCode"),
+    @Index(name = "idx_commercial_code", columnList = "commercialCode"),
+    @Index(name = "idx_period_commercial", columnList = "periodCode, commercialCode")
 })
 public class FacilityCommercial {
+
     @Id
     @Comment("집객시설_상권 아이디")
     @Column(columnDefinition = "INT UNSIGNED")
@@ -39,7 +51,7 @@ public class FacilityCommercial {
     @Comment("상권 코드 명")
     @Column(columnDefinition = "VARCHAR(80)", nullable = false)
     private String commercialCodeName;
-    
+
     @Comment("집객 시설 수")
     @Column(columnDefinition = "INT UNSIGNED")
     private Long facilityCnt;
