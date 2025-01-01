@@ -235,7 +235,7 @@ CREATE TABLE `sales_district` (
     PRIMARY KEY (`id`),
     KEY `idx_period_code` (`period_code`),
     KEY `idx_district_code` (`district_code`),
-    KEY `idx_district_code` (`service_code`)
+    KEY `idx_service_code` (`service_code`)
 );
 
 CREATE TABLE `store_district` (
