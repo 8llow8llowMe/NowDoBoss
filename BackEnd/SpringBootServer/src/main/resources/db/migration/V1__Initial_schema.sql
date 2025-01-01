@@ -136,7 +136,7 @@ CREATE TABLE `device_token` (
 );
 
 CREATE TABLE `area_district` (
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '영역 자치구 아이디',햣
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '영역 자치구 아이디',
     `x` FLOAT NOT NULL COMMENT 'x 좌표 값',
     `y` FLOAT NOT NULL COMMENT 'y 좌표 값',
     `district_code` VARCHAR(5) NOT NULL COMMENT '자치구 코드',
