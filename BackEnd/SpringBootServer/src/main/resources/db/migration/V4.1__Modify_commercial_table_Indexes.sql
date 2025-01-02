@@ -20,7 +20,6 @@ DROP INDEX idx_commercial_code ON population_commercial;
 
 -- sales_commercial 테이블 단일 인덱스 삭제
 DROP INDEX idx_period_code ON sales_commercial;
-DROP INDEX idx_commercial_code ON sales_commercial;
 DROP INDEX idx_service_code ON sales_commercial;
 
 -- store_commercial 테이블 단일 인덱스 삭제
