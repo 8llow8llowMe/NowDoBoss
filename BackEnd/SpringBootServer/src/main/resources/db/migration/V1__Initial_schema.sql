@@ -453,6 +453,8 @@ CREATE TABLE `sales_commercial` (
     `fri_sales` BIGINT UNSIGNED DEFAULT NULL COMMENT '금요일 매출 금액',
     `sat_sales` BIGINT UNSIGNED DEFAULT NULL COMMENT '토요일 매출 금액',
     `sun_sales` BIGINT UNSIGNED DEFAULT NULL COMMENT '일요일 매출 금액',
+    `male_sales_count` INT UNSIGNED DEFAULT NULL COMMENT '남성 매출 건수',
+    `female_sales_count` INT UNSIGNED DEFAULT NULL COMMENT '여성 매출 건수',
     `mon_sales_count` INT UNSIGNED DEFAULT NULL COMMENT '월요일 매출 건수',
     `tue_sales_count` INT UNSIGNED DEFAULT NULL COMMENT '화요일 매출 건수',
     `wed_sales_count` INT UNSIGNED DEFAULT NULL COMMENT '수요일 매출 건수',
