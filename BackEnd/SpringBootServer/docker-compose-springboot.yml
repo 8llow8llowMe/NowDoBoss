@@ -1,43 +1,63 @@
+x-spring-boot-environment: &spring_boot_environment
+  TZ: Asia/Seoul
+  SERVER_HTTPS_URL: ${SERVER_HTTPS_URL}
+  SERVER_FAST_API_URL: ${SERVER_FAST_API_URL}
+  MYSQL_DB_URL: ${MYSQL_DB_URL}
+  MYSQL_DB_USERNAME: ${MYSQL_DB_USERNAME}
+  MYSQL_DB_PASSWORD: ${MYSQL_DB_PASSWORD}
+  MONGO_DB_HOST: ${MONGO_DB_HOST}
+  MONGO_DB_DATABASE: ${MONGO_DB_DATABASE}
+  MONGO_DB_USERNAME: ${MONGO_DB_USERNAME}
+  MONGO_DB_PASSWORD: ${MONGO_DB_PASSWORD}
+  MONGO_DB_AUTHENTICATION_DATABASE: ${MONGO_DB_AUTHENTICATION_DATABASE}
+  JAVA_MAIL_HOST: ${JAVA_MAIL_HOST}
+  JAVA_MAIL_USERNAME: ${JAVA_MAIL_USERNAME}
+  JAVA_MAIL_PASSWORD: ${JAVA_MAIL_PASSWORD}
+  JWT_ACCESS_KEY: ${JWT_ACCESS_KEY}
+  JWT_REFRESH_KEY: ${JWT_REFRESH_KEY}
+  FIREBASE_BUCKET: ${FIREBASE_BUCKET}
+  FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+  OAUTH_KAKAO_CLIENT_ID: ${OAUTH_KAKAO_CLIENT_ID}
+  OAUTH_KAKAO_CLIENT_SECRET: ${OAUTH_KAKAO_CLIENT_SECRET}
+  OAUTH_NAVER_CLIENT_ID: ${OAUTH_NAVER_CLIENT_ID}
+  OAUTH_NAVER_CLIENT_SECRET: ${OAUTH_NAVER_CLIENT_SECRET}
+  OAUTH_GOOGLE_CLIENT_ID: ${OAUTH_GOOGLE_CLIENT_ID}
+  OAUTH_GOOGLE_CLIENT_SECRET: ${OAUTH_GOOGLE_CLIENT_SECRET}
+  JASYPT_ENCRYPTOR_KEY: ${JASYPT_ENCRYPTOR_KEY}
+
+
 services:
-  nowdoboss_springboot_service:
-    container_name: nowdoboss-backend-springboot  # 컨테이너의 이름을 설정
-    build:  # 도커 이미지 빌드 관련 설정
-      context: .  # Dockerfile이 위치한 디렉토리 경로 (현재 docker-compose 파일이 있는 경로와 Dockerfile 경로 같이 비교)
+  nowdoboss_springboot_blue_service:
+    container_name: nowdoboss-backend-springboot-blue
+    build:
+      context: .
       dockerfile: SpringBootServer.Dockerfile
-    image: nowdoboss-backend-springboot-img
+    image: nowdoboss-backend-springboot-img:blue
     restart: always
     ports:
-      - "${SPRING_BOOT_PORT}:${SPRING_BOOT_PORT}"
+      - "${SPRING_BOOT_BLUE_PORT}:${SPRING_BOOT_BLUE_PORT}"
     environment:
-      - TZ=Asia/Seoul
-      - SERVER_HTTPS_URL=${SERVER_HTTPS_URL}
-      - SERVER_FAST_API_URL=${SERVER_FAST_API_URL}
-      - MYSQL_DB_URL=${MYSQL_DB_URL}
-      - MYSQL_DB_USERNAME=${MYSQL_DB_USERNAME}
-      - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
-      - MONGO_DB_HOST=${MONGO_DB_HOST}
-      - MONGO_DB_DATABASE=${MONGO_DB_DATABASE}
-      - MONGO_DB_USERNAME=${MONGO_DB_USERNAME}
-      - MONGO_DB_PASSWORD=${MONGO_DB_PASSWORD}
-      - MONGO_DB_AUTHENTICATION_DATABASE=${MONGO_DB_AUTHENTICATION_DATABASE}
-      - JAVA_MAIL_HOST=${JAVA_MAIL_HOST}
-      - JAVA_MAIL_USERNAME=${JAVA_MAIL_USERNAME}
-      - JAVA_MAIL_PASSWORD=${JAVA_MAIL_PASSWORD}
-      - JWT_ACCESS_KEY=${JWT_ACCESS_KEY}
-      - JWT_REFRESH_KEY=${JWT_REFRESH_KEY}
-      - FIREBASE_BUCKET=${FIREBASE_BUCKET}
-      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
-      - OAUTH_KAKAO_CLIENT_ID=${OAUTH_KAKAO_CLIENT_ID}
-      - OAUTH_KAKAO_CLIENT_SECRET=${OAUTH_KAKAO_CLIENT_SECRET}
-      - OAUTH_NAVER_CLIENT_ID=${OAUTH_NAVER_CLIENT_ID}
-      - OAUTH_NAVER_CLIENT_SECRET=${OAUTH_NAVER_CLIENT_SECRET}
-      - OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID}
-      - OAUTH_GOOGLE_CLIENT_SECRET=${OAUTH_GOOGLE_CLIENT_SECRET}
-      - JASYPT_ENCRYPTOR_KEY=${JASYPT_ENCRYPTOR_KEY} # 해당 값은 인코딩작업이 안된 민감정보이기 때문에 추후 Jenkins Credentials 이용해서 직접 주입할 예정 (지금은 git submodule 통해서 주입)
+      <<: *spring_boot_environment
+      SPRING_BOOT_PORT: ${SPRING_BOOT_BLUE_PORT}
     networks:
-      - nowdoboss-net  # 사용할 네트워크를 지정
+      - nowdoboss-net
+
+  nowdoboss_springboot_green_service:
+    container_name: nowdoboss-backend-springboot-green
+    build:
+      context: .
+      dockerfile: SpringBootServer.Dockerfile
+    image: nowdoboss-backend-springboot-img:green
+    restart: always
+    ports:
+      - "${SPRING_BOOT_GREEN_PORT}:${SPRING_BOOT_GREEN_PORT}"
+    environment:
+      <<: *spring_boot_environment
+      SPRING_BOOT_PORT: ${SPRING_BOOT_GREEN_PORT}
+    networks:
+      - nowdoboss-net
 
 networks:
-  nowdoboss-net:  # 사용할 네트워크를 정의
+  nowdoboss-net:
     name: nowdoboss-net
     driver: bridge
