@@ -53,12 +53,13 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {  // 'Deploy with Docker Compose'라는 이름의 단계를 정의합니다. 이 단계에서는 Docker Compose를 사용한 배포가 이루어집니다.
+        stage('Deploy with Docker Compose') { 
             steps {
                 script {
                     dir('BackEnd/SpringBootServer') {
-                        sh "docker-compose -f docker-compose-springboot.yml --env-file src/main/resources/backend-env/.env-springboot down --volumes" // 'docker-compose down --volumes' 명령을 실행하여, 이전에 실행되었던 모든 컨테이너를 종료하고 관련된 볼륨을 삭제합니다. 이는 환경을 깨끗하게 정리하여 다음 배포가 깔끔한 상태에서 이루어질 수 있도록 합니다.
-                        sh "docker-compose -f docker-compose-springboot.yml --env-file src/main/resources/backend-env/.env-springboot up --build -d" // 'docker-compose up --build -d' 명령을 실행하여, Docker Compose 파일에 정의된 모든 서비스를 빌드하고 백그라운드 모드로 실행합니다. '--build' 옵션은 이미지가 새로운 코드로 재빌드되도록 합니다.
+                        echo "Blue/Green 전략을 이용한 배포 진행"
+                        sh "chmod +x deploy_blue_green.sh"
+                        sh "./deploy_blue_green.sh"
                     }
                 }
             }
