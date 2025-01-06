@@ -1,6 +1,7 @@
 server:
   https-url: ${SERVER_HTTPS_URL}
   fast-api-url: ${SERVER_FAST_API_URL}
+  port: ${SPRING_BOOT_PORT}
 
 spring:
   servlet:
