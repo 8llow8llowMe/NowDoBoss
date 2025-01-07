@@ -5,7 +5,7 @@ ENV_FILE="src/main/resources/backend-env/.env-springboot"
 NGINX_CONF_PATH="../CICD/Nginx/default.conf"
 
 # 현재 실행 중인 환경 확인
-CURRENT_ENV=$(docker ps --filter "name=nowdoboss-backend-springboot-blue" --filter "status=running" --format "{{.Names}}" | grep blue && echo "blue" || echo "green")
+CURRENT_ENV=$(docker ps --filter "name=nowdoboss-backend-springboot-blue" --filter "status=running" --format "{{.Names}}" | grep blue | head -n 1 && echo "blue" || echo "green")
 CURRENT_ENV=$(echo "$CURRENT_ENV" | tr -d '\n')  # 줄바꿈 제거
 echo "현재 환경: $CURRENT_ENV"
 
