@@ -7,6 +7,8 @@ NGINX_CONF_PATH="../CICD/Nginx/default.conf"
 # 현재 실행 중인 환경 확인
 CURRENT_ENV=$(docker ps --filter "name=nowdoboss-backend-springboot-blue" --filter "status=running" --format "{{.Names}}" | grep blue && echo "blue" || echo "green")
 
+echo "현재 환경: $CURRENT_ENV"
+
 if [ "$CURRENT_ENV" == "blue" ]; then
     echo "현재 Blue 환경이 작동 중입니다. Green 환경으로 전환합니다."
 
