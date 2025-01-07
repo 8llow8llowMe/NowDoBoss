@@ -2,35 +2,43 @@
 
 DOCKER_COMPOSE_FILE="docker-compose-springboot.yml"
 ENV_FILE="src/main/resources/backend-env/.env-springboot"
+NGINX_CONF_PATH="../CICD/Nginx/default.conf"
 
 # 현재 실행 중인 환경 확인
 CURRENT_ENV=$(docker ps --filter "name=nowdoboss-backend-springboot-blue" --filter "status=running" --format "{{.Names}}" | grep blue && echo "blue" || echo "green")
 
 if [ "$CURRENT_ENV" == "blue" ]; then
-    echo "Blue 환경 작동 중입니다. Green 환경으로 배포합니다."
+    echo "현재 Blue 환경이 작동 중입니다. Green 환경으로 전환합니다."
 
-    # Green 배포
+    # Green 환경 배포
     docker-compose -f $DOCKER_COMPOSE_FILE --env-file $ENV_FILE up --build -d nowdoboss_springboot_green_service
 
-    echo "Green 환경으로 배포 완료. 기존 Blue 환경 종료 중..."
-    
-    # Blue 환경 종료
+    # Nginx 설정 업데이트
+    sed -i 's/nowdoboss-backend-springboot-blue:8081/nowdoboss-backend-springboot-green:8082/' $NGINX_CONF_PATH
+
+    # Nginx 재시작
+    docker exec nowdoboss-frontend nginx -s reload
+
+    # Blue 환경 중지
     docker stop nowdoboss-backend-springboot-blue || true
     docker rm nowdoboss-backend-springboot-blue || true
 
-    echo "Blue 환경 종료 완료."
+    echo "Green 환경 배포 및 Nginx 설정 업데이트 완료."
 else
-    echo "Green 환경 작동 중입니다. Blue 환경으로 배포합니다."
+    echo "현재 Green 환경이 작동 중입니다. Blue 환경으로 전환합니다."
 
-    # Blue 배포
+    # Blue 환경 배포
     docker-compose -f $DOCKER_COMPOSE_FILE --env-file $ENV_FILE up --build -d nowdoboss_springboot_blue_service
 
+    # Nginx 설정 업데이트
+    sed -i 's/nowdoboss-backend-springboot-green:8082/nowdoboss-backend-springboot-blue:8081/' $NGINX_CONF_PATH
 
-    echo "Blue 환경으로 배포 완료. 기존 Green 환경 종료 중..."
-    
-    # Green 환경 종료
+    # Nginx 재시작
+    docker exec nowdoboss-frontend nginx -s reload
+
+    # Green 환경 중지
     docker stop nowdoboss-backend-springboot-green || true
     docker rm nowdoboss-backend-springboot-green || true
 
-    echo "Green 환경 종료 완료."
+    echo "Blue 환경 배포 및 Nginx 설정 업데이트 완료."
 fi
