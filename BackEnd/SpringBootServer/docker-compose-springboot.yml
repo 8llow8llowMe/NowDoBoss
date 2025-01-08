@@ -1,5 +1,6 @@
 x-spring-boot-environment: &spring_boot_environment
   TZ: Asia/Seoul
+  SPRING_BOOT_PROT: ${SPRING_BOOT_PORT}
   SERVER_HTTPS_URL: ${SERVER_HTTPS_URL}
   SERVER_FAST_API_URL: ${SERVER_FAST_API_URL}
   MYSQL_DB_URL: ${MYSQL_DB_URL}
@@ -35,10 +36,9 @@ services:
     image: nowdoboss-backend-springboot-img:blue
     restart: always
     ports:
-      - "${SPRING_BOOT_BLUE_PORT}:${SPRING_BOOT_BLUE_PORT}"
+      - "${SPRING_BOOT_BLUE_PORT}:${SPRING_BOOT_PORT}"
     environment:
       <<: *spring_boot_environment
-      SPRING_BOOT_PORT: ${SPRING_BOOT_BLUE_PORT}
     networks:
       - nowdoboss-net
 
@@ -50,10 +50,9 @@ services:
     image: nowdoboss-backend-springboot-img:green
     restart: always
     ports:
-      - "${SPRING_BOOT_GREEN_PORT}:${SPRING_BOOT_GREEN_PORT}"
+      - "${SPRING_BOOT_GREEN_PORT}:${SPRING_BOOT_PORT}"
     environment:
       <<: *spring_boot_environment
-      SPRING_BOOT_PORT: ${SPRING_BOOT_GREEN_PORT}
     networks:
       - nowdoboss-net
 
