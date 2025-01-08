@@ -40,9 +40,7 @@ services:
     environment:
       <<: *spring_boot_environment
     networks:
-      nowdoboss-net:
-        aliases:
-          - nowdoboss-backend-springboot   # Blue가 running 시점에 alias를 가짐
+      - nowdoboss-net
 
   nowdoboss_springboot_green_service:
     container_name: nowdoboss-backend-springboot-green
@@ -56,9 +54,8 @@ services:
     environment:
       <<: *spring_boot_environment
     networks:
-      nowdoboss-net:
-        aliases: []   # 초기엔 alias 없음
-        
+      - nowdoboss-net
+
 networks:
   nowdoboss-net:
     name: nowdoboss-net
