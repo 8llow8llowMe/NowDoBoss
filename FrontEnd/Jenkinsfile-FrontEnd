@@ -64,12 +64,12 @@ pipeline {
                         }
 
                         sh """
-                            docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend stop nowdoboss_frontend_service
-                            docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend rm -f nowdoboss_frontend_service
-                        """
+                            # 1) 먼저 docker-compose로 --no-cache 빌드만 수행
+                            docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend build --no-cache nowdoboss_react_service nowdoboss_frontend_service
 
-                        // React 빌드 및 Nginx 서비스 시작
-                        sh "docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend up --build -d nowdoboss_react_service nowdoboss_frontend_service"
+                            # 2) 빌드가 끝나면 up -d로 컨테이너 실행
+                            docker-compose -f docker-compose-frontend.yml --env-file frontend-env/.env-frontend up -d nowdoboss_react_service nowdoboss_frontend_service
+                        """
                     }
                 }
             }
@@ -78,7 +78,7 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    // React 빌드 컨테이너 정리ss
+                    // React 빌드 컨테이너 정리
                     sh "docker stop nowdoboss-react || true"
                     sh "docker rm nowdoboss-react || true"
                 }
