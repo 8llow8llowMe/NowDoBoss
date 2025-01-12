@@ -1,5 +1,5 @@
 import { CookiesProvider } from 'react-cookie'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import GlobalStyles from '@src/GlobalStyles.tsx'
 import MainPage from '@src/pages/MainPage'
 import SignUpPage from '@src/pages/SignUpPage'
@@ -29,6 +29,7 @@ import SimulationReportPage from '@src/pages/SimulationReportPage'
 import SimulationReportComparePage from '@src/pages/SimulationReportComparePage'
 import ChattingPage from '@src/pages/ChattingPage'
 import CommunityListPage from '@src/pages/CommunityListPage'
+import userStore, { getCookie } from '@src/stores/userStore'
 import { useEffect } from 'react'
 import ChattingListPage from '@src/pages/ChattingListPage'
 import ChattingDetailPage from '@src/pages/ChattingDetailPage'
@@ -53,6 +54,9 @@ declare global {
 export const confetti = new JSConfetti()
 
 function App() {
+  const { setIsLogin } = userStore();
+  const location = useLocation(); // 현재 URL 위치 가져오기
+  
   function setScreenSize() {
     const vh = window.innerHeight * 0.01
     document.documentElement.style.setProperty('--vh', `${vh}px`)
@@ -62,7 +66,16 @@ function App() {
     setScreenSize()
     window.addEventListener('resize', setScreenSize)
     return () => window.removeEventListener('resize', setScreenSize)
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const accessToken = getCookie('accessToken')
+    if (!accessToken) {
+      // 로컬스토리지의 memberInfo 삭제
+      localStorage.removeItem('memberInfo')
+      localStorage.removeItem('isLogIn')
+    } 
+  }, [location.pathname]) // location.pathname이 변경될 때마다 실행
 
   return (
     <CookiesProvider>
