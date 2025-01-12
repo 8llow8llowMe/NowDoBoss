@@ -29,7 +29,7 @@ import SimulationReportPage from '@src/pages/SimulationReportPage'
 import SimulationReportComparePage from '@src/pages/SimulationReportComparePage'
 import ChattingPage from '@src/pages/ChattingPage'
 import CommunityListPage from '@src/pages/CommunityListPage'
-import userStore, { getCookie } from '@src/stores/userStore'
+import { getCookie } from '@src/stores/userStore'
 import { useEffect } from 'react'
 import ChattingListPage from '@src/pages/ChattingListPage'
 import ChattingDetailPage from '@src/pages/ChattingDetailPage'
@@ -54,7 +54,6 @@ declare global {
 export const confetti = new JSConfetti()
 
 function App() {
-  const { setIsLogin } = userStore();
   const location = useLocation(); // 현재 URL 위치 가져오기
   
   function setScreenSize() {
