@@ -70,5 +70,5 @@ RUN sed -i '1iload_module /usr/lib/nginx/modules/ngx_http_geoip2_module.so;' /et
 COPY --from=react_builder /app/dist /usr/share/nginx/html
 
 # nginx 설정 파일을 컨테이너의 적절한 위치에 복사
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY CICD/Nginx/nginx.conf /etc/nginx/nginx.conf
+COPY CICD/Nginx/default.conf /etc/nginx/conf.d/default.conf
