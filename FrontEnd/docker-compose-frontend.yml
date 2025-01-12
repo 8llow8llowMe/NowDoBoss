@@ -1,15 +1,4 @@
 services:
-  # React 빌드 서비스
-  nowdoboss_react_service:
-    container_name: nowdoboss-react
-    build:
-      context: .
-      dockerfile: React.Dockerfile
-    image: nowdoboss-react-img
-    volumes:
-      - nowdoboss_react_build:/usr/src/app/dist  # 빌드된 React 정적 파일을 로컬 볼륨에 저장합니다.
-    entrypoint: ["true"]  # 컨테이너가 빌드된 후 바로 종료되도록 설정합니다. 빌드만 수행하기 때문에 애플리케이션을 실행하지 않습니다.
-
   # Nginx WebServer 서비스
   nowdoboss_frontend_service:
     container_name: nowdoboss-frontend
@@ -19,7 +8,6 @@ services:
     image: nowdoboss-frontend-img
     restart: always
     volumes:
-      - nowdoboss_react_build:/usr/share/nginx/html  # 빌드된 정적 파일을 Nginx가 서빙할 경로에 마운트합니다.
       - ./certbot/conf:/etc/letsencrypt  # Certbot이 사용하는 SSL 인증서 경로를 Nginx와 공유합니다.
       - ./certbot/www:/var/www/certbot  # Certbot 인증 파일을 저장할 경로를 Nginx와 공유합니다.
       - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스를 공유합니다.
@@ -28,9 +16,6 @@ services:
       - "${NGINX_HTTPS_PORT}:${NGINX_HTTPS_PORT}"  # Nginx의 HTTPS 트래픽을 포트
     networks:
       - nowdoboss-net  # 애플리케이션 서비스들이 같은 네트워크에 연결되도록 설정합니다.
-    depends_on:
-      - nowdoboss_react_service  # React 빌드가 완료된 후 Nginx가 실행되도록 의존성을 설정합니다.
-      # - geoip_service  # GeoIP 데이터가 업데이트된 후 Nginx 실행되도록 의존성을 설정합니다.
     command: "/bin/sh -c 'nginx -g \"daemon off;\"'"  # Nginx를 포그라운드에서 실행하여 컨테이너가 종료되지 않도록 합니다.
 
   # Certbot SSL 관리 서비스
@@ -59,7 +44,6 @@ services:
       - geoip_data:/usr/share/GeoIP  # GeoIP 데이터베이스 공유
 
 volumes:
-  nowdoboss_react_build:  # React 빌드 결과를 저장할 공유 볼륨
   geoip_data: # GeoIP 데이터 베이스 공유 볼륨
 
 networks:
