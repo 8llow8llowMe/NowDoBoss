@@ -30,15 +30,18 @@ RUN cd /opt \
 FROM node:20.15.0 AS react_builder
 WORKDIR /app
 
-# package.json, lock 파일만 먼저 복사 후 npm install
-COPY package*.json ./
+# package.json, lock 파일 복사
+# ==> FrontEnd/package*.json
+COPY FrontEnd/package*.json ./
+
 RUN npm install
 
-# 나머지 소스 복사 (vite.config.js, tsconfig, src/ 등등)
-COPY . .
+# 소스코드 전체 복사
+# ==> FrontEnd/...(src, vite.config 등)
+COPY FrontEnd/ ./
 
 # 서브모듈에서 환경변수 파일 복사
-COPY frontend-env/.env-react-vite-dev .env
+COPY FrontEnd/frontend-env/.env-react-vite-dev .env
 
 # 프론트엔드 코드 빌드
 RUN npm run build

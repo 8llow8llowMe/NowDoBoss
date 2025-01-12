@@ -3,8 +3,8 @@ services:
   nowdoboss_frontend_service:
     container_name: nowdoboss-frontend
     build:
-      context: ../CICD/Nginx
-      dockerfile: Nginx.Dockerfile
+      context: ..
+      dockerfile: CICD/Nginx/Nginx.Dockerfile
     image: nowdoboss-frontend-img
     restart: always
     volumes:
