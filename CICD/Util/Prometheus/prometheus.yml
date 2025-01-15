@@ -6,3 +6,9 @@ scrape_configs:
     metrics_path: '/actuator/prometheus' # 메트릭을 가져올 엔드포인트
     static_configs:
       - targets: ['nowdoboss-backend-springboot:8080']  # Spring Boot 애플리케이션 컨테이너 이름과 포트
+
+    # MySQL Exporter 메트릭 수집
+  - job_name: 'mysql_exporter'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['mysql_exporter:9104']  # MySQL Exporter 컨테이너 이름과 포트
