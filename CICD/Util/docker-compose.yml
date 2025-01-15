@@ -210,8 +210,7 @@ services:
     ports:
       - "${MYSQL_EXPORTER_PORT}:${MYSQL_EXPORTER_PORT}" # MySQL Exporter의 기본 포트
     command:
-      - "--mysqld.username=${MYSQL_EXPORTER_USERNAME}"
-      - "--mysqld.password=${MYSQL_EXPORTER_PASSWORD}"
+      - "--mysqld.username=${MYSQL_EXPORTER_USER}:${MYSQL_EXPORTER_PASSWORD}"
       - "--mysqld.address=${MYSQL_EXPORTER_HOST}:${MYSQL_EXPORTER_PORT}"
     depends_on:
       - mysql_service
