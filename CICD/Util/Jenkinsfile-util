@@ -93,6 +93,10 @@ pipeline {
                     def isGrafanaRunning = sh(script: "docker ps --filter name=grafana --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
                     echo "Grafana 실행 상태: ${isGrafanaRunning}"
 
+                    echo "MySQL Exporter 컨테이너 실행 상태 확인 중..."
+                    def isMySqlExporterRunning = sh(script: "docker ps --filter name=mysql_exporter --filter status=running --format '{{.Names}}'", returnStdout: true).trim()
+                    echo "MySQL Exporter 실행 상태: ${isMySqlExporterRunning}"
+
                     // if (isSonarQubeRunning == "") {
                     //     echo "sonarqube 관련 dockerfile 빌드..."
                     //     sh "docker-compose -f ./CICD/Util/docker-compose.yml up --build -d sonarqube"
@@ -100,12 +104,12 @@ pipeline {
 
                     dir('CICD/Util') {
                         if (isMySqlRunning == "") {
-                            echo "mysql 관련 dockerfile 빌드..."
+                            echo "MySQL 관련 dockerfile 빌드..."
                             sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d mysql_service"
                         }
 
                         if (isRedisRunning == "") {
-                            echo "redis 관련 dockerfile 빌드..."
+                            echo "Redis 관련 dockerfile 빌드..."
                             sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d nowdoboss_redis_service"
                         }
 
@@ -130,14 +134,17 @@ pipeline {
                             sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d fail2ban_service"
                         }
 
-                        if (isPrometheusRunning == "") {
-                            echo "Prometheus 관련 dockerfile 빌드..."
-                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d prometheus_service"
-                        }
+                        echo "Prometheus 관련 dockerfile 빌드..."
+                        sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d prometheus_service"
 
                         if (isGrafanaRunning == "") {
-                            echo "Prometheus 관련 dockerfile 빌드..."
+                            echo "Grafana 관련 dockerfile 빌드..."
                             sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d grafana_service"
+                        }
+
+                        if (isMySqlExporterRunning == "") {
+                            echo "MySQL_Exporter 관련 dockerfile 빌드..."
+                            sh "docker-compose -f docker-compose.yml --env-file infra-env/.env-infra up --build -d mysql_exporter_service"
                         }
                     }
                 }
