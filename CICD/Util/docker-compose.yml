@@ -205,12 +205,14 @@ services:
   # MySQL Exporter 설정
   mysql_exporter_service:
     image: prom/mysqld-exporter:latest
-    container_name: mysql_exporter
+    container_name: mysql-exporter
     restart: always
     ports:
       - "${MYSQL_EXPORTER_PORT}:${MYSQL_EXPORTER_PORT}" # MySQL Exporter의 기본 포트
-    environment:
-      DATA_SOURCE_NAME: "${MYSQL_EXPORTER_USER}:${MYSQL_EXPORTER_PASSWORD}@(${MYSQL_EXPORTER_HOST}:${MYSQL_PORT})/"
+    command:
+      - "--mysqld.username=${MYSQL_EXPORTER_USERNAME}"
+      - "--mysqld.password=${MYSQL_EXPORTER_PASSWORD}"
+      - "--mysqld.address=${MYSQL_EXPORTER_HOST}:${MYSQL_EXPORTER_PORT}"
     depends_on:
       - mysql_service
     networks:
