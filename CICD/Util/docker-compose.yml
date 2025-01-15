@@ -203,17 +203,17 @@ services:
       - nowdoboss-net  # Prometheus와 같은 네트워크 사용
 
   # MySQL Exporter 설정
-  mysql_exporter:
+  mysql_exporter_service:
     image: bitnami/mysqld-exporter:latest
     container_name: mysql_exporter
     restart: always
     port:
-      - "9104:9104"
+      - "${MYSQL_EXPORTER_PORT}:${MYSQL_EXPORTER_PORT}"
     environment:
-      MYSQL_USER: grafana_user
-      MYSQL_PASSWORD: 8llow8llowme
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
     networks:
       - nowdoboss-net
 
