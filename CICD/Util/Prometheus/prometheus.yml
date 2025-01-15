@@ -11,4 +11,4 @@ scrape_configs:
   - job_name: 'mysql_exporter'
     metrics_path: '/metrics'
     static_configs:
-      - targets: ['mysql_exporter:9104']  # MySQL Exporter 컨테이너 이름과 포트
+      - targets: ['mysql-exporter:9104']  # MySQL Exporter 컨테이너 이름과 포트
