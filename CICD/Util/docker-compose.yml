@@ -204,16 +204,15 @@ services:
 
   # MySQL Exporter 설정
   mysql_exporter_service:
-    image: bitnami/mysqld-exporter:latest
+    image: prom/mysqld-exporter:latest
     container_name: mysql_exporter
     restart: always
     ports:
-      - "${MYSQL_EXPORTER_PORT}:${MYSQL_EXPORTER_PORT}"
+      - "${MYSQL_EXPORTER_PORT}:${MYSQL_EXPORTER_PORT}" # MySQL Exporter의 기본 포트
     environment:
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_PORT: ${MYSQL_PORT}
+      DATA_SOURCE_NAME: "${MYSQL_EXPORTER_USER}:${MYSQL_EXPORTER_PASSWORD}@(${MYSQL_EXPORTER_HOST}:${MYSQL_PORT})/"
+    depends_on:
+      - mysql_service
     networks:
       - nowdoboss-net
 
