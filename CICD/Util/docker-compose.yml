@@ -207,7 +207,7 @@ services:
     image: bitnami/mysqld-exporter:latest
     container_name: mysql_exporter
     restart: always
-    port:
+    ports:
       - "${MYSQL_EXPORTER_PORT}:${MYSQL_EXPORTER_PORT}"
     environment:
       MYSQL_USER: ${MYSQL_USER}
