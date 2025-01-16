@@ -7,3 +7,6 @@
 [submodule "FrontEnd/frontend-env"]
 	path = FrontEnd/frontend-env
 	url = https://github.com/8llow8llowMe/NowDoBoss-env.git
+[submodule "BackEnd/FastApiServer/backend-env"]
+	path = BackEnd/FastApiServer/backend-env
+	url = https://github.com/8llow8llowMe/NowDoBoss-env.git
