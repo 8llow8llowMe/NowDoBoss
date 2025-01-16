@@ -2,20 +2,23 @@ from pymongo import MongoClient
 import pandas as pd
 from pyspark.sql import Row
 from motor.motor_asyncio import AsyncIOMotorClient
+import os
 
-# 연결에 필요한 정보
-authenticationDatabase = "admin"
-username = "8llow8llowme"
-password = "8llow8llowme"
-host = "192.168.0.25"
-port = 27017
+# MongoDB 환경변수 읽기
+MONGO_USERNAME = os.getenv("MONGO_DB_USERNAME")
+MONGO_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
+MONGO_HOST = os.getenv("MONGO_DB_HOST")
+MONGO_PORT = os.getenv("MONGO_DB_PORT")
+MONGO_DB_AUTHENTICATION_DATABASE = os.getenv("MONGO_DB_AUTHENTICATION_DATABASE")
+MONGO_DB_DATABASE = os.getenv("MONGO_DB_DATABASE")
 
 # MongoDB 연결 URL 설정
-url = f"mongodb://{username}:{password}@{host}:{port}/{authenticationDatabase}"
+MONGO_URL = f"mongodb://{MONGO_DB_USERNAME}:{MONGO_DB_PASSWORD}@{MONGO_DB_HOST}:{MONGO_DB_PORT}/{MONGO_DB_AUTHENTICATION_DATABASE}"
 
 # AsyncIOMotorClient를 사용하여 MongoDB에 연결
-client = AsyncIOMotorClient(url)
-db = client.nowdoboss  # 데이터베이스 선택
+client = AsyncIOMotorClient(MONGO_URL)
+
+db = client[MONGO_DB_DATABASE]  # 환경변수로 설정된 데이터베이스 이름을 사용
 
 async def get_mongodb_data():
     collection = db['data']
