@@ -7,8 +7,8 @@ services:
     image: nowdoboss-backend-fastapi-img 
     restart: always
     ports:
-      - "8000:8000"
-      - "50051:50051"
+      - "${FAST_API_PORT}:${FAST_API_PORT}"
+      - "${FAST_API_GRPC_PORT}:${FAST_API_GRPC_PORT}"
     networks:
       - nowdoboss-net
 
