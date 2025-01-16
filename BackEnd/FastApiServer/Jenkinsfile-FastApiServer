@@ -42,7 +42,7 @@ pipeline {
                                         execCommand: '''
                                             cd develop/infra/jenkins/BackEnd/FastApiServer
                                             chmod -R 755 .
-                                            docker-compose -f docker-compose-fastapi.yml up --build -d
+                                            docker-compose -f docker-compose-fastapi.yml --env-file backend-env/.env-fastapi up --build -d
                                         ''' // Sub Server에서 실행할 명령어
                                     )
                                 ],
