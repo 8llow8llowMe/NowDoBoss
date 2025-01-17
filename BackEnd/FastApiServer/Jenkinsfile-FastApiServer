@@ -38,6 +38,7 @@ pipeline {
                                 transfers: [
                                     sshTransfer(
                                         sourceFiles: 'BackEnd/FastApiServer/**/*', // Sub Server로 전송할 파일
+                                        excludes: '', // 제외 파일 없음 (해당 코드 추가함으로써 환경변수 -> .env 파일도 같이 보내짐)
                                         remoteDirectory: 'develop/infra/jenkins', // Sub Server에서 작업할 디렉터리
                                         execCommand: '''
                                             cd develop/infra/jenkins/BackEnd/FastApiServer
