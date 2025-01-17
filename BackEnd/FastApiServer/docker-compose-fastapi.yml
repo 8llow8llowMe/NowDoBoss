@@ -1,14 +1,21 @@
 services:
   nowdoboss_backend_fastapi_service:
     container_name: nowdoboss-backend-fastapi
-    build: 
+    build:
       context: .
       dockerfile: FastApiServer.Dockerfile
-    image: nowdoboss-backend-fastapi-img 
+    image: nowdoboss-backend-fastapi-img
     restart: always
     ports:
-      - "${FAST_API_PORT}:${FAST_API_PORT}"
-      - "${FAST_API_GRPC_PORT}:${FAST_API_GRPC_PORT}"
+      - '${FAST_API_PORT}:${FAST_API_PORT}'
+      - '${FAST_API_GRPC_PORT}:${FAST_API_GRPC_PORT}'
+    environment:
+      MONGO_DB_HOST: ${MONGO_DB_HOST}
+      MONGO_DB_DATABASE: ${MONGO_DB_DATABASE}
+      MONGO_DB_USERNAME: ${MONGO_DB_USERNAME}
+      MONGO_DB_PASSWORD: ${MONGO_DB_PASSWORD}
+      MONGO_DB_AUTHENTICATION_DATABASE: ${MONGO_DB_AUTHENTICATION_DATABASE}
+      MONGO_DB_PORT: ${MONGO_DB_PORT}
     networks:
       - nowdoboss-net
 
