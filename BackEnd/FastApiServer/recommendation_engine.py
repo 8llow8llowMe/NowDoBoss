@@ -17,14 +17,14 @@ cached_als_model = None  # ALS 모델 캐싱
 
 def load_commercial_data(spark):
     """
-    HDFS 상권 데이터를 한 번 로드한 후 메모리에 캐싱합니다.
+    HDFS 상권 데이터를 한 번 로드한 후 Spark DataFrame으로 캐싱합니다.
     """
     global cached_commercial_data
     if cached_commercial_data is None:
         print("HDFS 상권 데이터 로드 및 캐싱 중...")
-        # HDFS 데이터 로드 및 Pandas DataFrame으로 변환
-        df = spark.read.csv(COMMERCIAL_DATA_PATH, header=True, inferSchema=True).toPandas()
-        cached_commercial_data = df
+        # HDFS 데이터 로드 및 Spark DataFrame 유지
+        cached_commercial_data = spark.read.csv(COMMERCIAL_DATA_PATH, header=True, inferSchema=True)
+        cached_commercial_data.cache()
         print("HDFS 상권 데이터 캐싱 완료")
     return cached_commercial_data
 
@@ -79,6 +79,7 @@ async def recommend(spark, user_id, background_tasks):
             col("recommendation.commercialCode").alias("commercialCode"),
             col("recommendation.rating").alias("rating")
         )
+        # commercial_df는 Spark DataFrame이므로 join 가능
         result_df = recommendations_df.join(commercial_df, on="commercialCode", how="inner").orderBy(desc("rating"))
 
         # 결과를 JSON 형식으로 반환
