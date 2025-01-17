@@ -5,10 +5,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 
 # MongoDB 환경변수 읽기
-MONGO_USERNAME = os.getenv("MONGO_DB_USERNAME")
-MONGO_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
-MONGO_HOST = os.getenv("MONGO_DB_HOST")
-MONGO_PORT = os.getenv("MONGO_DB_PORT")
+MONGO_DB_USERNAME = os.getenv("MONGO_DB_USERNAME")
+MONGO_DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
+MONGO_DB_HOST = os.getenv("MONGO_DB_HOST")
+MONGO_DB_PORT = os.getenv("MONGO_DB_PORT")
 MONGO_DB_AUTHENTICATION_DATABASE = os.getenv("MONGO_DB_AUTHENTICATION_DATABASE")
 MONGO_DB_DATABASE = os.getenv("MONGO_DB_DATABASE")
 
