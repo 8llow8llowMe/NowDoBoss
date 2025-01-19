@@ -1,12 +1,17 @@
-from pydantic import BaseModel
+# server.py
+
 from fastapi import FastAPI, HTTPException, BackgroundTasks
+from pydantic import BaseModel
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 from pyspark.sql import SparkSession
 import recommendation_engine
+from offline_training import offline_train_job
 
 app = FastAPI()
 
-# 전역 SparkSession
 spark = None
+scheduler = BackgroundScheduler()
 
 class UserRequest(BaseModel):
     userId: int
@@ -14,19 +19,39 @@ class UserRequest(BaseModel):
 @app.on_event("startup")
 def startup_event():
     """
-    애플리케이션 시작 시 Spark 세션 초기화
+    FastAPI 애플리케이션 시작 시점:
+    1) 실시간 추론용 Spark 세션 생성
+    2) APScheduler 시작 & 매일 새벽 4시 오프라인 학습 스케줄 등록
     """
     global spark
     spark = initialize_spark_session()
     print("Spark 세션 초기화 완료")
 
+    # APScheduler 시작
+    scheduler.start()
+
+    # 매일 새벽 4시에 offline_train_job() 실행
+    # CronTrigger 포맷: second minute hour day_of_month month day_of_week
+    # 여기서는 0 4 * * * -> 새벽 4시 정각
+    trigger = CronTrigger(hour=4, minute=0)
+    scheduler.add_job(
+        offline_train_job,  # offline_training.py 에서 import
+        trigger=trigger,
+        id="offline_train_job",
+        replace_existing=True
+    )
+    print("매일 새벽 4시에 offline_train_job 스케줄링 완료")
+
 @app.on_event("shutdown")
 def shutdown_event():
     """
-    애플리케이션 종료 시 Spark 세션 종료
-    - 비동기 백그라운드 작업이 남아있다면 충돌이 날 수 있음.
-      서버가 완전히 종료될 타이밍에만 stop() 되도록 주의.
+    FastAPI 애플리케이션 종료 시점:
+    1) APScheduler 종료
+    2) Spark 세션 stop
     """
+    scheduler.shutdown(wait=False)
+    print("스케줄러 중지 완료")
+
     global spark
     if spark:
         spark.stop()
@@ -35,7 +60,7 @@ def shutdown_event():
 @app.post("/recommend")
 async def recommend_commercial_areas(request: UserRequest, background_tasks: BackgroundTasks):
     """
-    사용자 ID 기반으로 상권 추천 데이터를 생성합니다.
+    사용자 ID 기반 상권 추천 (이미 오프라인 학습된 모델 사용)
     """
     print(f"추천 요청 수신: {request}")
     try:
@@ -47,35 +72,36 @@ async def recommend_commercial_areas(request: UserRequest, background_tasks: Bac
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/test-hdfs")
-async def test_hdfs_connection():
+def test_hdfs_connection():
     """
-    HDFS 연결 테스트 및 데이터 확인.
+    HDFS 상의 Parquet 파일 테스트
     """
     try:
-        # 이미 Parquet로 변경했다고 가정
         df = spark.read.parquet("hdfs://master1:9000/data/commercial_data.parquet")
-        df.show(10)
-        return {"status": "success", "data": df.head(10)}
+        df.show(5)
+        return {"status": "success", "data": df.head(5)}
     except Exception as e:
         print(f"에러 발생: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 def initialize_spark_session():
     """
-    Spark 세션 초기화
+    실시간 추론용 Spark 세션
+    - 라즈베리파이 환경이라면 메모리를 더 줄이는 것도 가능
     """
     return (
         SparkSession.builder
         .appName("RecommendationSystem")
         .master("spark://master1:7077")
-        .config("spark.executor.memory", "4g")
-        .config("spark.driver.memory", "2g")
-        .config("spark.executor.cores", "2")
-        .config("spark.sql.shuffle.partitions", "16")  # 파티션 수 조정
-        .config("spark.sql.broadcastTimeout", "7200")  # 브로드캐스트 타임아웃 (초)
+        .config("spark.executor.memory", "1g")
+        .config("spark.driver.memory", "1g")
+        .config("spark.executor.cores", "1")
+        .config("spark.sql.shuffle.partitions", "8")
+        .config("spark.sql.broadcastTimeout", "7200")
         .getOrCreate()
     )
 
 if __name__ == "__main__":
     import uvicorn
+    # FastAPI + APScheduler 동작
     uvicorn.run(app, host="0.0.0.0", port=8000)

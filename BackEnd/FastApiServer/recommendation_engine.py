@@ -1,18 +1,20 @@
+# recommendation_engine.py
+
 from pyspark.sql.functions import col, explode, desc, lit, when
-from pyspark.ml.recommendation import ALS, ALSModel
+from pyspark.ml.recommendation import ALSModel
 import mongoDB
 import pandas as pd
 from pyspark.sql.utils import AnalysisException
 
-CSV_PATH = "hdfs://master1:9000/data/commercial_data.csv"     # CSV 파일
+CSV_PATH = "hdfs://master1:9000/data/commercial_data.csv"
 PARQUET_PATH = "hdfs://master1:9000/data/commercial_data.parquet"
 MODEL_PATH = "hdfs://master1:9000/models/recommendation_model"
 
 ACTION_WEIGHTS = {"click": 2, "search": 4, "analysis": 7, "save": 10}
 
-# 전역 캐시 변수
+# 전역 캐시
 cached_commercial_data = None
-cached_als_model = None  # ALS 모델 캐싱
+cached_als_model = None  # 오프라인에서 이미 학습된 모델
 
 def path_exists(spark, path):
     try:
@@ -24,36 +26,40 @@ def path_exists(spark, path):
         raise ae
 
 def load_commercial_data(spark):
+    """
+    상권 데이터를 Parquet에서 로드 (없으면 CSV→Parquet 변환)
+    """
     global cached_commercial_data
     if cached_commercial_data is not None:
         return cached_commercial_data
 
-    # Parquet 파일 유무 확인
     if not path_exists(spark, PARQUET_PATH):
-        print(f"[load_commercial_data] Parquet 파일이 없어 CSV({CSV_PATH})에서 변환을 시작합니다.")
+        print(f"[load_commercial_data] Parquet 파일이 없어 CSV({CSV_PATH})에서 변환 중...")
         df = spark.read.csv(CSV_PATH, header=True, inferSchema=True)
         df.write.parquet(PARQUET_PATH)
         print("[load_commercial_data] CSV -> Parquet 변환 완료.")
 
-    print("[load_commercial_data] Parquet 상권 데이터 로드 및 캐싱 중...")
+    print("[load_commercial_data] Parquet 상권 데이터 로드 중...")
     cached_commercial_data = spark.read.parquet(PARQUET_PATH).cache()
-    print("[load_commercial_data] Parquet 상권 데이터 캐싱 완료")
-
+    print("[load_commercial_data] Parquet 상권 데이터 로드 완료")
     return cached_commercial_data
 
 async def recommend(spark, user_id, background_tasks):
+    """
+    사용자 ID 기반 추천 로직 (오프라인 학습 모델 사용)
+    """
     print("추천 로직 시작...")
 
-    # MongoDB에서 사용자 데이터 로드
+    # 1) MongoDB에서 사용자 행동 데이터 로드 (비동기)
     mongo_data = await mongoDB.get_mongodb_data()
     if not mongo_data:
-        print("MongoDB에 사용자 데이터 없음.")
+        print("MongoDB 사용자 데이터 없음.")
         return {"message": "No user data found in MongoDB."}
 
-    # MongoDB -> Spark DataFrame 변환
+    # 2) Spark DataFrame 변환
     user_df = spark.createDataFrame(pd.DataFrame(mongo_data))
 
-    # 사용자 행동 데이터를 가중치로 변환
+    # 3) 행동 가중치 컬럼
     user_df = user_df.withColumn(
         "weight",
         when(col("action") == "click", lit(ACTION_WEIGHTS["click"]))
@@ -63,17 +69,18 @@ async def recommend(spark, user_id, background_tasks):
         .otherwise(lit(1))
     ).select("userId", "commercialCode", "weight")
 
-    # 캐싱된 상권 데이터 가져오기
+    # 4) 상권 데이터 로드
     commercial_df = load_commercial_data(spark)
 
     try:
-        model = await load_or_train_model(spark, user_df)
+        # 5) 오프라인 학습된 모델 불러오기
+        model = await load_offline_model(spark)
 
-        # 특정 사용자에 대한 추천
+        # 6) 특정 사용자에 대한 추천
         user_subset = user_df.filter(col("userId") == user_id)
         recommendations = model.recommendForUserSubset(user_subset, numItems=10)
 
-        # 추천 결과 전개
+        # 7) 추천 결과 전개 + 상권 데이터 조인
         recommendations_df = (
             recommendations
             .withColumn("recommendation", explode("recommendations"))
@@ -83,33 +90,29 @@ async def recommend(spark, user_id, background_tasks):
                 col("recommendation.rating").alias("rating")
             )
         )
-        # 상권 데이터와 조인
         result_df = recommendations_df.join(commercial_df, on="commercialCode", how="inner").orderBy(desc("rating"))
 
-        # 결과가 많지 않을 것이므로 toPandas() 변환
+        # 8) toPandas 변환 후 반환
         result = result_df.toPandas().to_dict(orient="records")
         return {"status": "success", "data": result}
+
     finally:
         print("추천 로직 완료")
 
-async def load_or_train_model(spark, user_df):
+async def load_offline_model(spark):
+    """
+    오프라인 학습된 모델을 캐싱 후 반환.
+    """
     global cached_als_model
-    if cached_als_model is None:
-        try:
-            print("모델 로드 시도...")
-            cached_als_model = ALSModel.load(MODEL_PATH)
-            print("모델 로드 성공")
-        except Exception as e:
-            print(f"모델 로드 실패: {e}. 새로 학습 시작...")
-            als = ALS(
-                maxIter=5,
-                regParam=0.1,
-                userCol="userId",
-                itemCol="commercialCode",
-                ratingCol="weight",
-                coldStartStrategy="drop"
-            )
-            cached_als_model = als.fit(user_df)
-            cached_als_model.save(MODEL_PATH)
-            print("모델 학습 완료 및 저장")
+    if cached_als_model is not None:
+        return cached_als_model
+
+    print("[load_offline_model] 오프라인 학습된 모델 로드 시도...")
+    try:
+        cached_als_model = ALSModel.load(MODEL_PATH)
+        print("[load_offline_model] 모델 로드 성공")
+    except Exception as e:
+        print("[load_offline_model] 모델 로드 실패:", e)
+        raise e  # 모델이 전혀 없으면 추론 불가 -> 500 에러
+
     return cached_als_model
