@@ -1,17 +1,17 @@
 services:
   master1:
-    build: 
+    build:
       context: .
       dockerfile: hd-spark-base.Dockerfile
     container_name: master1
     hostname: master1
     ports:
-      - "9870:9870"    # Hadoop NameNode Web UI
-      - "8088:8088"    # Hadoop ResourceManager Web UI
-      - "19888:19888"  # Hadoop MapReduce JobHistory Server Web UI
-      - "7077:7077"    # Spark Master Port
-      - "8870:8080"    # Spark Master Web UI
-      - "18080:18080"  # Spark History Server
+      - '${HADOOP_NAME_NODE_WEB_UI_PORT}:${HADOOP_NAME_NODE_WEB_UI_PORT}'
+      - '${HADOOP_RESOURCE_MANAGER_WEB_UI_PORT}:${HADOOP_RESOURCE_MANAGER_WEB_UI_PORT}'
+      - '${HADOOP_MAP_REDUCE_JOB_HISTORY_SERVER_WEB_UI_PORT}:${HADOOP_MAP_REDUCE_JOB_HISTORY_SERVER_WEB_UI_PORT}'
+      - '${SPARK_MASTER_PORT}:${SPARK_MASTER_PORT}'
+      - '${SPARK_MASTER_WEB_UI_PORT}:${SPARK_MASTER_WEB_UI_PORT}'
+      - '${SPARK_HISTORY_SERVER_PORT}:${SPARK_HISTORY_SERVER_PORT}'
     volumes:
       - shared_keys:/shared_keys
     networks:
@@ -35,7 +35,7 @@ services:
       "
 
   worker1:
-    build: 
+    build:
       context: .
       dockerfile: hd-spark-base.Dockerfile
     container_name: worker1
@@ -61,7 +61,7 @@ services:
       "
 
   worker2:
-    build: 
+    build:
       context: .
       dockerfile: hd-spark-base.Dockerfile
     container_name: worker2
@@ -87,7 +87,7 @@ services:
       "
 
   worker3:
-    build: 
+    build:
       context: .
       dockerfile: hd-spark-base.Dockerfile
     container_name: worker3
