@@ -1,3 +1,39 @@
+# 공통 명령어 정의
+x-commands:
+  master_command: &master_command >
+    /bin/bash -c "
+    if [ ! -f /setup_completed ]; then
+        echo 'Performing initial setup...';
+        /usr/local/bin/setup-hadoop.sh &&
+        /usr/local/bin/update-hosts.sh &&
+        /usr/local/bin/init-ssh-keys.sh &&
+        /usr/local/bin/collect-ssh-keys.sh 3 &&
+        /usr/local/bin/master/setup-master-hadoop-env.sh &&
+        /usr/local/bin/create-hdfs-log-dir.sh &&
+        touch /setup_completed;
+    else
+        echo 'Skipping initial setup, already completed.';
+    fi;
+    /usr/local/bin/start-master.sh &&
+    /usr/local/bin/start-history-server.sh
+    "
+
+  worker_command: &worker_command >
+    /bin/bash -c "
+    if [ ! -f /setup_completed ]; then
+        echo 'Performing initial setup...';
+        /usr/local/bin/setup-hadoop.sh &&
+        /usr/local/bin/update-hosts.sh &&
+        /usr/local/bin/init-ssh-keys.sh &&
+        /usr/local/bin/collect-ssh-keys.sh 7 &&
+        /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
+        touch /setup_completed;
+    else
+        echo 'Skipping initial setup, already completed.';
+    fi;
+    /usr/local/bin/start-slave.sh
+    "
+
 services:
   master1:
     build:
@@ -16,23 +52,8 @@ services:
       - shared_keys:/shared_keys
     networks:
       nowdoboss-net:
-    command: >
-      /bin/bash -c "
-      if [ ! -f /setup_completed ]; then
-          echo 'Performing initial setup...';
-          /usr/local/bin/setup-hadoop.sh &&
-          /usr/local/bin/update-hosts.sh &&
-          /usr/local/bin/init-ssh-keys.sh &&
-          /usr/local/bin/collect-ssh-keys.sh 3 &&
-          /usr/local/bin/master/setup-master-hadoop-env.sh &&
-          /usr/local/bin/create-hdfs-log-dir.sh &&
-          touch /setup_completed;
-      else
-          echo 'Skipping initial setup, already completed.';
-      fi;
-      /usr/local/bin/start-master.sh &&
-      /usr/local/bin/start-history-server.sh
-      "
+    command:
+      <<: *master_command # 공통 master 명령어 사용
 
   worker1:
     build:
@@ -44,21 +65,8 @@ services:
       - shared_keys:/shared_keys
     networks:
       nowdoboss-net:
-    command: >
-      /bin/bash -c "
-      if [ ! -f /setup_completed ]; then
-          echo 'Performing initial setup...';
-          /usr/local/bin/setup-hadoop.sh &&
-          /usr/local/bin/update-hosts.sh &&
-          /usr/local/bin/init-ssh-keys.sh &&
-          /usr/local/bin/collect-ssh-keys.sh 5 &&
-          /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
-          touch /setup_completed;
-      else
-          echo 'Skipping initial setup, already completed.';
-      fi;
-      /usr/local/bin/start-slave.sh
-      "
+    command:
+      <<: *worker_command # 공통 worker 명령어 사용
 
   worker2:
     build:
@@ -70,21 +78,8 @@ services:
       - shared_keys:/shared_keys
     networks:
       nowdoboss-net:
-    command: >
-      /bin/bash -c "
-      if [ ! -f /setup_completed ]; then
-          echo 'Performing initial setup...';
-          /usr/local/bin/setup-hadoop.sh &&
-          /usr/local/bin/update-hosts.sh &&
-          /usr/local/bin/init-ssh-keys.sh &&
-          /usr/local/bin/collect-ssh-keys.sh 7 &&
-          /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
-          touch /setup_completed;
-      else
-          echo 'Skipping initial setup, already completed.';
-      fi;
-      /usr/local/bin/start-slave.sh
-      "
+    command:
+      <<: *worker_command # 공통 worker 명령어 사용
 
   worker3:
     build:
@@ -96,21 +91,8 @@ services:
       - shared_keys:/shared_keys
     networks:
       nowdoboss-net:
-    command: >
-      /bin/bash -c "
-      if [ ! -f /setup_completed ]; then
-          echo 'Performing initial setup...';
-          /usr/local/bin/setup-hadoop.sh &&
-          /usr/local/bin/update-hosts.sh &&
-          /usr/local/bin/init-ssh-keys.sh &&
-          /usr/local/bin/collect-ssh-keys.sh 7 &&
-          /usr/local/bin/worker/setup-worker-hadoop-env.sh &&
-          touch /setup_completed;
-      else
-          echo 'Skipping initial setup, already completed.';
-      fi;
-      /usr/local/bin/start-slave.sh
-      "
+    command:
+      <<: *worker_command # 공통 worker 명령어 사용
 
 networks:
   nowdoboss-net:
