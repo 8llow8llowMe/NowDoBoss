@@ -10,3 +10,6 @@
 [submodule "BackEnd/FastApiServer/backend-env"]
 	path = BackEnd/FastApiServer/backend-env
 	url = https://github.com/8llow8llowMe/NowDoBoss-env.git
+[submodule "CICD/DataProcessing/data-processing-env"]
+	path = CICD/DataProcessing/data-processing-env
+	url = https://github.com/8llow8llowMe/NowDoBoss-env.git
