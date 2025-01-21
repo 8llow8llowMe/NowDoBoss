@@ -174,7 +174,7 @@ const RealTimeSearchTerms = (props: RealTimeSearchTermsPropsType) => {
       // console.log('Received general update:', data)
     }
 
-    // 3. 그 이후로 실시간 검색어 순위가 10분마다 갱신된 데이터 보내줌
+    // 3. 그 이후로 실시간 검색어 순위가 5분마다 갱신된 데이터 보내줌
     // 'ranking-update' 이벤트 이름으로 백엔드 서버에서 발송한 순위 업데이트 이벤트 처리
     eventSource.addEventListener('ranking-update', (event: MessageEvent) => {
       const data: RankingsResponse = JSON.parse(event.data)
