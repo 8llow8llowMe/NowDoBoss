@@ -58,7 +58,7 @@ pipeline {
 
                                             if [ -z "$isHadoopRunning_master1" ] || [ -z "$isHadoopRunning_worker1" ] || [ -z "$isHadoopRunning_worker2" ] || [ -z "$isHadoopRunning_worker3" ]; then
                                                 echo "하둡 + 스파크 클러스터 빌드중..."
-                                                docker-compose -f docker-compose-hadoop-spark.yml up --build -d
+                                                docker-compose -f docker-compose-hadoop-spark.yml --env-file data-processing-env/.env-data-processing up --build -d
                                             else
                                                 echo "하둡 스파크 클러스터가 이미 실행중입니다!"
                                             fi
