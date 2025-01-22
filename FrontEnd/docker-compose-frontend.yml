@@ -40,12 +40,11 @@ services:
     container_name: geoip
     restart: always
     environment:
-      TZ: ${TZ}
-    environment:
       GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID}
       GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY}
       GEOIPUPDATE_EDITION_IDS: ${GEOIPUPDATE_EDITION_IDS}
       GEOIPUPDATE_FREQUENCY: ${GEOIPUPDATE_FREQUENCY}
+      TZ: ${TZ}
     volumes:
       - geoip_data:/usr/share/GeoIP # GeoIP 데이터베이스 공유
 
