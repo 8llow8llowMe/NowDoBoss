@@ -1,11 +1,10 @@
 # mongoDB.py
-
 from pymongo import MongoClient
 import os
 import pandas as pd
 from motor.motor_asyncio import AsyncIOMotorClient
 
-# .env나 환경변수를 통해 설정
+# 환경변수로 MongoDB 연결 정보 가져오기
 MONGO_DB_USERNAME = os.getenv("MONGO_DB_USERNAME")
 MONGO_DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
 MONGO_DB_HOST = os.getenv("MONGO_DB_HOST")
@@ -15,12 +14,23 @@ MONGO_DB_DATABASE = os.getenv("MONGO_DB_DATABASE")
 
 # 동기 MongoClient -> 오프라인 학습용
 def get_mongodb_data_sync():
+    """
+    오프라인 학습에서 사용하는 동기 함수.
+    여기서 _id 필드를 문자열로 변환해서
+    Spark DataFrame이 ObjectId 타입을 처리 못하는 문제를 해결한다.
+    """
     url = f"mongodb://{MONGO_DB_USERNAME}:{MONGO_DB_PASSWORD}@{MONGO_DB_HOST}:{MONGO_DB_PORT}/{MONGO_DB_AUTHENTICATION_DATABASE}"
     client = MongoClient(url)
     db = client[MONGO_DB_DATABASE]
     collection = db["data"]  # collection 이름
     data = list(collection.find({}))
     client.close()
+
+    # >>> _id를 문자열로 변환 <<<
+    for doc in data:
+        if "_id" in doc:
+            doc["_id"] = str(doc["_id"])
+
     return data
 
 # 비동기 MotorClient -> 실시간 API용
@@ -33,6 +43,10 @@ def get_async_client():
     return client_async
 
 async def get_mongodb_data():
+    """
+    실시간 API에서 사용하는 비동기 함수.
+    이미 _id -> str 변환 로직이 있음.
+    """
     client = get_async_client()
     db = client[MONGO_DB_DATABASE]
     collection = db["data"]
@@ -43,7 +57,7 @@ async def get_mongodb_data():
         doc["_id"] = str(doc["_id"])
     return documents
 
-# 추가 예시 함수
+# 추가 예시 함수들
 async def find_weights(userId: int):
     client = get_async_client()
     db = client[MONGO_DB_DATABASE]
