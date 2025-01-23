@@ -19,9 +19,8 @@ class UserRequest(BaseModel):
 @app.on_event("startup")
 def startup_event():
     """
-    FastAPI 애플리케이션 시작 시점:
     1) 실시간 추론용 Spark 세션 생성
-    2) APScheduler 시작 & 매일 새벽 4시 오프라인 학습 스케줄 등록
+    2) APScheduler 시작 & 매일 새벽 4시 offline_train_job 등록
     """
     global spark
     spark = initialize_spark_session()
@@ -31,11 +30,10 @@ def startup_event():
     scheduler.start()
 
     # 매일 새벽 4시에 offline_train_job() 실행
-    # CronTrigger 포맷: second minute hour day_of_month month day_of_week
-    # 여기서는 0 4 * * * -> 새벽 4시 정각
     trigger = CronTrigger(hour=4, minute=0)
+    # offline_train_job 은 spark://master1:7077 로 새 SparkSession 만드는 함수
     scheduler.add_job(
-        offline_train_job,  # offline_training.py 에서 import
+        offline_train_job,
         trigger=trigger,
         id="offline_train_job",
         replace_existing=True
@@ -45,9 +43,7 @@ def startup_event():
 @app.on_event("shutdown")
 def shutdown_event():
     """
-    FastAPI 애플리케이션 종료 시점:
-    1) APScheduler 종료
-    2) Spark 세션 stop
+    서버 종료 시점: APScheduler 중지 + Spark 세션 stop
     """
     scheduler.shutdown(wait=False)
     print("스케줄러 중지 완료")
@@ -60,7 +56,7 @@ def shutdown_event():
 @app.post("/recommend")
 async def recommend_commercial_areas(request: UserRequest, background_tasks: BackgroundTasks):
     """
-    사용자 ID 기반 상권 추천 (이미 오프라인 학습된 모델 사용)
+    사용자 ID 기반 상권 추천 API
     """
     print(f"추천 요청 수신: {request}")
     try:
@@ -86,8 +82,8 @@ def test_hdfs_connection():
 
 def initialize_spark_session():
     """
-    실시간 추론용 Spark 세션
-    - 라즈베리파이 환경이라면 메모리를 더 줄이는 것도 가능
+    실시간 추론용 SparkSession (작은 메모리/코어 할당)
+    - 만약 master1 호스트가 인식 안 되면 IP로 교체
     """
     return (
         SparkSession.builder
@@ -103,5 +99,4 @@ def initialize_spark_session():
 
 if __name__ == "__main__":
     import uvicorn
-    # FastAPI + APScheduler 동작
     uvicorn.run(app, host="0.0.0.0", port=8000)
