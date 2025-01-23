@@ -29,10 +29,10 @@ def offline_train_job():
         SparkSession.builder
         .appName("OfflineTrainingJob")
         .master("spark://master1:7077")  # IP로 대체 가능
-        .config("spark.driver.memory", "2g")
-        .config("spark.executor.memory", "2g")
-        .config("spark.executor.cores", "2")
-        .config("spark.sql.shuffle.partitions", "16")
+        .config("spark.driver.memory", "1g")
+        .config("spark.executor.memory", "1g")
+        .config("spark.executor.cores", "1")
+        .config("spark.sql.shuffle.partitions", "8")
         .config("spark.sql.broadcastTimeout", "7200")
         .getOrCreate()
     )
