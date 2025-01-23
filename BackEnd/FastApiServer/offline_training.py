@@ -4,7 +4,7 @@ import pandas as pd
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, when, lit
 from pyspark.ml.recommendation import ALS
-import mongoDB  # MongoDB 접근 모듈 (동기 가정)
+import mongoDB  # MongoDB 접근 모듈 (동기)
 from pyspark.sql.utils import AnalysisException
 
 CSV_PATH = "hdfs://master1:9000/data/commercial_data.csv"
@@ -15,17 +15,20 @@ ACTION_WEIGHTS = {"click": 2, "search": 4, "analysis": 7, "save": 10}
 
 def offline_train_job():
     """
-    APScheduler가 호출할 학습 함수.
-    매일 새벽 4시에 돌도록 설정.
+    APScheduler가 매일 새벽 4시에 호출하는 오프라인 학습 함수.
+    별도의 SparkSession을 생성 -> 모델 학습 후 -> stop()
     """
     print("[offline_train_job] 시작")
 
-    # 새로 SparkSession 생성 (실시간 추론 세션과는 별개)
+    # --------------------
+    # 1) 오프라인 학습용 SparkSession 생성
+    # master="spark://master1:7077" 에서 master1이 DNS로 인식 안 되면,
+    # 실제 IP로 교체 (예: spark://192.168.0.10:7077).
+    # --------------------
     spark = (
         SparkSession.builder
         .appName("OfflineTrainingJob")
-        .master("spark://master1:7077")
-        # 라즈베리파이 메모리 고려
+        .master("spark://master1:7077")  # IP로 대체 가능
         .config("spark.driver.memory", "2g")
         .config("spark.executor.memory", "2g")
         .config("spark.executor.cores", "2")
@@ -34,23 +37,24 @@ def offline_train_job():
         .getOrCreate()
     )
 
-    # 1) CSV -> Parquet (최초 1회)
+    # 2) CSV -> Parquet (최초 1회만)
     if not path_exists(spark, PARQUET_PATH):
         print(f"[offline_train_job] Parquet 파일이 없어 CSV({CSV_PATH})에서 변환합니다.")
         df_csv = spark.read.csv(CSV_PATH, header=True, inferSchema=True)
         df_csv.write.parquet(PARQUET_PATH)
         print("[offline_train_job] CSV -> Parquet 변환 완료.")
 
-    # 2) MongoDB에서 사용자 로그 로드 (동기)
+    # 3) MongoDB 사용자 로그 로드 (동기) -> 이미 _id를 str로 변환함
     mongo_data = mongoDB.get_mongodb_data_sync()
     if not mongo_data:
         print("[offline_train_job] MongoDB 사용자 데이터 없음. 학습 종료.")
         spark.stop()
         return
 
+    # 4) Spark DataFrame 생성
     user_df = spark.createDataFrame(pd.DataFrame(mongo_data))
 
-    # 3) 가중치 컬럼
+    # 5) 가중치 컬럼 생성
     user_df = user_df.withColumn(
         "weight",
         when(col("action") == "click", lit(ACTION_WEIGHTS["click"]))
@@ -60,7 +64,6 @@ def offline_train_job():
         .otherwise(lit(1))
     ).select("userId", "commercialCode", "weight")
 
-    # 4) ALS 학습
     print("[offline_train_job] ALS 모델 학습 시작...")
     als = ALS(
         maxIter=5,
@@ -73,7 +76,7 @@ def offline_train_job():
     model = als.fit(user_df)
     print("[offline_train_job] ALS 모델 학습 완료")
 
-    # 5) 모델 저장
+    # 6) 모델 저장
     model.save(MODEL_PATH)
     print(f"[offline_train_job] 모델 저장 완료 -> {MODEL_PATH}")
 
@@ -81,6 +84,9 @@ def offline_train_job():
     print("[offline_train_job] 종료")
 
 def path_exists(spark, path):
+    """
+    Parquet 경로 존재 여부를 체크
+    """
     try:
         spark.read.parquet(path).limit(1).collect()
         return True
