@@ -45,7 +45,7 @@ services:
       - '${HADOOP_RESOURCE_MANAGER_WEB_UI_PORT}:${HADOOP_RESOURCE_MANAGER_WEB_UI_PORT}' # ResourceManager Web UI
       - '${HADOOP_MAP_REDUCE_JOB_HISTORY_SERVER_WEB_UI_PORT}:${HADOOP_MAP_REDUCE_JOB_HISTORY_SERVER_WEB_UI_PORT}' # MapReduce History Server
       - '${SPARK_MASTER_PORT}:${SPARK_MASTER_PORT}' # Spark Master Port
-      - '${SPARK_MASTER_WEB_UI_PORT}:${SPARK_MASTER_WEB_UI_PORT}' # Spark Master Web UI
+      - '${SPARK_MASTER_WEB_UI_PORT}:8080' # Spark Master Web UI
       - '${SPARK_HISTORY_SERVER_PORT}:${SPARK_HISTORY_SERVER_PORT}' # Spark History Server
     volumes:
       - shared_keys:/shared_keys # SSH 키 공유 볼륨
