@@ -13,22 +13,32 @@ MODEL_PATH = "hdfs://master1:9000/models/recommendation_model"
 
 ACTION_WEIGHTS = {"click": 2, "search": 4, "analysis": 7, "save": 10}
 
+def model_exists(spark):
+    """
+    모델 경로 존재 여부를 Spark로 체크.
+    모델 저장 시 metadata/ 디렉토리 등이 생겨야 하므로,
+    'MODEL_PATH/metadata' 등을 직접 읽어보거나
+    Spark 내장 기능을 써도 됨.
+    """
+    try:
+        spark.read.parquet(MODEL_PATH + "/metadata").limit(1).collect()
+        return True
+    except AnalysisException as e:
+        if "Path does not exist" in str(e):
+            return False
+        raise e
+
 def offline_train_job():
     """
-    APScheduler가 매일 새벽 4시에 호출하는 오프라인 학습 함수.
-    별도의 SparkSession을 생성 -> 모델 학습 후 -> stop()
+    매일 새벽 4시에 호출되는 오프라인 학습 함수.
+    별도의 SparkSession -> ALS 모델 학습 -> model.save() -> spark.stop()
     """
     print("[offline_train_job] 시작")
 
-    # --------------------
-    # 1) 오프라인 학습용 SparkSession 생성
-    # master="spark://master1:7077" 에서 master1이 DNS로 인식 안 되면,
-    # 실제 IP로 교체 (예: spark://192.168.0.10:7077).
-    # --------------------
     spark = (
         SparkSession.builder
         .appName("OfflineTrainingJob")
-        .master("spark://master1:7077")  # IP로 대체 가능
+        .master("spark://master1:7077")
         .config("spark.driver.memory", "1g")
         .config("spark.executor.memory", "1g")
         .config("spark.executor.cores", "1")
@@ -37,24 +47,24 @@ def offline_train_job():
         .getOrCreate()
     )
 
-    # 2) CSV -> Parquet (최초 1회만)
+    # 1) CSV -> Parquet (최초 1회)
     if not path_exists(spark, PARQUET_PATH):
         print(f"[offline_train_job] Parquet 파일이 없어 CSV({CSV_PATH})에서 변환합니다.")
         df_csv = spark.read.csv(CSV_PATH, header=True, inferSchema=True)
         df_csv.write.parquet(PARQUET_PATH)
         print("[offline_train_job] CSV -> Parquet 변환 완료.")
 
-    # 3) MongoDB 사용자 로그 로드 (동기) -> 이미 _id를 str로 변환함
+    # 2) MongoDB에서 사용자 로그 로드
     mongo_data = mongoDB.get_mongodb_data_sync()
     if not mongo_data:
-        print("[offline_train_job] MongoDB 사용자 데이터 없음. 학습 종료.")
+        print("[offline_train_job] MongoDB 사용자 데이터 없음. 학습 중단.")
         spark.stop()
         return
 
-    # 4) Spark DataFrame 생성
+    # 3) Spark DataFrame
     user_df = spark.createDataFrame(pd.DataFrame(mongo_data))
 
-    # 5) 가중치 컬럼 생성
+    # 4) 가중치 컬럼
     user_df = user_df.withColumn(
         "weight",
         when(col("action") == "click", lit(ACTION_WEIGHTS["click"]))
@@ -76,7 +86,7 @@ def offline_train_job():
     model = als.fit(user_df)
     print("[offline_train_job] ALS 모델 학습 완료")
 
-    # 6) 모델 저장
+    # 5) 모델 저장
     model.save(MODEL_PATH)
     print(f"[offline_train_job] 모델 저장 완료 -> {MODEL_PATH}")
 
