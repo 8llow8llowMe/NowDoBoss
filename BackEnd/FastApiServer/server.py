@@ -6,7 +6,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from pyspark.sql import SparkSession
 import recommendation_engine
-from offline_training import offline_train_job
+from offline_training import offline_train_job, model_exists
+import os
 
 app = FastAPI()
 
@@ -20,18 +21,24 @@ class UserRequest(BaseModel):
 def startup_event():
     """
     1) 실시간 추론용 Spark 세션 생성
-    2) APScheduler 시작 & 매일 새벽 4시 offline_train_job 등록
+    2) 서버 시작 후, 모델이 없으면 즉시 offline_train_job() 수행
+    3) APScheduler 시작 & 매일 새벽 4시 offline_train_job 등록
     """
     global spark
     spark = initialize_spark_session()
     print("Spark 세션 초기화 완료")
 
-    # APScheduler 시작
-    scheduler.start()
+    # (A) 서버 시작 직후, 모델이 있는지 체크
+    if not model_exists(spark):
+        print("[startup_event] 모델이 없어 즉시 오프라인 학습을 수행합니다.")
+        # offline_train_job() 은 내부에서 별도의 SparkSession 만듦
+        offline_train_job()
+    else:
+        print("[startup_event] 모델이 이미 존재합니다. 즉시 학습은 생략합니다.")
 
-    # 매일 새벽 4시에 offline_train_job() 실행
+    # (B) APScheduler 시작 (매일 새벽4시에 offline_train_job 실행)
+    scheduler.start()
     trigger = CronTrigger(hour=4, minute=0)
-    # offline_train_job 은 spark://master1:7077 로 새 SparkSession 만드는 함수
     scheduler.add_job(
         offline_train_job,
         trigger=trigger,
@@ -83,7 +90,7 @@ def test_hdfs_connection():
 def initialize_spark_session():
     """
     실시간 추론용 SparkSession (작은 메모리/코어 할당)
-    - 만약 master1 호스트가 인식 안 되면 IP로 교체
+    - master1 DNS 문제 있으면 IP로 교체.
     """
     return (
         SparkSession.builder
