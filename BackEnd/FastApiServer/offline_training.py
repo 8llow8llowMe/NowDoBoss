@@ -58,7 +58,7 @@ def offline_train_job():
     mongo_data = mongoDB.get_mongodb_data_sync()
     if not mongo_data:
         print("[offline_train_job] MongoDB 사용자 데이터 없음. 학습 중단.")
-        spark.stop()
+        # spark.stop()
         return
 
     # 3) Spark DataFrame
@@ -90,7 +90,7 @@ def offline_train_job():
     model.save(MODEL_PATH)
     print(f"[offline_train_job] 모델 저장 완료 -> {MODEL_PATH}")
 
-    spark.stop()
+    # spark.stop()
     print("[offline_train_job] 종료")
 
 def path_exists(spark, path):
