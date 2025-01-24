@@ -90,7 +90,6 @@ def test_hdfs_connection():
 def initialize_spark_session():
     """
     실시간 추론용 SparkSession (작은 메모리/코어 할당)
-    - master1 DNS 문제 있으면 IP로 교체.
     """
     return (
         SparkSession.builder
