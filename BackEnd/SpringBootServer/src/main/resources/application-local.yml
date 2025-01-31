@@ -28,7 +28,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver  # DB 드라이버
     url: jdbc:mysql://${server.base-url}:3306/nowdoboss?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true       # 데이터베이스 URL
     username: ENC(akJyoQsbvBpIR8Hr/6gHrMKbTXs+Ob6s)                     # 데이터베이스 계정명
-    password: ENC(Go35MRKFyLOfAGu9NJ4plDzetyEhr+VM)                     # 데이터베이스 계정 비밀번호
+    password: ENC(qMqsUHHJbnVXen27G8/40fAjKwR5tYBuTJaB4HYd1vw=)         # 데이터베이스 계정 비밀번호
 
   # data_테이블명.sql 관련 실행 setting (더미데이터)
   #  sql:
@@ -55,7 +55,7 @@ spring:
       port: 27017
       database: ENC(TsihpAwI+2KlpkV7OZXu75xbdsM0wcJA)
       username: ENC(DkrVZoXLsSjuunsNJbFyiGGRz2fzhBNq)
-      password: ENC(kTXriLMqjqkU1uXj9RvEKcv1aFGBDZmP)
+      password: ENC(xmrow2QycvAiBGA+53sxhBL+W3HbZrFzlBrRnyiycKA=)
       authentication-database: ENC(kGONsEZYcgxAFauoUqW1Lw==)
 
 
