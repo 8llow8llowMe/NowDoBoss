@@ -304,7 +304,13 @@ const RealTimeSearchTerms = (props: RealTimeSearchTermsPropsType) => {
         setKoreanType('')
       }, 500)
     }
-  }, [fetchKoreaData])
+  }, [
+    fetchKoreaData,
+    navigate,
+    setSelectedCommercial,
+    setSelectedDong,
+    setSelectedGoo,
+  ])
 
   return (
     <div>

@@ -54,18 +54,19 @@ export const Container = styled.div`
 `
 
 export const Main = styled.div`
-    height: calc(100vh);
-    position: relative;
-    display: flex;
-    padding: 3% 0 3% 2%;
-    background-color: #fcfdff;
-    align-items: center;
+  height: calc(100vh);
+  position: relative;
+  display: flex;
+  padding: 3% 0 3% 2%;
+  background-color: #fcfdff;
+  align-items: center;
 
-    @media (max-width: 1200px) {
-        flex-direction: column;
-        height: auto;
+  @media (max-width: 1200px) {
+    flex-direction: column;
+    height: auto;
 
-        padding: 5%;
+    padding: 5%;
+  }
 `
 
 export const TextDiv = styled.div`
