@@ -85,20 +85,17 @@ const Menu = styled.div<{
   cursor: pointer;
   font-weight: bold;
   border-bottom: 2px solid
-    ${props =>
-      props.$isActive
-        ? props.$isMain && props.$atTop
-          ? 'white'
-          : '#1549B5'
-        : 'none'};
-  color: ${props =>
-    props.$isActive
-      ? props.$isMain && props.$atTop
-        ? 'white'
-        : '#1549B5'
-      : props.$isMain && props.$atTop
-        ? 'white'
-        : 'black'};
+    ${props => {
+      if (props.$isActive) {
+        return props.$isMain && props.$atTop ? 'white' : '#1549B5'
+      }
+      return 'none'
+    }};
+  color: ${props => {
+    if (props.$isActive)
+      return props.$isMain && props.$atTop ? 'white' : '#1549B5'
+    return props.$isMain && props.$atTop ? 'white' : 'black'
+  }};
 
   &:hover {
     color: ${props => (props.$isMain && props.$atTop ? 'white' : '#1549B5')};
@@ -336,6 +333,15 @@ const HeaderContainer = () => {
     navigate(url)
   }
 
+  let iconSrc
+  if (location.pathname === '/' && atTop) {
+    iconSrc = WhiteChatImg
+  } else if (location.pathname === '/chatting/list') {
+    iconSrc = BlueChatImg
+  } else {
+    iconSrc = ChatImg
+  }
+
   return (
     <Container
       $isTransparent={isTransparent}
@@ -398,15 +404,7 @@ const HeaderContainer = () => {
               window.location.reload()
             }}
           >
-            <Icon
-              src={
-                location.pathname === '/' && atTop
-                  ? WhiteChatImg
-                  : location.pathname === '/chatting/list'
-                    ? BlueChatImg
-                    : ChatImg
-              }
-            />
+            <Icon src={iconSrc} />
           </Menu>
           {userLoggedIn ? (
             <Menu
