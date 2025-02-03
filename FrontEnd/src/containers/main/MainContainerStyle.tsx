@@ -149,17 +149,17 @@ export const Recommend = styled.div`
   }
 
   @media only screen and (max-width: 992px) {
-    height: 400vh;
+    height: auto;
   }
   @media only screen and (max-width: 500px) {
-    height: 280vh;
+    height: auto;
   }
 `
 
 // moreService
 export const EctContainer = styled.div`
   width: calc(100vw - 5px);
-  height: calc(100vh);
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;

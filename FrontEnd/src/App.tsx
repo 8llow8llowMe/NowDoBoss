@@ -41,8 +41,8 @@ import './index.css'
 // firebase config 파일 실행
 import '@src/util/auth/firebaseMessage'
 
-// 헤더 여부 설정하는 파일
-import ConditionalHeader from '@src/util/ConditionalHeader'
+// 헤더, 푸터 여부 설정하는 파일
+import HeaderAndFooter from '@src/util/HeaderAndFooter'
 
 declare global {
   interface Window {
@@ -54,8 +54,8 @@ declare global {
 export const confetti = new JSConfetti()
 
 function App() {
-  const location = useLocation(); // 현재 URL 위치 가져오기
-  
+  const location = useLocation() // 현재 URL 위치 가져오기
+
   function setScreenSize() {
     const vh = window.innerHeight * 0.01
     document.documentElement.style.setProperty('--vh', `${vh}px`)
@@ -65,7 +65,7 @@ function App() {
     setScreenSize()
     window.addEventListener('resize', setScreenSize)
     return () => window.removeEventListener('resize', setScreenSize)
-  }, []);
+  }, [])
 
   useEffect(() => {
     const accessToken = getCookie('accessToken')
@@ -73,14 +73,14 @@ function App() {
       // 로컬스토리지의 memberInfo 삭제
       localStorage.removeItem('memberInfo')
       localStorage.removeItem('isLogIn')
-    } 
+    }
   }, [location.pathname]) // location.pathname이 변경될 때마다 실행
 
   return (
     <CookiesProvider>
       <GlobalStyles />
       <SweetAlert2 />
-      <ConditionalHeader />
+      <HeaderAndFooter content="header" />
       <Routes>
         <Route path="/" element={<MainPage />} />
         {/* 회원 */}
@@ -136,6 +136,7 @@ function App() {
         {/*  시뮬레이션 카카오 공유 페이지 */}
         <Route path="/share/:token" element={<ReportKakaoSharePage />} />
       </Routes>
+      <HeaderAndFooter content="footer" />
     </CookiesProvider>
   )
 }

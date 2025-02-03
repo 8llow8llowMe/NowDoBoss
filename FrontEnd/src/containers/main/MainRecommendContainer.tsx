@@ -13,7 +13,7 @@ const MainRecommendContainer = () => {
       <r.Content>
         <r.Text>
           <m.BlueText>Market Recommend Report</m.BlueText>
-          <m.Title>상권추천 보고서</m.Title>
+          <m.Title>상권 추천 보고서</m.Title>
           <m.TextContent>
             지도에서 원하는 지역을 선택, <br />
             창업 조건에 유리한 상권을 <br />

@@ -14,7 +14,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: './tsconfig.json',
+    project: './FrontEnd/tsconfig.json',
   },
   plugins: ['react-refresh', 'react', '@typescript-eslint', 'prettier'],
   rules: {
