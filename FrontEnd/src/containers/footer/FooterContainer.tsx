@@ -5,18 +5,39 @@ const Container = styled.div`
   background-color: #ffffff;
   color: #606d85;
   width: 100%;
-  padding: 2rem 10rem;
-  font-size: 0.8rem;
+  padding: 2rem 8vw;
+  font-size: 0.9rem;
   font-weight: 400;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 992px) {
+    font-size: 0.8rem;
+    padding: 2rem 5vw;
+  }
+  @media (max-width: 648px) {
+    height: 25vh;
+    padding: 5vh 10vw;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+  }
 `
 
 const Div = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+
+  @media (max-width: 648px) {
+    width: 100%;
+    height: 7.5vh;
+    justify-content: center;
+  }
 `
 
 const LinkText = styled.a`
