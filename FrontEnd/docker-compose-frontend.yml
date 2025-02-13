@@ -30,6 +30,7 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt # Certbot이 사용하는 SSL 인증서 경로입니다.
       - ./certbot/www:/var/www/certbot # Certbot의 인증 경로를 설정합니다.
+      - /var/run/docker.sock:/var/run/docker.sock # Docker 실행 권한을 추가합니다. (해당 Nginx 도커 컨테이너 SSL 자동 갱신을 위해)
     entrypoint: '/bin/sh -c ''trap exit TERM; while :; do certbot renew --quiet --no-self-upgrade --deploy-hook "docker exec nowdoboss-frontend nginx -s reload"; sleep 12h & wait $${!}; done;''' # Certbot이 인증서를 갱신한 후 Nginx를 자동으로 리로드합니다.
     depends_on:
       - nowdoboss_frontend_service # Nginx가 실행된 후 Certbot이 동작하도록 의존성을 설정합니다.
