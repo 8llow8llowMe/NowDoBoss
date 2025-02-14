@@ -1,0 +1,6 @@
+services:
+
+networks:
+  nowdoboss-net:
+    name: nowdoboss-net
+    driver: bridge
