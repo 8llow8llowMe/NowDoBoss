@@ -40,21 +40,15 @@ pipeline {
                                         execCommand: '''
                                             cd develop/infra/jenkins/CICD/DataProcessing
 
-                                            echo "하둡 + 스파크 (masater1) 컨테이너 구성 실행 상태 확인 중..."
+                                            echo "=== Hadoop + Spark master/worker 상태 확인 ==="
+
+                                            # 마스터
                                             isHadoopRunning_master1=$(docker ps --filter name=master1 --filter status=running --format '{{.Names}}')
-                                            echo "마스터 노드 실행 상태: ${isHadoopRunning_master1}"
 
-                                            echo "하둡 + 스파크 (worker1) 컨테이너 구성 실행 상태 확인 중..."
+                                            # 워커들
                                             isHadoopRunning_worker1=$(docker ps --filter name=worker1 --filter status=running --format '{{.Names}}')
-                                            echo "워커 노드-1 실행 상태: ${isHadoopRunning_worker1}"
-
-                                            echo "하둡 + 스파크 (worker2) 컨테이너 구성 실행 상태 확인 중..."
                                             isHadoopRunning_worker2=$(docker ps --filter name=worker2 --filter status=running --format '{{.Names}}')
-                                            echo "워커 노드-2 실행 상태: ${isHadoopRunning_worker2}"
-
-                                            echo "하둡 + 스파크 (worker3) 컨테이너 구성 실행 상태 확인 중..."
                                             isHadoopRunning_worker3=$(docker ps --filter name=worker3 --filter status=running --format '{{.Names}}')
-                                            echo "워커 노드-3 실행 상태: ${isHadoopRunning_worker3}"
 
                                             if [ -z "$isHadoopRunning_master1" ] || [ -z "$isHadoopRunning_worker1" ] || [ -z "$isHadoopRunning_worker2" ] || [ -z "$isHadoopRunning_worker3" ]; then
                                                 echo "하둡 + 스파크 클러스터 빌드중..."
@@ -62,6 +56,21 @@ pipeline {
                                             else
                                                 echo "하둡 스파크 클러스터가 이미 실행중입니다!"
                                             fi
+
+                                            echo "=== Airflow container 상태 확인 ==="
+
+                                            # Airflow Webserver + Scheduler 검사
+                                            isAirflowRunning_webserver=$(docker ps --filter name=airflow-webserver --filter status=running --format '{{.Names}}')
+                                            isAirflowRunning_scheduler=$(docker ps --filter name=airflow-scheduler --filter status=running --format '{{.Names}}')
+
+                                            if [ -z "$isAirflowRunning_webserver" ] || [ -z "$isAirflowRunning_scheduler" ]; then
+                                                echo "Airflow 빌드중..."
+                                                docker-compose -f docker-compose-airflow.yml --env-file data-processing-env/.env-airflow up --build -d
+                                            else
+                                                echo "Airflow가 이미 실행중입니다!"
+                                            fi
+
+
                                         '''
                                     )
                                 ],
