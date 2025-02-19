@@ -10,7 +10,6 @@ services:
   airflow-init:
     image: apache/airflow:latest
     container_name: airflow-init
-    restart: always
     environment:
       <<: *airflow_environment
       AIRFLOW_ADMIN_USER: ${AIRFLOW_ADMIN_USER}
