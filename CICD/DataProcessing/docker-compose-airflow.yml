@@ -5,18 +5,27 @@ x-airflow-environment: &airflow_environment
   AIRFLOW_UID: ${AIRFLOW_UID}
   AIRFLOW_GID: ${AIRFLOW_GID}
   TZ: ${TZ}
+  MONGO_DB_HOST: ${MONGO_DB_HOST}
+  MONGO_DB_DATABASE: ${MONGO_DB_DATABASE}
+  MONGO_DB_USERNAME: ${MONGO_DB_USERNAME}
+  MONGO_DB_PASSWORD: ${MONGO_DB_PASSWORD}
+  MONGO_DB_AUTHENTICATION_DATABASE: ${MONGO_DB_AUTHENTICATION_DATABASE}
+  MONGO_DB_PORT: ${MONGO_DB_PORT}
 
 services:
   airflow-init:
-    image: apache/airflow:latest
     container_name: airflow-init
+    build:
+      context: ./airflow
+      dockerfile: airflow.Dockerfile
+    image: airflow-img
     environment:
       <<: *airflow_environment
       AIRFLOW_ADMIN_USER: ${AIRFLOW_ADMIN_USER}
       AIRFLOW_ADMIN_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD}
       AIRFLOW_ADMIN_EMAIL: ${AIRFLOW_ADMIN_EMAIL}
     volumes:
-      - ./dags:/opt/airflow/dags
+      - ./airflow/dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
     entrypoint: /bin/bash
@@ -37,15 +46,18 @@ services:
       - nowdoboss-net
 
   airflow-scheduler:
-    image: apache/airflow:latest
     container_name: airflow-scheduler
+    build:
+      context: ./airflow
+      dockerfile: airflow.Dockerfile
+    image: airflow-img
     restart: always
     depends_on:
       - airflow-init
     environment:
       <<: *airflow_environment
     volumes:
-      - ./dags:/opt/airflow/dags
+      - ./airflow/dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
     command: scheduler
@@ -53,8 +65,11 @@ services:
       - nowdoboss-net
 
   airflow-webserver:
-    image: apache/airflow:latest
     container_name: airflow-webserver
+    build:
+      context: ./airflow
+      dockerfile: airflow.Dockerfile
+    image: airflow-img
     restart: always
     depends_on:
       - airflow-scheduler
@@ -63,7 +78,7 @@ services:
     ports:
       - '${AIRFLOW_WEB_PORT}:8080'
     volumes:
-      - ./dags:/opt/airflow/dags
+      - ./airflow/dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
     command: webserver
