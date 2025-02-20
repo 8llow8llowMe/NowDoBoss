@@ -26,8 +26,8 @@ services:
       AIRFLOW_ADMIN_EMAIL: ${AIRFLOW_ADMIN_EMAIL}
     volumes:
       - ./airflow/dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
+      - airflow_logs:/opt/airflow/logs
+      - airflow_plugins:/opt/airflow/plugins
     entrypoint: /bin/bash
     command: >
       -c "
@@ -58,8 +58,8 @@ services:
       <<: *airflow_environment
     volumes:
       - ./airflow/dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
+      - airflow_logs:/opt/airflow/logs
+      - airflow_plugins:/opt/airflow/plugins
     command: scheduler
     networks:
       - nowdoboss-net
@@ -79,11 +79,15 @@ services:
       - '${AIRFLOW_WEB_PORT}:8080'
     volumes:
       - ./airflow/dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
+      - airflow_logs:/opt/airflow/logs
+      - airflow_plugins:/opt/airflow/plugins
     command: webserver
     networks:
       - nowdoboss-net
+
+volumes:
+  airflow_logs:
+  airflow_plugins:
 
 networks:
   nowdoboss-net:

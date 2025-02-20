@@ -26,7 +26,7 @@ pipeline {
             }
         }
 
-        stage('Transfer, Deploy, and Build Hadoop and Spark') {
+        stage('Transfer, Deploy, and Build Hadoop and Spark and Airflow') {
             steps {
                 script {
                     sshPublisher(
@@ -64,8 +64,15 @@ pipeline {
                                             isAirflowRunning_scheduler=$(docker ps --filter name=airflow-scheduler --filter status=running --format '{{.Names}}')
 
                                             if [ -z "$isAirflowRunning_webserver" ] || [ -z "$isAirflowRunning_scheduler" ]; then
-                                                echo "Airflow 빌드중..."
-                                                docker-compose -f docker-compose-airflow.yml --env-file data-processing-env/.env-airflow up --build -d
+                                                echo "Building Airflow image..."
+                                                docker-compose -f docker-compose-airflow.yml --env-file data-processing-env/.env-airflow build
+
+                                                echo "Running Airflow init container (ephemeral)..."
+                                                docker-compose -f docker-compose-airflow.yml --env-file data-processing-env/.env-airflow run --rm airflow-init
+                                                
+                                                echo "Starting Airflow scheduler & webserver..."
+                                                docker-compose -f docker-compose-airflow.yml --env-file data-processing-env/.env-airflow up -d airflow-scheduler airflow-webserver
+
                                             else
                                                 echo "Airflow가 이미 실행중입니다!"
                                             fi
