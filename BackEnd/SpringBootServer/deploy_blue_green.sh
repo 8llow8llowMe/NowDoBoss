@@ -8,7 +8,7 @@ wait_for_container_health() {
   local container_name=$1
   local port=$2
   local health_url="http://${container_name}:${port}/actuator/health"
-  local max_retries=36
+  local max_retries=12
   local i=1
 
   echo "[$container_name] 헬스체크를 시작합니다... ($health_url)"
@@ -27,14 +27,13 @@ wait_for_container_health() {
 # 현재 활성화된 환경 확인
 if docker ps --filter "name=nowdoboss-backend-springboot-blue" --filter "status=running" --format "{{.Names}}" | grep -q blue; then
     CURRENT_ENV="blue"
+    SPRING_BOOT_INTERNAL_PORT=8082  # Green 컨테이너의 포트
 else
     CURRENT_ENV="green"
+    SPRING_BOOT_INTERNAL_PORT=8081  # Blue 컨테이너의 포트
 fi
 
 echo "현재 동작 중인 환경: $CURRENT_ENV"
-
-# 기본 Spring Boot 내부 포트
-SPRING_BOOT_INTERNAL_PORT=8080
 
 if [ "$CURRENT_ENV" == "blue" ]; then
     echo "Blue -> Green 전환을 진행합니다."
