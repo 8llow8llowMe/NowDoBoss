@@ -8,7 +8,7 @@ wait_for_container_health() {
   local container_name=$1
   local port=$2
   local health_url="http://${container_name}:${port}/actuator/health"
-  local max_retries=12
+  local max_retries=36
   local i=1
 
   echo "[$container_name] 헬스체크를 시작합니다... ($health_url)"
