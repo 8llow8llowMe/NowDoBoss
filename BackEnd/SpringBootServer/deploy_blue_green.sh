@@ -4,11 +4,11 @@
 DOCKER_COMPOSE_FILE="docker-compose-springboot.yml"
 ENV_FILE="src/main/resources/backend-env/.env-springboot"
 
-# 헬스체크 함수 (localhost + 호스트 포트 사용)
+# 헬스체크 함수 (사설 IP + 호스트 포트 사용) -> 추후에 SSH 연결을 이용한 다른 서버에 배포 시 사설 IP를 localhost로 변경
 # 지정한 포트에서 actuator/health 엔드포인트를 검사하여 서비스가 정상적으로 실행 중인지 확인
 wait_for_container_health() {
   local port=$1
-  local health_url="http://localhost:${port}/actuator/health"
+  local health_url="http://192.168.0.25:${port}/actuator/health"
   local max_retries=12
   local i=1
 
@@ -43,7 +43,7 @@ if [ "$CURRENT_ENV" == "blue" ]; then
     # 1) Green 컨테이너 실행 (이때 컨테이너 이름은 nowdoboss-backend-springboot-green)
     docker-compose -f $DOCKER_COMPOSE_FILE --env-file $ENV_FILE up --build -d nowdoboss_springboot_green_service
 
-    # 1-1) 새로운 Green 컨테이너의 헬스체크 (localhost 사용)
+    # 1-1) 새로운 Green 컨테이너의 헬스체크
     wait_for_container_health $SPRING_BOOT_INTERNAL_PORT
 
     # 2) 기존 Blue alias 해제 및 Green alias 연결
@@ -68,7 +68,7 @@ else
     # 1) Blue 컨테이너 실행 (이때 컨테이너 이름은 nowdoboss-backend-springboot-blue)
     docker-compose -f $DOCKER_COMPOSE_FILE --env-file $ENV_FILE up --build -d nowdoboss_springboot_blue_service
 
-    # 1-1) 새로운 Blue 컨테이너의 헬스체크 (localhost 사용)
+    # 1-1) 새로운 Blue 컨테이너의 헬스체크
     wait_for_container_health $SPRING_BOOT_INTERNAL_PORT
 
     # 2) 기존 Green alias 해제 및 Blue alias 연결
