@@ -29,24 +29,22 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         String accessToken = jwtTokenProvider.issueAccessToken(member);
         String refreshToken = jwtTokenProvider.issueRefreshToken();
 
-        log.info("== {} 회원에 대한 토큰 발급: {}", member.getEmail(), accessToken);
-
         try {
             refreshTokenRepository.save(member.getEmail(), refreshToken);
         } catch (Exception e) {
-            throw new GlobalException(GlobalErrorCode.REDIS_CONNECTION_FAILURE);
+            log.warn("Redis 연결에 실패하였습니다.");
         }
 
         JwtTokenInfo tokenInfo = new JwtTokenInfo(accessToken);
 
         MemberInfo memberInfo = new MemberInfo(
-                member.getId(),
-                member.getEmail(),
-                member.getName(),
-                member.getNickname(),
-                member.getProfileImage(),
-                member.getRole(),
-                member.getOAuthDomain()
+            member.getId(),
+            member.getEmail(),
+            member.getName(),
+            member.getNickname(),
+            member.getProfileImage(),
+            member.getRole(),
+            member.getOAuthDomain()
         );
 
         return new MemberLoginResponse(tokenInfo, memberInfo);
@@ -55,10 +53,10 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Override
     public String reissueAccessToken(String email) {
         String refreshToken = refreshTokenRepository.find(email)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.REDIS_NOT_TOKEN));
+            .orElseThrow(() -> new GlobalException(GlobalErrorCode.REDIS_NOT_TOKEN));
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+            .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
 
         return jwtTokenProvider.issueAccessToken(member);
     }
