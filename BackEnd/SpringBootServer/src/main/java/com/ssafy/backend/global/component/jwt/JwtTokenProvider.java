@@ -26,7 +26,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-    
+
+    private static final String CLAIM_EMAIL = "email";
     private static final String CLAIM_ROLE = "role";
     private final JwtTokenPropsInfo tokenPropsInfo;
 
@@ -41,6 +42,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims()
             .id(UUID.randomUUID().toString())
             .subject(String.valueOf(member.getId()))
+            .add(CLAIM_EMAIL, member.getEmail())
             .add(CLAIM_ROLE, member.getRole())
             .build();
 
@@ -71,6 +73,7 @@ public class JwtTokenProvider {
         // 파싱된 데이터를 기반으로 MemberLoginActive 객체 생성 및 반환
         return new MemberLoginActive(
             Long.valueOf(payload.getSubject()),
+            payload.get(CLAIM_EMAIL, String.class),
             MemberRole.fromName(payload.get(CLAIM_ROLE, String.class))
         );
     }

@@ -4,6 +4,7 @@ import com.ssafy.backend.domain.member.entity.enums.MemberRole;
 
 public record MemberLoginActive(
     Long id,
+    String email,
     MemberRole role
 ) {
 
