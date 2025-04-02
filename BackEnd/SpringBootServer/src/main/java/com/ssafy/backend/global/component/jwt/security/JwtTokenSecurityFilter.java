@@ -1,13 +1,16 @@
 package com.ssafy.backend.global.component.jwt.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.backend.global.common.dto.Message;
+import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.jwt.JwtTokenProvider;
 import com.ssafy.backend.global.component.jwt.exception.JwtTokenException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -16,10 +19,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * JWT 인증을 위한 커스텀 필터입니다.
@@ -30,9 +29,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtTokenSecurityFilter extends OncePerRequestFilter {
 
+    private static final String BEARER_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
-    private static final String BEARER_PREFIX = "Bearer ";
 
     /**
      * 요청에 대해 필터링 로직을 수행합니다.
@@ -44,8 +43,9 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
      * @throws IOException      입출력 예외 발생 시
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain)
+        throws ServletException, IOException {
         // 요청에서 JWT 토큰을 추출합니다.
         String accessToken = getJwtFrom(request);
 
@@ -57,7 +57,8 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
 
                 // 성공적으로 토큰이 파싱되면 로그를 통해 인증된 회원의 ID와 해당 요청의 시도를 기록합니다.
                 log.info("회원 ID : {}  - 요청 시도", member.id());
-                SecurityContextHolder.getContext().setAuthentication(createAuthenticationToken(member));
+                SecurityContextHolder.getContext()
+                    .setAuthentication(createAuthenticationToken(member));
             } catch (JwtTokenException e) {
                 // JWT 토큰 파싱 중 예외가 발생하면, 보안 컨텍스트를 클리어하고 에러를 응답합니다.
                 SecurityContextHolder.clearContext();
@@ -103,7 +104,7 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
         // JwtTokenAuthentication 객체를 생성하고, 사용자의 권한을 설정합니다.
         // 이 권한 정보는 Spring Security의 인증 과정에서 사용됩니다.
         return new JwtTokenAuthentication(member, "",
-                List.of(new SimpleGrantedAuthority(member.role().name())));
+            List.of(new SimpleGrantedAuthority(member.role().name())));
     }
 
     /**
@@ -122,7 +123,8 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
 
         // 응답 본문에 오류 메시지를 JSON 형식으로 작성하고 클라이언트에게 전송합니다.
         PrintWriter writer = response.getWriter();
-        writer.write(objectMapper.writeValueAsString(Message.fail(e.getErrorCode().name(), e.getMessage())));
+        writer.write(objectMapper.writeValueAsString(
+            Response.fail(e.getErrorCode().name(), e.getMessage())));
         writer.flush();
     }
 
@@ -132,11 +134,11 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
      *
      * @param request 현재 처리 중인 HTTP 요청 객체
      * @return {@code true}이면 필터가 적용되지 않으며, {@code false}이면 필터가 적용됩니다.
-     *         여기서는 "/actuator/prometheus" 경로에 대해 필터를 건너뛰도록 설정했습니다.
+     * 여기서는 "/actuator/prometheus" 경로에 대해 필터를 건너뛰도록 설정했습니다.
      * @throws ServletException 서블릿 예외 발생 시
      */
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException{
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         // 특정 경로에 대해 필터를 건너뜁니다.
         // 프로메테우스가 메트릭을 가져오는 API 호출 경로는 필터링 되지 않으며, 해당 경로는 doFilterInternal() 로직을 타지 않습니다.
         String requestURI = request.getRequestURI();

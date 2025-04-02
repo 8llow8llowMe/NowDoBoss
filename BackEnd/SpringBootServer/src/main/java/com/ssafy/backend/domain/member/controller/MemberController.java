@@ -7,7 +7,7 @@ import com.ssafy.backend.domain.member.dto.MemberPasswordChangeRequest;
 import com.ssafy.backend.domain.member.dto.MemberSignupRequest;
 import com.ssafy.backend.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.backend.domain.member.service.MemberService;
-import com.ssafy.backend.global.common.dto.Message;
+import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.jwt.security.MemberLoginActive;
 import com.ssafy.backend.global.component.jwt.service.JwtTokenService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,10 +42,10 @@ public class MemberController {
         description = "회원정보에 필요한 정보를 입력하여 회원가입을 하는 기능입니다."
     )
     @PostMapping("/signup")
-    public ResponseEntity<Message<Void>> signupMember(
+    public ResponseEntity<Response<Void>> signupMember(
         @Valid @RequestBody MemberSignupRequest signupRequest) {
         memberService.signupMember(signupRequest);
-        return ResponseEntity.ok().body(Message.success());
+        return ResponseEntity.ok().body(Response.success());
     }
 
     @Operation(
@@ -53,7 +53,7 @@ public class MemberController {
         description = "이메일과 비밀번호를 입력하여 로그인을 하는 기능입니다."
     )
     @PostMapping("/login")
-    public ResponseEntity<Message<MemberLoginResponse>> loginMember(
+    public ResponseEntity<Response<MemberLoginResponse>> loginMember(
         @RequestBody MemberLoginRequest loginRequest,
         HttpServletResponse response) {
 
@@ -64,7 +64,7 @@ public class MemberController {
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(25200); // 4200분(25200초)으로 설정 (25200)
         response.addCookie(accessTokenCookie);
-        return ResponseEntity.ok().body(Message.success(loginResponse));
+        return ResponseEntity.ok().body(Response.success(loginResponse));
     }
 
     @Operation(
@@ -73,7 +73,7 @@ public class MemberController {
     )
     @PostMapping("/logout")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<Void>> logoutMember(
+    public ResponseEntity<Response<Void>> logoutMember(
         @AuthenticationPrincipal MemberLoginActive loginActive,
         HttpServletResponse response) {
         memberService.logoutMember(loginActive.email());
@@ -82,7 +82,7 @@ public class MemberController {
         accessTokenCookie.setMaxAge(0);
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
-        return ResponseEntity.ok().body(Message.success());
+        return ResponseEntity.ok().body(Response.success());
     }
 
     @Operation(
@@ -91,10 +91,10 @@ public class MemberController {
     )
     @GetMapping("/get")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<MemberInfo>> getMember(
+    public ResponseEntity<Response<MemberInfo>> getMember(
         @AuthenticationPrincipal MemberLoginActive loginActive) {
         MemberInfo info = memberService.getMember(loginActive.id());
-        return ResponseEntity.ok().body(Message.success(info));
+        return ResponseEntity.ok().body(Response.success(info));
     }
 
     @Operation(
@@ -103,10 +103,10 @@ public class MemberController {
     )
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<Void>> deleteMember(
+    public ResponseEntity<Response<Void>> deleteMember(
         @AuthenticationPrincipal MemberLoginActive loginActive) {
         memberService.deleteMember(loginActive.id());
-        return ResponseEntity.ok().body(Message.success());
+        return ResponseEntity.ok().body(Response.success());
     }
 
     @Operation(
@@ -115,11 +115,11 @@ public class MemberController {
     )
     @PatchMapping("/update")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<Void>> updateImageAndNicknameMember(
+    public ResponseEntity<Response<Void>> updateImageAndNicknameMember(
         @AuthenticationPrincipal MemberLoginActive loginActive,
         @RequestBody MemberUpdateRequest updateRequest) {
         memberService.updateProfileImageAndNickNameMember(loginActive.id(), updateRequest);
-        return ResponseEntity.ok().body(Message.success());
+        return ResponseEntity.ok().body(Response.success());
     }
 
     @Operation(
@@ -128,11 +128,11 @@ public class MemberController {
     )
     @PatchMapping("/password/change")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<Void>> updatePasswordMember(
+    public ResponseEntity<Response<Void>> updatePasswordMember(
         @AuthenticationPrincipal MemberLoginActive loginActive,
         @Valid @RequestBody MemberPasswordChangeRequest passwordChangeRequest) {
         memberService.updatePasswordMember(loginActive.id(), passwordChangeRequest);
-        return ResponseEntity.ok().body(Message.success());
+        return ResponseEntity.ok().body(Response.success());
     }
 
     @Operation(
@@ -140,8 +140,8 @@ public class MemberController {
         description = "Access 토큰이 만료된 회원이 레디스에 저장된 Refresh 토큰을 이용하여 Access 토큰을 재발급 받는 기능입니다."
     )
     @PostMapping("/reissue/accessToken/{memberEmail}")
-    public ResponseEntity<Message<String>> reissueAccessToken(@PathVariable String memberEmail) {
+    public ResponseEntity<Response<String>> reissueAccessToken(@PathVariable String memberEmail) {
         String reissueAccessToken = jwtTokenService.reissueAccessToken(memberEmail);
-        return ResponseEntity.ok().body(Message.success(reissueAccessToken));
+        return ResponseEntity.ok().body(Response.success(reissueAccessToken));
     }
 }

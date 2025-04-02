@@ -1,6 +1,6 @@
 package com.ssafy.backend.global.component.sse.service;
 
-import com.ssafy.backend.global.common.dto.Message;
+import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.kafka.dto.response.RankingResponse;
 import com.ssafy.backend.global.component.kafka.service.KafkaStreamService;
 import java.io.IOException;
@@ -59,12 +59,12 @@ public class SseEmitterServiceImpl implements SseEmitterService {
     @Override
     public void broadcastUpdates() {
         RankingResponse rankings = kafkaStreamService.getRankings(); // 랭킹 데이터 가져오기
-        Message<RankingResponse> message = Message.success(rankings);
+        Response<RankingResponse> response = Response.success(rankings);
 
         emitters.forEach((id, emitter) -> {
             try {
                 emitter.send(SseEmitter.event()
-                    .data(message, MediaType.APPLICATION_JSON) // 데이터 전송
+                    .data(response, MediaType.APPLICATION_JSON) // 데이터 전송
                     .id(Long.toString(System.currentTimeMillis())) // 이벤트 ID
                     .name("ranking-update") // 이벤트 이름
                     .reconnectTime(10000)); // 재연결 간격
@@ -96,8 +96,8 @@ public class SseEmitterServiceImpl implements SseEmitterService {
     private void sendInitialData(SseEmitter emitter) {
         try {
             RankingResponse rankings = kafkaStreamService.getRankings(); // 초기 랭킹 데이터
-            Message<RankingResponse> message = Message.success(rankings);
-            emitter.send(message, MediaType.APPLICATION_JSON); // 데이터 전송
+            Response<RankingResponse> response = Response.success(rankings);
+            emitter.send(response, MediaType.APPLICATION_JSON); // 데이터 전송
         } catch (IOException e) {
             log.error("Error sending initial data", e); // 전송 실패 시 로그 출력
         }

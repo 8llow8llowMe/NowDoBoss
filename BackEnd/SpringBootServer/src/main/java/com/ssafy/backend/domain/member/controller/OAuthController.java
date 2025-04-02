@@ -2,7 +2,7 @@ package com.ssafy.backend.domain.member.controller;
 
 import com.ssafy.backend.domain.member.dto.MemberLoginResponse;
 import com.ssafy.backend.domain.member.service.OAuthService;
-import com.ssafy.backend.global.common.dto.Message;
+import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.oauth.vendor.enums.OAuthDomain;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,10 +29,10 @@ public class OAuthController {
         description = "소셜 로그인 하기 전 인증코드를 가져와 소셜에 가입된 회원정보를 가져오는 기능입니다."
     )
     @GetMapping("/{oAuthDomain}")
-    public ResponseEntity<Message<String>> provideAuthCodeRequestUrlOAuth(
+    public ResponseEntity<Response<String>> provideAuthCodeRequestUrlOAuth(
         @PathVariable OAuthDomain oAuthDomain) {
         String redirectUrl = oAuthService.provideAuthCodeRequestUrlOAuth(oAuthDomain);
-        return ResponseEntity.ok().body(Message.success(redirectUrl));
+        return ResponseEntity.ok().body(Response.success(redirectUrl));
     }
 
     @Operation(
@@ -40,7 +40,7 @@ public class OAuthController {
         description = "인증코드를 통해 소셜 로그인(회원가입)을 하는 기능입니다."
     )
     @GetMapping("/{oAuthDomain}/login")
-    public ResponseEntity<Message<MemberLoginResponse>> loginOAuth(
+    public ResponseEntity<Response<MemberLoginResponse>> loginOAuth(
         @PathVariable("oAuthDomain") OAuthDomain oAuthDomain,
         @RequestParam("code") String authCode,
         HttpServletResponse response) {
@@ -51,7 +51,7 @@ public class OAuthController {
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(25200); // 4200분(25200초)으로 설정 (25200)
         response.addCookie(accessTokenCookie);
-        return ResponseEntity.ok().body(Message.success(loginResponse));
+        return ResponseEntity.ok().body(Response.success(loginResponse));
     }
 
 }

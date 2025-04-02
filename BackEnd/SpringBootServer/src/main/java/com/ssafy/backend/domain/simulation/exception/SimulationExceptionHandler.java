@@ -1,6 +1,8 @@
 package com.ssafy.backend.domain.simulation.exception;
 
-import com.ssafy.backend.global.common.dto.Message;
+import com.ssafy.backend.global.common.dto.Response;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +11,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Slf4j
 @RestControllerAdvice
 public class SimulationExceptionHandler {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> invalidInputExceptionHandler(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
@@ -26,12 +26,14 @@ public class SimulationExceptionHandler {
             errors.put(fieldName + "Error", message);
         });
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.fail("validError", errors));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(Response.fail("validError", errors));
     }
 
     @ExceptionHandler(SimulationException.class)
-    public ResponseEntity<Message<Void>> memberException(SimulationException e) {
+    public ResponseEntity<Response<Void>> memberException(SimulationException e) {
         log.error("창업 시뮬레이션 관련 오류: {}", e.getMessage());
-        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(Message.fail(null, e.getErrorCode().getErrorMessage()));
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(
+            Response.fail(null, e.getErrorCode().getErrorMessage()));
     }
 }

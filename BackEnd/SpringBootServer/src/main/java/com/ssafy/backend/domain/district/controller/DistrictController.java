@@ -11,7 +11,7 @@ import com.ssafy.backend.domain.district.dto.response.DistrictDetailResponse;
 import com.ssafy.backend.domain.district.dto.response.DistrictTopTenResponse;
 import com.ssafy.backend.domain.district.dto.response.FootTrafficDistrictDetailResponse;
 import com.ssafy.backend.domain.district.service.DistrictService;
-import com.ssafy.backend.global.common.dto.Message;
+import com.ssafy.backend.global.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +33,9 @@ public class DistrictController {
         description = "유동인구, 매출, 개업률, 폐업률 Top 5 리스트를 제공하는 기능입니다."
     )
     @GetMapping("/top/ten")
-    public ResponseEntity<Message<DistrictTopTenResponse>> getTopTenDistricts() {
+    public ResponseEntity<Response<DistrictTopTenResponse>> getTopTenDistricts() {
         DistrictTopTenResponse districtTopTenResponse = districtService.getTopTenDistricts();
-        return ResponseEntity.ok().body(Message.success(districtTopTenResponse));
+        return ResponseEntity.ok().body(Response.success(districtTopTenResponse));
     }
 
     @Operation(
@@ -43,11 +43,11 @@ public class DistrictController {
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
     @GetMapping("/detail/{districtCode}")
-    public ResponseEntity<Message<DistrictDetailResponse>> getDistrictDetail(
+    public ResponseEntity<Response<DistrictDetailResponse>> getDistrictDetail(
         @PathVariable String districtCode) {
         DistrictDetailResponse districtDetailResponse = districtService.getDistrictDetail(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(districtDetailResponse));
+        return ResponseEntity.ok().body(Response.success(districtDetailResponse));
     }
 
     @Operation(
@@ -55,11 +55,11 @@ public class DistrictController {
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
     @GetMapping("/detail/footTraffic/{districtCode}")
-    public ResponseEntity<Message<FootTrafficDistrictDetailResponse>> getDistrictFootTrafficDetail(
+    public ResponseEntity<Response<FootTrafficDistrictDetailResponse>> getDistrictFootTrafficDetail(
         @PathVariable String districtCode) {
         FootTrafficDistrictDetailResponse footTrafficDistrictDetailResponse = districtService.getDistrictFootTrafficDetail(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(footTrafficDistrictDetailResponse));
+        return ResponseEntity.ok().body(Response.success(footTrafficDistrictDetailResponse));
     }
 
     @Operation(
@@ -67,11 +67,11 @@ public class DistrictController {
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
     @GetMapping("/detail/changeIndicator/{districtCode}")
-    public ResponseEntity<Message<ChangeIndicatorDistrictResponse>> getDistrictChangeDetail(
+    public ResponseEntity<Response<ChangeIndicatorDistrictResponse>> getDistrictChangeDetail(
         @PathVariable String districtCode) {
         ChangeIndicatorDistrictResponse changeIndicatorDistrictResponse = districtService.getDistrictChangeIndicatorDetail(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(changeIndicatorDistrictResponse));
+        return ResponseEntity.ok().body(Response.success(changeIndicatorDistrictResponse));
     }
 
     @Operation(
@@ -79,11 +79,11 @@ public class DistrictController {
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
     @GetMapping("/detail/store/total/{districtCode}")
-    public ResponseEntity<Message<List<StoreDistrictTotalTopEightInfo>>> getDistrictTotalStoreDetail(
+    public ResponseEntity<Response<List<StoreDistrictTotalTopEightInfo>>> getDistrictTotalStoreDetail(
         @PathVariable String districtCode) {
         List<StoreDistrictTotalTopEightInfo> storeDistrictTotalTopEightInfoList = districtService.getDistrictTotalStoreDetail(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(storeDistrictTotalTopEightInfoList));
+        return ResponseEntity.ok().body(Response.success(storeDistrictTotalTopEightInfoList));
     }
 
     @Operation(
@@ -91,11 +91,11 @@ public class DistrictController {
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
     @GetMapping("/detail/store/opened/{districtCode}")
-    public ResponseEntity<Message<List<OpenedStoreAdministrationTopFiveInfo>>> getDistrictOpenedStoreDetail(
+    public ResponseEntity<Response<List<OpenedStoreAdministrationTopFiveInfo>>> getDistrictOpenedStoreDetail(
         @PathVariable String districtCode) {
         List<OpenedStoreAdministrationTopFiveInfo> openedStoreAdministrationTopFiveInfoList = districtService.getDistrictOpenedStoreDetail(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(openedStoreAdministrationTopFiveInfoList));
+        return ResponseEntity.ok().body(Response.success(openedStoreAdministrationTopFiveInfoList));
     }
 
     @Operation(
@@ -103,11 +103,11 @@ public class DistrictController {
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
     @GetMapping("/detail/store/closed/{districtCode}")
-    public ResponseEntity<Message<List<ClosedStoreAdministrationTopFiveInfo>>> getDistrictStoreDetail(
+    public ResponseEntity<Response<List<ClosedStoreAdministrationTopFiveInfo>>> getDistrictStoreDetail(
         @PathVariable String districtCode) {
         List<ClosedStoreAdministrationTopFiveInfo> closedStoreAdministrationTopFiveInfoList = districtService.getDistrictClosedStoreDetail(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(closedStoreAdministrationTopFiveInfoList));
+        return ResponseEntity.ok().body(Response.success(closedStoreAdministrationTopFiveInfoList));
     }
 
     @Operation(
@@ -115,11 +115,11 @@ public class DistrictController {
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
     @GetMapping("/detail/sales/service/{districtCode}")
-    public ResponseEntity<Message<List<SalesDistrictMonthSalesTopFiveInfo>>> getDistrictSalesDetailByServiceCode(
+    public ResponseEntity<Response<List<SalesDistrictMonthSalesTopFiveInfo>>> getDistrictSalesDetailByServiceCode(
         @PathVariable String districtCode) {
         List<SalesDistrictMonthSalesTopFiveInfo> salesDistrictMonthSalesTopFiveInfoList = districtService.getDistrictSalesDetailByServiceCode(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(salesDistrictMonthSalesTopFiveInfoList));
+        return ResponseEntity.ok().body(Response.success(salesDistrictMonthSalesTopFiveInfoList));
     }
 
     @Operation(
@@ -127,11 +127,11 @@ public class DistrictController {
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
     @GetMapping("/detail/sales/administration/{districtCode}")
-    public ResponseEntity<Message<List<SalesAdministrationTopFiveInfo>>> getDistrictSalesDetailByAdministrationCode(
+    public ResponseEntity<Response<List<SalesAdministrationTopFiveInfo>>> getDistrictSalesDetailByAdministrationCode(
         @PathVariable String districtCode) {
         List<SalesAdministrationTopFiveInfo> salesAdministrationTopFiveInfoList = districtService.getDistrictSalesDetailByAdministrationCode(
             districtCode);
-        return ResponseEntity.ok().body(Message.success(salesAdministrationTopFiveInfoList));
+        return ResponseEntity.ok().body(Response.success(salesAdministrationTopFiveInfoList));
     }
 
     @Operation(
@@ -139,8 +139,8 @@ public class DistrictController {
         description = "모든 자치구의 코드와 이름을 반환하는 기능입니다."
     )
     @GetMapping("/areas")
-    public ResponseEntity<Message<List<DistrictAreaResponse>>> getAllDistricts() {
+    public ResponseEntity<Response<List<DistrictAreaResponse>>> getAllDistricts() {
         List<DistrictAreaResponse> areaResponseList = districtService.getAllDistricts();
-        return ResponseEntity.ok().body(Message.success(areaResponseList));
+        return ResponseEntity.ok().body(Response.success(areaResponseList));
     }
 }
