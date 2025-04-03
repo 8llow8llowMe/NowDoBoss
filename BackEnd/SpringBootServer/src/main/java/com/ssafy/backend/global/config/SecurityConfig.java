@@ -49,27 +49,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             // CORS(Cross-Origin Resource Sharing) 설정을 적용합니다.
-            .cors(cors ->
-                cors.configurationSource(corsConfigurationSource())
-            )
-            // HTTP Basic 인증을 비활성화하여, 사용자 이름과 비밀번호를 사용한 인증 방식을 사용하지 않습니다.
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+            // HTTP Basic 인증 방식을 비활성화합니다. (ID/PW 기반 인증 사용하지 않음)
             .httpBasic(AbstractHttpConfigurer::disable)
-            // 웹 페이지를 <frame> 또는 <iframe> 내에서 렌더링하는 것을 방지하는 X-Frame-Options 헤더를 비활성화합니다.
-            .headers(header ->
-                header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
-            )
+
+            // X-Frame-Options 비활성화 (H2 Console 접근 등 필요시 사용)
+            .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+
+            // 모든 HTTP 요청에 대해 접근을 허용합니다.
+            // 인증이 필요한 요청은 JwtTokenSecurityFilter에서 직접 토큰 검증을 수행하며,
+            // @PreAuthorize 등 메서드 수준의 인가 처리는 EnableMethodSecurity에 의해 적용됩니다.
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/actuator/**",
-                    "/swagger-ui/**", "/v3/api-docs/**"
-                ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
-            // Spring Security가 제공하는 기본 로그인 페이지와 로그아웃 메커니즘을 비활성화합니다.
+
+            // Spring Security 기본 로그인/로그아웃 기능 비활성화
             .formLogin(AbstractHttpConfigurer::disable)
             .logout(AbstractHttpConfigurer::disable)
-            // JWT 인증을 위한 커스텀 필터를 UsernamePasswordAuthenticationFilter 클래스 실행 전에 추가합니다.
-            // 이 필터는 요청 헤더에 포함된 JWT를 검증하여 사용자 인증을 수행합니다.
+
+            // UsernamePasswordAuthenticationFilter 실행 전에 커스텀 JWT 필터를 삽입
             .addFilterBefore(jwtSecurityFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
