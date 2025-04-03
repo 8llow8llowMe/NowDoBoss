@@ -21,9 +21,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * JWT 인증을 위한 커스텀 필터입니다.
- * HTTP 요청의 Authorization 헤더에서 JWT 액세스 토큰을 추출하고 검증하여,
- * 유효한 경우 Spring Security의 SecurityContext에 인증 정보를 설정합니다.
+ * JWT 인증을 위한 커스텀 필터입니다. HTTP 요청의 Authorization 헤더에서 JWT 액세스 토큰을 추출하고 검증하여, 유효한 경우 Spring Security의
+ * SecurityContext에 인증 정보를 설정합니다.
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -55,8 +54,6 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
                 // 토큰에서 멤버 정보를 파싱합니다. 유효하지 않은 토큰인 경우 예외를 발생시킵니다.
                 MemberLoginActive member = jwtTokenProvider.parseAccessToken(accessToken);
 
-                // 성공적으로 토큰이 파싱되면 로그를 통해 인증된 회원의 ID와 해당 요청의 시도를 기록합니다.
-                log.info("회원 ID : {}  - 요청 시도", member.id());
                 SecurityContextHolder.getContext()
                     .setAuthentication(createAuthenticationToken(member));
             } catch (JwtTokenException e) {
@@ -133,12 +130,11 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 특정 경로에 대해 JWT 필터를 적용하지 않도록 설정합니다.
-     * 이 메서드를 오버라이드하여 특정 조건에 해당하는 요청을 필터링하지 않도록 할 수 있습니다.
+     * 특정 경로에 대해 JWT 필터를 적용하지 않도록 설정합니다. 이 메서드를 오버라이드하여 특정 조건에 해당하는 요청을 필터링하지 않도록 할 수 있습니다.
      *
      * @param request 현재 처리 중인 HTTP 요청 객체
-     * @return {@code true}이면 필터가 적용되지 않으며, {@code false}이면 필터가 적용됩니다.
-     * 여기서는 "/actuator/prometheus" 경로에 대해 필터를 건너뛰도록 설정했습니다.
+     * @return {@code true}이면 필터가 적용되지 않으며, {@code false}이면 필터가 적용됩니다. 여기서는 "/actuator/prometheus"
+     * 경로에 대해 필터를 건너뛰도록 설정했습니다.
      * @throws ServletException 서블릿 예외 발생 시
      */
     @Override
