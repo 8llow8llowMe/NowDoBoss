@@ -2,7 +2,6 @@ package com.ssafy.backend.domain.support.controller;
 
 import com.ssafy.backend.domain.support.dto.response.StartupSupportListResponse;
 import com.ssafy.backend.domain.support.service.StartupSupportService;
-import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +24,6 @@ public class StartupSupportController {
         summary = "창업지원 목록 조회",
         description = "창업지원 목록을 조회하는 기능입니다."
     )
-    @PublicEndpoint
     @GetMapping
     public ResponseEntity<Response<List<StartupSupportListResponse>>> selectSupport(Long lastId) {
         return ResponseEntity.ok()

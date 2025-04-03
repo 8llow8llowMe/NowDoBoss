@@ -1,10 +1,8 @@
 package com.ssafy.backend.global.config;
 
-import com.ssafy.backend.global.aspect.interceptor.PublicEndpointInterceptor;
 import com.ssafy.backend.global.component.oauth.vendor.enums.OAuthDomainConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -23,12 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new OAuthDomainConverter()); // OAuthDomain 컨버터 등록
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new PublicEndpointInterceptor())
-            .addPathPatterns("/**");
     }
 }
 

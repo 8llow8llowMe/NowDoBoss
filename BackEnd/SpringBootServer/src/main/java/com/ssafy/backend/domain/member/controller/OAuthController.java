@@ -2,7 +2,6 @@ package com.ssafy.backend.domain.member.controller;
 
 import com.ssafy.backend.domain.member.dto.MemberLoginResponse;
 import com.ssafy.backend.domain.member.service.OAuthService;
-import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.oauth.vendor.enums.OAuthDomain;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +28,6 @@ public class OAuthController {
         summary = "소셜 도메인을 통한 인증코드 가져오기",
         description = "소셜 로그인 하기 전 인증코드를 가져와 소셜에 가입된 회원정보를 가져오는 기능입니다."
     )
-    @PublicEndpoint
     @GetMapping("/{oAuthDomain}")
     public ResponseEntity<Response<String>> provideAuthCodeRequestUrlOAuth(
         @PathVariable OAuthDomain oAuthDomain) {
@@ -41,7 +39,6 @@ public class OAuthController {
         summary = "소셜 로그인(회원가입)",
         description = "인증코드를 통해 소셜 로그인(회원가입)을 하는 기능입니다."
     )
-    @PublicEndpoint
     @GetMapping("/{oAuthDomain}/login")
     public ResponseEntity<Response<MemberLoginResponse>> loginOAuth(
         @PathVariable("oAuthDomain") OAuthDomain oAuthDomain,

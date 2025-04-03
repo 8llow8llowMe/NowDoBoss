@@ -11,7 +11,6 @@ import com.ssafy.backend.domain.community.dto.response.CommunityListResponse;
 import com.ssafy.backend.domain.community.dto.response.PopularCommunityListResponse;
 import com.ssafy.backend.domain.community.service.CommentService;
 import com.ssafy.backend.domain.community.service.CommunityService;
-import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.jwt.security.MemberLoginActive;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,7 +57,6 @@ public class CommunityController {
         summary = "게시글 목록 조회",
         description = "커뮤니티 게시글 목록을 조회하는 기능입니다."
     )
-    @PublicEndpoint
     @GetMapping
     public ResponseEntity<Response<List<CommunityListResponse>>> selectCommunityList(
         CommunityListRequest request) {
@@ -70,7 +68,6 @@ public class CommunityController {
         summary = "인기 게시글 조회",
         description = "커뮤니티 인기 게시글을 조회하는 기능입니다."
     )
-    @PublicEndpoint
     @GetMapping("/popular")
     public ResponseEntity<Response<List<PopularCommunityListResponse>>> selectPopularCommunityList() {
         return ResponseEntity.ok()
@@ -81,7 +78,6 @@ public class CommunityController {
         summary = "게시글 상세 조회",
         description = "커뮤니티 게시글을 상세 조회하는 기능입니다."
     )
-    @PublicEndpoint
     @GetMapping("/{communityId}")
     public ResponseEntity<Response<CommunityDetailResponse>> selectCommunity(
         @PathVariable Long communityId) {
@@ -128,7 +124,6 @@ public class CommunityController {
         summary = "댓글 목록 조회",
         description = "커뮤니티 댓글 목록을 조회하는 기능입니다."
     )
-    @PublicEndpoint
     @GetMapping("/{communityId}/comment")
     public ResponseEntity<Response<List<CommentListResponse>>> selectCommentList(
         @PathVariable Long communityId, Long lastId) {

@@ -82,8 +82,12 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
         // HTTP 요청 헤더에서 'Authorization' 값을 가져옵니다.
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        String method = request.getMethod();
+        String uri = request.getRequestURI();
+        String ip = request.getRemoteAddr();
+
         // 요청 URI와 함께 추출된 액세스 토큰 값을 로깅합니다.
-        log.info("요청 : {} / 액세스 토큰 값 : {}", request.getRequestURI(), bearerToken);
+        log.info("[API ACCESS] [{}] URI: {}, IP: {}", method, uri, ip);
 
         // 헤더에 있는 토큰이 'Bearer '로 시작하는 경우, 해당 접두어를 제거하고 실제 토큰만 반환합니다.
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
@@ -139,9 +143,9 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        Object isPublic = request.getAttribute("IS_PUBLIC");
-        String uri = request.getRequestURI();
-
-        return uri.startsWith("/actuator") || Boolean.TRUE.equals(isPublic);
+        // 특정 경로에 대해 필터를 건너뜁니다.
+        // 프로메테우스가 메트릭을 가져오는 API 호출 경로는 필터링 되지 않으며, 해당 경로는 doFilterInternal() 로직을 타지 않습니다.
+        String requestURI = request.getRequestURI();
+        return "/actuator/prometheus".equals(requestURI);
     }
 }
