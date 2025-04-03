@@ -48,6 +48,9 @@ public class SecurityConfig {
             // CORS(Cross-Origin Resource Sharing) 설정을 적용합니다.
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
+            // CSRF 설정 비활성화
+            .csrf(AbstractHttpConfigurer::disable)
+
             // HTTP Basic 인증 방식을 비활성화합니다. (ID/PW 기반 인증 사용하지 않음)
             .httpBasic(AbstractHttpConfigurer::disable)
 
@@ -70,7 +73,7 @@ public class SecurityConfig {
 
         return http.build();
     }
-    
+
     /**
      * JWT 인증 필터를 생성하는 메소드입니다. 이 필터는 HTTP 요청의 헤더에서 JWT를 추출하고 검증하는 역할을 합니다.
      *
