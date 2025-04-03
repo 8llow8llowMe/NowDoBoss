@@ -18,9 +18,9 @@ spring:
       ddl-auto: none                # ddl 자동 작성 여부
     properties:
       hibernate:
-        format_sql: true             # 하이버네이트가 실행한 SQL을 출력할 때 보기 좋게 정렬
-        use_sql_comments: true
-        show_sql: true               # 하이버네이트가 실행한 SQL을 출력
+        format_sql: false             # 하이버네이트가 실행한 SQL을 출력할 때 보기 좋게 정렬
+        use_sql_comments: false
+        show_sql: false               # 하이버네이트가 실행한 SQL을 출력
         jdbc:
           batch_size: 100              #   insert/update 쿼리를 원하는 개수만큼 모아서 DB에 날릴 수 있는 옵션
         default_batch_fetch_size: 100
