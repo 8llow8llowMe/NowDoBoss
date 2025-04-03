@@ -142,6 +142,6 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
         Object isPublic = request.getAttribute("IS_PUBLIC");
         String uri = request.getRequestURI();
 
-        return (Boolean.TRUE.equals(isPublic)) || "/actuator/prometheus".equals(uri);
+        return uri.startsWith("/actuator") || Boolean.TRUE.equals(isPublic);
     }
 }
