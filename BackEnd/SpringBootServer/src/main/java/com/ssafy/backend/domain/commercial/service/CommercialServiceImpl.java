@@ -84,7 +84,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CommercialServiceImpl implements CommercialService {
 
@@ -193,6 +192,7 @@ public class CommercialServiceImpl implements CommercialService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommercialServiceResponse> getServiceByCommercialCode(String commercialCode) {
         List<ServiceCodeProjection> serviceCodeProjectionList = salesCommercialRepository.findDistinctServiceCodesByCommercialCode(
             commercialCode);
