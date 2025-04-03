@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -71,17 +70,7 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-    /**
-     * 웹 보안을 커스터마이즈하는 WebSecurityCustomizer 빈을 생성합니다. 이 설정을 통해 특정 요청 경로에 대한 보안 검사를 무시할 수 있습니다.
-     *
-     * @return WebSecurityCustomizer 객체
-     */
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().anyRequest();    // 모든 요청에 대해 보안 검사를 무시합니다.
-    }
-
+    
     /**
      * JWT 인증 필터를 생성하는 메소드입니다. 이 필터는 HTTP 요청의 헤더에서 JWT를 추출하고 검증하는 역할을 합니다.
      *
