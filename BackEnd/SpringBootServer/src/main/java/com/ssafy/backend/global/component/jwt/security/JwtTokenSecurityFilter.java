@@ -138,10 +138,10 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
      * @throws ServletException 서블릿 예외 발생 시
      */
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // 특정 경로에 대해 필터를 건너뜁니다.
-        // 프로메테우스가 메트릭을 가져오는 API 호출 경로는 필터링 되지 않으며, 해당 경로는 doFilterInternal() 로직을 타지 않습니다.
-        String requestURI = request.getRequestURI();
-        return "/actuator/prometheus".equals(requestURI);
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        Object isPublic = request.getAttribute("IS_PUBLIC");
+        String uri = request.getRequestURI();
+
+        return (Boolean.TRUE.equals(isPublic)) || "/actuator/prometheus".equals(uri);
     }
 }

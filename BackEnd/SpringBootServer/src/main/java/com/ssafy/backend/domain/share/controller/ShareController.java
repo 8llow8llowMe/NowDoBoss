@@ -4,6 +4,7 @@ import com.ssafy.backend.domain.share.dto.request.CreateShareRequest;
 import com.ssafy.backend.domain.share.dto.response.LinkTokenResponse;
 import com.ssafy.backend.domain.share.dto.response.ShareResponse;
 import com.ssafy.backend.domain.share.service.ShareService;
+import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +33,7 @@ public class ShareController {
         summary = "공유 데이터 저장",
         description = "공유 데이터를 저장하는 기능입니다."
     )
+    @PublicEndpoint
     @PostMapping
     public ResponseEntity<Response<LinkTokenResponse>> share(
         @Validated @RequestBody CreateShareRequest request) {
@@ -48,6 +50,7 @@ public class ShareController {
         summary = "공유 데이터 조회",
         description = "공유 데이터를 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/{token}")
     public ResponseEntity<Response<ShareResponse>> selectShare(@PathVariable String token) {
         return ResponseEntity.ok().body(Response.success(shareService.selectShare(token)));

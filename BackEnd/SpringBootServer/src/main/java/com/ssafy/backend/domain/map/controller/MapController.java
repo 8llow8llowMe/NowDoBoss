@@ -2,6 +2,7 @@ package com.ssafy.backend.domain.map.controller;
 
 import com.ssafy.backend.domain.map.dto.response.MapResponse;
 import com.ssafy.backend.domain.map.service.MapService;
+import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,11 +27,11 @@ public class MapController {
         summary = "상권 영역 좌표",
         description = "주어진 지도 영역 내에 포함된 상권의 테두리 좌표를 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/commercial")
     public ResponseEntity<Response<MapResponse>> getCommercialAreaCoords(
         @RequestParam Double lngSW, @RequestParam Double latSW, @RequestParam Double lngNE,
         @RequestParam Double latNE) {
-        log.info("상권 영역 좌표: {}, {}, {}, {}", lngSW, latSW, lngNE, latNE);
         return ResponseEntity.ok().body(
             Response.success(mapservice.getCommercialAreaCoords(lngSW, latSW, lngNE, latNE)));
     }
@@ -39,11 +40,11 @@ public class MapController {
         summary = "행정동 영역 좌표",
         description = "주어진 지도 영역 내에 포함된 행정동의 테두리 좌표를 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/administration")
     public ResponseEntity<Response<MapResponse>> getAdministrationAreaCoords(
         @RequestParam Double lngSW, @RequestParam Double latSW, @RequestParam Double lngNE,
         @RequestParam Double latNE) {
-        log.info("행정동 영역 좌표: {}, {}, {}, {}", lngSW, latSW, lngNE, latNE);
         return ResponseEntity.ok().body(
             Response.success(mapservice.getAdministrationAreaCoords(lngSW, latSW, lngNE, latNE)));
     }
@@ -52,11 +53,11 @@ public class MapController {
         summary = "자치구 영역 좌표",
         description = "주어진 지도 영역 내에 포함된 자치구의 테두리 좌표를 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/district")
     public ResponseEntity<Response<MapResponse>> getDistrictAreaCoords(
         @RequestParam Double lngSW, @RequestParam Double latSW, @RequestParam Double lngNE,
         @RequestParam Double latNE) {
-        log.info("자치구 영역 좌표: {}, {}, {}, {}", lngSW, latSW, lngNE, latNE);
         return ResponseEntity.ok().body(
             Response.success(mapservice.getDistrictAreaCoords(lngSW, latSW, lngNE, latNE)));
     }

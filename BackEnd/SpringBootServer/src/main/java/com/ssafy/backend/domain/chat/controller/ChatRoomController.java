@@ -10,6 +10,7 @@ import com.ssafy.backend.domain.chat.dto.response.EnterChatRoomResponse;
 import com.ssafy.backend.domain.chat.dto.response.MyChatRoomListResponse;
 import com.ssafy.backend.domain.chat.service.ChatMessageService;
 import com.ssafy.backend.domain.chat.service.ChatRoomService;
+import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.jwt.security.MemberLoginActive;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +42,7 @@ public class ChatRoomController {
         summary = "채팅방 목록 조회",
         description = "채팅방 목록을 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping
     public ResponseEntity<Response<List<ChatRoomListResponse>>> selectMyChatRooms(Long lastId) {
         List<ChatRoomListResponse> response = chatRoomService.selectChatRooms(lastId);
@@ -92,6 +94,7 @@ public class ChatRoomController {
         summary = "인기 채팅방 조회",
         description = "인기 채팅방 조회에 필요한 정보를 입력하여 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/popular-room")
     public ResponseEntity<Response<List<ChatRoomResponse>>> selectPopularChatRoom(String category) {
         List<ChatRoomResponse> response = chatRoomService.selectPopularChatRoom(category);

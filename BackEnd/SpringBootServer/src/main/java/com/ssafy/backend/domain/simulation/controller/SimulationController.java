@@ -8,6 +8,7 @@ import com.ssafy.backend.domain.simulation.dto.response.SimulationDocumentRespon
 import com.ssafy.backend.domain.simulation.dto.response.SimulationResponse;
 import com.ssafy.backend.domain.simulation.dto.response.StoreResponse;
 import com.ssafy.backend.domain.simulation.service.SimulationService;
+import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.PageResponse;
 import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.jwt.security.MemberLoginActive;
@@ -38,6 +39,7 @@ public class SimulationController {
         summary = "프랜차이즈 검색",
         description = "프랜차이즈 검색 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/franchisee")
     public ResponseEntity<Response<List<SearchFranchiseeResponse>>> searchFranchisee(
         @Validated SearchFranchiseeRequest request) {
@@ -49,6 +51,7 @@ public class SimulationController {
         summary = "업종별 가게 크기 조회",
         description = "업종별 가게 크기를 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/store")
     public ResponseEntity<Response<StoreResponse>> selectStoreSize(String serviceCode) {
         return ResponseEntity.ok()
@@ -59,6 +62,7 @@ public class SimulationController {
         summary = "창업 시뮬레이션 결과 조회",
         description = "창업 시뮬레이션 결과를 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @PostMapping
     public ResponseEntity<Response<SimulationResponse>> simulation(
         @RequestBody SimulationRequest request) {

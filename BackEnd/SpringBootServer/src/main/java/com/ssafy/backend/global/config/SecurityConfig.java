@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -59,10 +58,12 @@ public class SecurityConfig {
             .headers(header ->
                 header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
             )
-            // 모든 요청에 대해 접근을 허용합니다.
-            // 상세한 접근 제어는 각 API 엔드포인트에 @PreAuthorize 등의 어노테이션을 사용하여 설정할 수 있습니다.
-            .authorizeHttpRequests(auth ->
-                auth.anyRequest().permitAll()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/actuator/prometheus",
+                    "/swagger-ui/**", "/v3/api-docs/**"
+                ).permitAll()
+                .anyRequest().authenticated()
             )
             // Spring Security가 제공하는 기본 로그인 페이지와 로그아웃 메커니즘을 비활성화합니다.
             .formLogin(AbstractHttpConfigurer::disable)
@@ -72,18 +73,6 @@ public class SecurityConfig {
             .addFilterBefore(jwtSecurityFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-
-    /**
-     * 웹 보안을 커스터마이즈하는 WebSecurityCustomizer 빈을 생성합니다.
-     * 이 설정을 통해 특정 요청 경로에 대한 보안 검사를 무시할 수 있습니다.
-     *
-     * @return WebSecurityCustomizer 객체
-     */
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().anyRequest();    // 모든 요청에 대해 보안 검사를 무시합니다.
     }
 
     /**

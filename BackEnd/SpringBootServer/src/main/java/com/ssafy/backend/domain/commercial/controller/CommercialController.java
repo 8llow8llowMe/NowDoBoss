@@ -17,6 +17,7 @@ import com.ssafy.backend.domain.commercial.dto.response.CommercialServiceRespons
 import com.ssafy.backend.domain.commercial.dto.response.CommercialStoreResponse;
 import com.ssafy.backend.domain.commercial.dto.response.ConversionCodeResponse;
 import com.ssafy.backend.domain.commercial.service.CommercialService;
+import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.PageResponse;
 import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.jwt.security.MemberLoginActive;
@@ -49,6 +50,7 @@ public class CommercialController {
         summary = "자치구, 행정동, 상권 코드명 조회",
         description = "자치구, 행정도, 상권 코드를 통해 코드명을 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/code-name")
     public ResponseEntity<Response<ConversionCodeResponse>> getCodeByCodeName(
         @Validated ConversionCodeNameRequest request) {
@@ -62,6 +64,7 @@ public class CommercialController {
         summary = "해당 자치구에 포함된 행정동 목록 조회",
         description = "해당 자치구에 포함된 행정동 목록을 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/administration/district/{districtCode}/areas")
     public ResponseEntity<Response<List<CommercialAdministrationResponse>>> getAdministrativeAreasByDistrict(
         @PathVariable String districtCode) {
@@ -74,6 +77,7 @@ public class CommercialController {
         summary = "해당 행정동에 포함된 상권 목록 조회",
         description = "해당 행정동에 포함된 상권 목록을 조회하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/administration/{administrationCode}/areas")
     public ResponseEntity<Response<List<CommercialAreaResponse>>> getCommercialAreasByAdministrationCode(
         @PathVariable String administrationCode) {
@@ -86,6 +90,7 @@ public class CommercialController {
         summary = "해당 상권의 존재하는 업종 목록 조회",
         description = "주어진 상권코드에 대해 해당 상권의 존재하는 업종 목록 데이터를 조회합니다."
     )
+    @PublicEndpoint
     @GetMapping("/service/{commercialCode}")
     public ResponseEntity<Response<List<CommercialServiceResponse>>> getCommercialServiceCodeAndServiceCodeName(
         @PathVariable String commercialCode) {
@@ -98,6 +103,7 @@ public class CommercialController {
         summary = "해당 상권의 분기별 유동 인구 조회",
         description = "주어진 상권코드에 대해 해당 분기의 유동 인구 데이터를 조회합니다. 기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
+    @PublicEndpoint
     @GetMapping("/foot-traffic/{commercialCode}")
     public ResponseEntity<Response<CommercialFootTrafficResponse>> getFootTrafficByCommercialCodeAndPeriod(
         @RequestParam(defaultValue = "20233") String periodCode,
@@ -112,6 +118,7 @@ public class CommercialController {
         summary = "해당 상권&업종의 분기별 매출 분석 조회",
         description = "주어진 상권코드 및 서비스코드에 대해 해당 분기의 매출분석 데이터를 조회합니다. 기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
+    @PublicEndpoint
     @GetMapping("/sales/{commercialCode}/{serviceCode}")
     public ResponseEntity<Response<CommercialSalesResponse>> getSalesByPeriodAndCommercialCode(
         @RequestParam(defaultValue = "20233") String periodCode,
@@ -127,6 +134,7 @@ public class CommercialController {
         description = "주어진 자치구, 행정동, 상권 코드 및 서비스코드에 대해 해당 분기의 매출 총 금액 데이터를 조회합니다. " +
             "기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
+    @PublicEndpoint
     @GetMapping("/sales/{districtCode}/{administrationCode}/{commercialCode}/{serviceCode}")
     public ResponseEntity<Response<AllSalesResponse>> getAllSalesByPeriodAndDistrictCodeAndAdministrationCodeAndCommercialCodeAndServiceCode(
         @AuthenticationPrincipal MemberLoginActive loginActive,
@@ -145,6 +153,7 @@ public class CommercialController {
         summary = "해당 상권의 분기별 집객 시설 조회",
         description = "주어진 상권코드에 대해 해당 분기의 집객 시설 데이터를 조회합니다. 기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
+    @PublicEndpoint
     @GetMapping("/facility/{commercialCode}")
     public ResponseEntity<Response<CommercialFacilityResponse>> getFacilityByPeriodAndCommercialCode(
         @RequestParam(defaultValue = "20233") String periodCode,
@@ -158,6 +167,7 @@ public class CommercialController {
         summary = "해당 상권의 분기별 상주 인구 조회",
         description = "주어진 상권코드에 대해 해당 분기의 상주 인구 데이터를 조회합니다. 기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
+    @PublicEndpoint
     @GetMapping("/population/{commercialCode}")
     public ResponseEntity<Response<CommercialPopulationResponse>> getPopulationByPeriodAndCommercialCode(
         @RequestParam(defaultValue = "20233") String periodCode,
@@ -171,6 +181,7 @@ public class CommercialController {
         summary = "해당 상권이 속한 행정동 정보 조회",
         description = "해당 상권이 속한 행정동의 코드와 이름을 반환하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/{commercialCode}")
     public ResponseEntity<Response<CommercialAdministrationAreaResponse>> getAdministration(
         @PathVariable String commercialCode) {
@@ -184,6 +195,7 @@ public class CommercialController {
         description = "주어진 상권코드 및 서비스코드에 대해 해당 분기의 점포 분석 데이터를 조회합니다. " +
             "기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
+    @PublicEndpoint
     @GetMapping("/store/{commercialCode}/{serviceCode}")
     public ResponseEntity<Response<CommercialStoreResponse>> getStoreByPeriodAndCommercialCodeAndServiceCode(
         @RequestParam(defaultValue = "20233") String periodCode,
@@ -199,6 +211,7 @@ public class CommercialController {
         description = "주어진 상권코드에 대해 해당 분기의 지출 내역 분석 데이터를 조회합니다. " +
             "기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
+    @PublicEndpoint
     @GetMapping("/income/{commercialCode}")
     public ResponseEntity<Response<CommercialIncomeResponse>> getIncomeByPeriodCodeAndCommercialCode(
         @RequestParam(defaultValue = "20233") String periodCode,
@@ -213,6 +226,7 @@ public class CommercialController {
         description = "주어진 자치구, 행정동, 상권 코드에 대해 해당 분기의 지출 총 금액 데이터를 조회합니다. " +
             "기준년분기코드가 주어지지 않으면 2023년 3분기의 데이터를 사용합니다."
     )
+    @PublicEndpoint
     @GetMapping("/income/{districtCode}/{administrationCode}/{commercialCode}")
     public ResponseEntity<Response<AllIncomeResponse>> getAllIncomeByPeriodCodeAndDistrictCodeAndAdministrationCodeAndCommercialCode(
         @RequestParam(defaultValue = "20233") String periodCode,

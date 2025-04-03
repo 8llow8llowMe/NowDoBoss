@@ -11,6 +11,7 @@ import com.ssafy.backend.domain.district.dto.response.DistrictDetailResponse;
 import com.ssafy.backend.domain.district.dto.response.DistrictTopTenResponse;
 import com.ssafy.backend.domain.district.dto.response.FootTrafficDistrictDetailResponse;
 import com.ssafy.backend.domain.district.service.DistrictService;
+import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
@@ -32,6 +33,7 @@ public class DistrictController {
         summary = "자치구 Top 5 리스트",
         description = "유동인구, 매출, 개업률, 폐업률 Top 5 리스트를 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/top/ten")
     public ResponseEntity<Response<DistrictTopTenResponse>> getTopTenDistricts() {
         DistrictTopTenResponse districtTopTenResponse = districtService.getTopTenDistricts();
@@ -42,6 +44,7 @@ public class DistrictController {
         summary = "특정 자치구 상세 분석",
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/detail/{districtCode}")
     public ResponseEntity<Response<DistrictDetailResponse>> getDistrictDetail(
         @PathVariable String districtCode) {
@@ -54,6 +57,7 @@ public class DistrictController {
         summary = "특정 자치구 유동인구 상세 분석",
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/detail/footTraffic/{districtCode}")
     public ResponseEntity<Response<FootTrafficDistrictDetailResponse>> getDistrictFootTrafficDetail(
         @PathVariable String districtCode) {
@@ -66,6 +70,7 @@ public class DistrictController {
         summary = "특정 자치구 변화 지표 상세 분석",
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/detail/changeIndicator/{districtCode}")
     public ResponseEntity<Response<ChangeIndicatorDistrictResponse>> getDistrictChangeDetail(
         @PathVariable String districtCode) {
@@ -78,6 +83,7 @@ public class DistrictController {
         summary = "특정 자치구 점포 수 상세 분석",
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/detail/store/total/{districtCode}")
     public ResponseEntity<Response<List<StoreDistrictTotalTopEightInfo>>> getDistrictTotalStoreDetail(
         @PathVariable String districtCode) {
@@ -90,6 +96,7 @@ public class DistrictController {
         summary = "특정 자치구 개업률 상세 분석",
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/detail/store/opened/{districtCode}")
     public ResponseEntity<Response<List<OpenedStoreAdministrationTopFiveInfo>>> getDistrictOpenedStoreDetail(
         @PathVariable String districtCode) {
@@ -102,6 +109,7 @@ public class DistrictController {
         summary = "특정 자치구 폐업률 상세 분석",
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/detail/store/closed/{districtCode}")
     public ResponseEntity<Response<List<ClosedStoreAdministrationTopFiveInfo>>> getDistrictStoreDetail(
         @PathVariable String districtCode) {
@@ -114,6 +122,7 @@ public class DistrictController {
         summary = "특정 자치구 업종별 매출 상세 분석",
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/detail/sales/service/{districtCode}")
     public ResponseEntity<Response<List<SalesDistrictMonthSalesTopFiveInfo>>> getDistrictSalesDetailByServiceCode(
         @PathVariable String districtCode) {
@@ -126,6 +135,7 @@ public class DistrictController {
         summary = "특정 자치구 해당 행정동 매출 상세 분석",
         description = "상권변화지표 상세, 유동인구 상세, 점포 상세 분석을 제공하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/detail/sales/administration/{districtCode}")
     public ResponseEntity<Response<List<SalesAdministrationTopFiveInfo>>> getDistrictSalesDetailByAdministrationCode(
         @PathVariable String districtCode) {
@@ -138,6 +148,7 @@ public class DistrictController {
         summary = "전체 자치구 목록 조회",
         description = "모든 자치구의 코드와 이름을 반환하는 기능입니다."
     )
+    @PublicEndpoint
     @GetMapping("/areas")
     public ResponseEntity<Response<List<DistrictAreaResponse>>> getAllDistricts() {
         List<DistrictAreaResponse> areaResponseList = districtService.getAllDistricts();

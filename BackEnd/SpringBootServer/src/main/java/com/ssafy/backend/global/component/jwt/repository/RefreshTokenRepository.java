@@ -1,11 +1,10 @@
 package com.ssafy.backend.global.component.jwt.repository;
 
 import com.ssafy.backend.global.component.jwt.JwtTokenPropsInfo;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 
 /**
@@ -16,8 +15,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RefreshTokenRepository {
 
-    private final RedisTemplate<String, String> redisTemplate;
     private static final String KEY_PREFIX = "refreshToken::";
+    private final RedisTemplate<String, String> redisTemplate;
     private final JwtTokenPropsInfo tokenPropsInfo;
 
     /**

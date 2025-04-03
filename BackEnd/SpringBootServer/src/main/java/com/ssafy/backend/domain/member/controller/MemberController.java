@@ -7,6 +7,7 @@ import com.ssafy.backend.domain.member.dto.MemberPasswordChangeRequest;
 import com.ssafy.backend.domain.member.dto.MemberSignupRequest;
 import com.ssafy.backend.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.backend.domain.member.service.MemberService;
+import com.ssafy.backend.global.annotation.PublicEndpoint;
 import com.ssafy.backend.global.common.dto.Response;
 import com.ssafy.backend.global.component.jwt.security.MemberLoginActive;
 import com.ssafy.backend.global.component.jwt.service.JwtTokenService;
@@ -41,6 +42,7 @@ public class MemberController {
         summary = "회원가입",
         description = "회원정보에 필요한 정보를 입력하여 회원가입을 하는 기능입니다."
     )
+    @PublicEndpoint
     @PostMapping("/signup")
     public ResponseEntity<Response<Void>> signupMember(
         @Valid @RequestBody MemberSignupRequest signupRequest) {
@@ -52,6 +54,7 @@ public class MemberController {
         summary = "로그인",
         description = "이메일과 비밀번호를 입력하여 로그인을 하는 기능입니다."
     )
+    @PublicEndpoint
     @PostMapping("/login")
     public ResponseEntity<Response<MemberLoginResponse>> loginMember(
         @RequestBody MemberLoginRequest loginRequest,
@@ -139,6 +142,7 @@ public class MemberController {
         summary = "Access 토큰 재발급 받기",
         description = "Access 토큰이 만료된 회원이 레디스에 저장된 Refresh 토큰을 이용하여 Access 토큰을 재발급 받는 기능입니다."
     )
+    @PublicEndpoint
     @PostMapping("/reissue/accessToken/{memberEmail}")
     public ResponseEntity<Response<String>> reissueAccessToken(@PathVariable String memberEmail) {
         String reissueAccessToken = jwtTokenService.reissueAccessToken(memberEmail);
