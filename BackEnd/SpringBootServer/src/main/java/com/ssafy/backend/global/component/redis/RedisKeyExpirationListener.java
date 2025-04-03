@@ -1,6 +1,5 @@
 package com.ssafy.backend.global.component.redis;
 
-import com.ssafy.backend.domain.commercial.service.CommercialService;
 import com.ssafy.backend.domain.district.service.DistrictService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 public class RedisKeyExpirationListener implements MessageListener {
 
     private final DistrictService districtService;
-    private final CommercialService commercialService;
 
     /**
      * Redis 키 만료 이벤트가 발생했을 때 호출되는 메서드입니다. 만료된 키를 감지하고, 필요한 경우 해당 데이터를 다시 로드하여 캐시를 갱신합니다.
