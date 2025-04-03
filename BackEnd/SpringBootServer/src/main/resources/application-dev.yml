@@ -30,7 +30,18 @@ spring:
     url: ${MYSQL_DB_URL}       # 데이터베이스 URL
     username: ${MYSQL_DB_USERNAME}             # 데이터베이스 계정명
     password: ${MYSQL_DB_PASSWORD}             # 데이터베이스 계정 비밀번호
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      keepalive-time: 300000
+      connection-timeout: 10000
+      validation-timeout: 3000
+      initialization-fail-timeout: 10000
+      is-auto-commit: true
 
+  
   # NoSQL setting
   data:
     # Redis setting
