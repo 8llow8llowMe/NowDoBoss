@@ -2,8 +2,11 @@ server:
   https-url: ${SERVER_HTTPS_URL}
   fast-api-url: ${SERVER_FAST_API_URL}
   port: ${SPRING_BOOT_PORT}
+  shutdown: graceful # Graceful Shutdown 활성화
 
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s # 종료 준비 시간: 30초
   servlet:
     # file 업로드 관련 세팅 (명시적으로 설정 안할 시 Spring boot는 기본적으로 1MB로 설정됨)
     multipart:
