@@ -41,7 +41,7 @@ fi
 echo "[INFO] 현재 활성화된 환경: ${CURRENT_ENV} -> 신규 배포 환경 포트: ${NEXT_PORT}"
 
 # 1. 신규 컨테이너 실행
-docker compose -f $DOCKER_COMPOSE_FILE --env-file $ENV_FILE up --build -d $NEXT_SERVICE
+docker-compose -f $DOCKER_COMPOSE_FILE --env-file $ENV_FILE up --build -d $NEXT_SERVICE
 
 # 2. 신규 컨테이너 alias 연결 (기존과 동시에 존재 가능)
 docker network connect --alias nowdoboss-backend-springboot nowdoboss-net $NEXT_NAME || true
