@@ -40,20 +40,20 @@ fi
 
 echo "[INFO] 현재 활성화된 환경: ${CURRENT_ENV} -> 신규 배포 환경 포트: ${NEXT_PORT}"
 
-# 1. 신규 컨테이너 실행
+# 1. 신규 컨테이너 실행 (alias는 아직 X)
 docker-compose -f $DOCKER_COMPOSE_FILE --env-file $ENV_FILE up --build -d $NEXT_SERVICE
 
-# 2. 신규 컨테이너 alias 연결 (기존과 동시에 존재 가능)
-docker network connect --alias nowdoboss-backend-springboot nowdoboss-net $NEXT_NAME || true
-
-# 3. 헬스체크 (alias 붙인 뒤 API 정상 작동 확인)
+# 2. 헬스체크 (포트 기준으로 직접 검사)
 wait_for_container_health $NEXT_PORT
+
+# 3. alias를 새 컨테이너에 연결 (이 시점에 nginx가 해당 upstream을 참조해도 정상 동작)
+docker network connect --alias nowdoboss-backend-springboot nowdoboss-net $NEXT_NAME || true
 
 # 4. 기존 컨테이너 alias 제거
 docker network disconnect nowdoboss-net nowdoboss-backend-springboot-${CURRENT_ENV} || true
 
-# 5. 기존 컨테이너 종료 및 제거
+# 5. 기존 컨테이너 종료 및 삭제
 docker stop -t 30 nowdoboss-backend-springboot-${CURRENT_ENV} || true
 docker rm nowdoboss-backend-springboot-${CURRENT_ENV} || true
 
-echo "[SUCCESS] ${CURRENT_ENV} -> ${NEXT_NAME##*-} 배포 완료. nowdoboss-backend-springboot alias 전환 완료."
+echo "[SUCCESS] ${CURRENT_ENV} -> ${NEXT_ENV} 전환 완료 (alias nowdoboss-backend-springboot → ${NEXT_ENV})"
