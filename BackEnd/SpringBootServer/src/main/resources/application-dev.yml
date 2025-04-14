@@ -34,13 +34,13 @@ spring:
     username: ${MYSQL_DB_USERNAME}             # 데이터베이스 계정명
     password: ${MYSQL_DB_PASSWORD}             # 데이터베이스 계정 비밀번호
     hikari:
-      maximum-pool-size: 30
-      minimum-idle: 10
-      idle-timeout: 300000
-      max-lifetime: 1200000
-      keepalive-time: 300000
-      connection-timeout: 10000
-      validation-timeout: 3000
+      maximum-pool-size: 30             # 동시에 처리 가능한 최대 커넥션 수
+      minimum-idle: 10                  # 최소 유지 커넥션 수
+      idle-timeout: 300000              # 5분 (사용되지 않은 커넥션 반납)
+      max-lifetime: 1200000             # 20분 (MySQL wait_timeout보다 짧게)
+      keepalive-time: 300000            # 5분 (idle 커넥션 ping 유지)
+      connection-timeout: 10000         # 커넥션을 얻기 위한 최대 대기 시간
+      validation-timeout: 3000          # 커넥션 유효성 체크 응답 타임아웃
       initialization-fail-timeout: 10000
       is-auto-commit: true
 
