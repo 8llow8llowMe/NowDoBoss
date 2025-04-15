@@ -23,17 +23,7 @@ public class FootTrafficDistrictCustomRepositoryImpl implements
         QFootTrafficDistrict f1 = QFootTrafficDistrict.footTrafficDistrict;
         QFootTrafficDistrict f2 = new QFootTrafficDistrict("f2");
 
-        // 1. 유동인구 기준 상위 10개 자치구 코드 추출 (기준: 최근 분기인 "20233")
-        // TODO: 추후에 년분기코드 하드코딩이 아닌 parameter 넘겨서 하는 식으로 변경해야함
-        List<String> topTenDistrictCodes = queryFactory
-            .select(f2.districtCode)
-            .from(f2)
-            .where(f2.periodCode.eq("20233"))
-            .orderBy(f2.totalFootTraffic.desc())
-            .limit(10)
-            .fetch();
-
-        // 2. 이전 분기("20232")와 비교하여 유동인구 변화율을 계산한 결과를 record dto 형태로 조회
+        // 1. 이전 분기("20232")와 비교하여 유동인구 변화율을 계산한 결과를 record dto 형태로 조회
         // record 구조는 생성자 기반이므로 모든 파라미터를 constructor에 맞춰 넘겨야 함
         // level은 post-processing으로 계산하므로 Expressions.constant(0)으로 임시 값 채움
         List<FootTrafficDistrictTopTenResponse> rawResults = queryFactory
@@ -55,13 +45,12 @@ public class FootTrafficDistrictCustomRepositoryImpl implements
             .on(f1.districtCode.eq(f2.districtCode)) // 자치구 코드 기준으로 self join (과거 vs 현재 비교)
             .where(
                 f1.periodCode.eq("20232"), // 비교 대상: 이전 분기
-                f2.periodCode.eq("20233"), // 기준 대상: 최근 분기
-                f1.districtCode.in(topTenDistrictCodes) // 상위 10개 자치구만 추출
+                f2.periodCode.eq("20233") // 기준 대상: 최근 분기
             )
             .orderBy(f2.totalFootTraffic.desc()) // 정렬 기준: 최근 분기 유동인구
             .fetch();
 
-        // 3. Stream을 활용해 각 항목에 level 부여 후 새 record 인스턴스로 재생성
+        // 2. Stream을 활용해 각 항목에 level 부여 후 새 record 인스턴스로 재생성
         // 5개 단위로 레벨이 올라감 (ex. 1~5위 -> level = 1, 6~10위 -> level = 2)
         return IntStream.range(0, rawResults.size())
             .mapToObj(i -> {
