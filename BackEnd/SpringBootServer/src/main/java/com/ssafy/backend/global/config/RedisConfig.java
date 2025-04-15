@@ -1,6 +1,7 @@
 package com.ssafy.backend.global.config;
 
 import com.ssafy.backend.global.component.redis.RedisKeyExpirationListener;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -18,8 +19,6 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.time.Duration;
 
 /**
  * Redis 데이터 저장소 및 캐시 구성을 위한 설정 클래스입니다.
@@ -81,11 +80,14 @@ public class RedisConfig {
     @Bean
     public CacheManager contentCacheManager(RedisConnectionFactory cf) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // 키 직렬화 설정
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // 값 직렬화 설정
-                .entryTtl(Duration.ofDays(30)); // 캐시 만료 기간 설정 (30일)
+            .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                new StringRedisSerializer())) // 키 직렬화 설정
+            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                new GenericJackson2JsonRedisSerializer())) // 값 직렬화 설정
+            .entryTtl(Duration.ofDays(30)); // 캐시 만료 기간 설정 (30일)
 
-        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf).cacheDefaults(redisCacheConfiguration).build();
+        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf)
+            .cacheDefaults(redisCacheConfiguration).build();
     }
 
     /**
@@ -99,7 +101,7 @@ public class RedisConfig {
      */
     @Bean
     public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-                                                   MessageListenerAdapter listenerAdapter) {
+        MessageListenerAdapter listenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory); // Redis 연결 설정
         // Redis 키 만료 이벤트에 대한 리스너 등록
