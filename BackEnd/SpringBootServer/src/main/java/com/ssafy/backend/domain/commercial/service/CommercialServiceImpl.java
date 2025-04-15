@@ -143,12 +143,13 @@ public class CommercialServiceImpl implements CommercialService {
             .filter(ac -> seenAdministrationCodes.add(ac.getAdministrationCode()))
             .map(ac -> {
                 Point transformedPoint = transformCoordinates(ac.getX(), ac.getY());
-                return new CommercialAdministrationResponse(
-                    ac.getAdministrationCodeName(),
-                    ac.getAdministrationCode(),
-                    transformedPoint.getX(),
-                    transformedPoint.getY()
-                );
+
+                return CommercialAdministrationResponse.builder()
+                    .administrationCodeName(ac.getAdministrationCodeName())
+                    .administrationCode(ac.getAdministrationCode())
+                    .centerLat(transformedPoint.getX())
+                    .centerLng(transformedPoint.getY())
+                    .build();
             })
             .toList();
     }
