@@ -25,18 +25,7 @@ public class SalesDistrictCustomRepositoryImpl implements SalesDistrictCustomRep
         QSalesDistrict s1 = QSalesDistrict.salesDistrict;
         QSalesDistrict s2 = new QSalesDistrict("s2");
 
-        // 1. 최신 분기("20233") 기준으로 매출 상위 10개 자치구 코드 추출
-        // TODO: 기준 분기는 추후 파라미터화 필요
-        List<String> topTenDistrictCodes = queryFactory
-            .select(s2.districtCode)
-            .from(s2)
-            .where(s2.periodCode.eq("20233")) // 최신 기준
-            .groupBy(s2.districtCode)
-            .orderBy(s2.monthSales.sum().desc()) // 월 매출 합 기준 내림차순 정렬
-            .limit(10)
-            .fetch();
-
-        // 2. 이전 분기("20232")와의 비교를 통해 매출 변화율 계산
+        // 1. 이전 분기("20232")와의 비교를 통해 매출 변화율 계산
         // Projections.constructor 방식은 Record와 같이 불변 객체에 적합
         // level 값은 후처리 예정이므로 임시로 Expressions.constant(0) 처리
         List<SalesDistrictTopTenResponse> rawResults = queryFactory
@@ -71,14 +60,13 @@ public class SalesDistrictCustomRepositoryImpl implements SalesDistrictCustomRep
             )
             .from(s1)
             .where(
-                s1.periodCode.eq("20233"), // 기준 분기 조건
-                s1.districtCode.in(topTenDistrictCodes) // 상위 10개 자치구만 조회
+                s1.periodCode.eq("20233") // 기준 분기 조건
             )
             .groupBy(s1.districtCode, s1.districtCodeName)
             .orderBy(s1.monthSales.sum().desc()) // 매출 기준 정렬
             .fetch();
 
-        // 3. Stream을 활용해 각 항목에 level 부여 후 새 record 인스턴스로 재생성
+        // 2. Stream을 활용해 각 항목에 level 부여 후 새 record 인스턴스로 재생성
         // 5개 단위로 레벨이 올라감 (ex. 1~5위 -> level = 1, 6~10위 -> level = 2)
         return IntStream.range(0, rawResults.size())
             .mapToObj(i -> {
