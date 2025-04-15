@@ -4,11 +4,11 @@ import lombok.Builder;
 
 @Builder
 public record SalesDistrictTopTenResponse(
-        String districtCode,
-        String districtCodeName,
-        Long total,
-        Double totalRate,
-        int level
-
+    String districtCode,
+    String districtCodeName,
+    Long total,
+    Double totalRate,
+    int level
 ) {
+
 }
