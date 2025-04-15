@@ -38,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -54,21 +55,24 @@ public class DistrictServiceImpl implements DistrictService {
     private final AreaCommercialRepository areaCommercialRepository;
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "Contents", key = "'districts:top10'", cacheManager = "contentCacheManager")
     public DistrictTopTenResponse getTopTenDistricts() {
         // 유동 인구
-        List<FootTrafficDistrictTopTenResponse> footTrafficInfoList = footTrafficDistrictRepository.getTopTenFootTrafficDistrictByPeriodCode();
+        List<FootTrafficDistrictTopTenResponse> footTrafficDistrictTopTenResponses = footTrafficDistrictRepository.getTopTenFootTrafficDistrictByPeriodCode();
         // 매출
-        List<SalesDistrictTopTenResponse> salesInfoList = salesDistrictRepository.getTopTenSalesDistrictByPeriodCode();
+        List<SalesDistrictTopTenResponse> salesDistrictTopTenResponses = salesDistrictRepository.getTopTenSalesDistrictByPeriodCode();
         // 개업률
-        List<OpenedStoreDistrictTopTenResponse> openedStoreInfoList = storeDistrictRepository.getTopTenOpenedStoreDistrictByPeriodCode();
+        List<OpenedStoreDistrictTopTenResponse> openedStoreDistrictTopTenResponses = storeDistrictRepository.getTopTenOpenedStoreDistrictByPeriodCode();
         // 폐업률
-        List<ClosedStoreDistrictTopTenResponse> closedStoreInfoList = storeDistrictRepository.getTopTenClosedStoreDistrictByPeriodCode();
+        List<ClosedStoreDistrictTopTenResponse> closedStoreDistrictTopTenResponses = storeDistrictRepository.getTopTenClosedStoreDistrictByPeriodCode();
 
-        log.info("========================= 자치구 Top 10");
-
-        return new DistrictTopTenResponse(footTrafficInfoList, salesInfoList, openedStoreInfoList,
-            closedStoreInfoList);
+        return DistrictTopTenResponse.builder()
+            .footTrafficTopTenList(footTrafficDistrictTopTenResponses)
+            .salesTopTenList(salesDistrictTopTenResponses)
+            .openedRateTopTenList(openedStoreDistrictTopTenResponses)
+            .closedRateTopTenList(closedStoreDistrictTopTenResponses)
+            .build();
     }
 
     @Override

@@ -29,8 +29,8 @@ public class DistrictController {
     private final DistrictService districtService;
 
     @Operation(
-        summary = "자치구 Top 5 리스트",
-        description = "유동인구, 매출, 개업률, 폐업률 Top 5 리스트를 제공하는 기능입니다."
+        summary = "자치구 상위 리스트",
+        description = "유동인구, 매출, 개업률, 폐업률 상위 리스트를 제공하는 기능입니다."
     )
     @GetMapping("/top/ten")
     public ResponseEntity<Response<DistrictTopTenResponse>> getTopTenDistricts() {
