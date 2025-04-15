@@ -4,8 +4,9 @@ import lombok.Builder;
 
 @Builder
 public record StoreDistrictTotalTopEightInfo(
-        String serviceCode,
-        String serviceCodeName,
-        Long totalStore
+    String serviceCode,
+    String serviceCodeName,
+    Long totalStore
 ) {
+
 }
