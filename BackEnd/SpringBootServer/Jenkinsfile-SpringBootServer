@@ -63,6 +63,7 @@ pipeline {
                                 transfers: [
                                     sshTransfer(
                                         sourceFiles: 'BackEnd/SpringBootServer/**/*', // BackEnd Server로 전송할 파일
+                                        removePrefix: 'BackEnd/SpringBootServer', // 원격 서버에 복사할 때 이 경로(prefix)를 제거하고 deploy/backend-app 밑에 바로 파일을 복사
                                         remoteDirectory: 'deploy/backend-app', // BackEnd Server에서 작업할 디렉터리
                                         execCommand: '''
                                             cd ~/deploy/backend-app
