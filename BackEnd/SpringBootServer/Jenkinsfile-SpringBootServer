@@ -59,7 +59,7 @@ pipeline {
                     sshPublisher(
                         publishers: [
                             sshPublisherDesc(
-                                configName: 'BackEnd Server SSH' // Jenkins Web UI에서 Publish Over SSH에서 설장한 SSH Server 이름
+                                configName: 'BackEnd Server SSH', // Jenkins Web UI에서 Publish Over SSH에서 설장한 SSH Server 이름
                                 transfers: [
                                     sshTransfer(
                                         sourceFiles: 'BackEnd/SpringBootServer/**/*', // BackEnd Server로 전송할 파일
