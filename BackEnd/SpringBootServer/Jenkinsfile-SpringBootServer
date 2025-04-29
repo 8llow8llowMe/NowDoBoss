@@ -13,7 +13,7 @@ pipeline {
             printContributedVariables: false,
             printPostContent: false,
             regexpFilterText: '$IF_MERGED $BASE_BRANCH $LABEL',
-            regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*BE-Springboot)'
+            regexpFilterExpression: '(?=.*true)(?=.*develop)(?=.*BE-SpringBoot)'
         )
     }
 
@@ -53,14 +53,28 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') { 
+        stage('Transfer and Deploy on BackEnd Server') {
             steps {
                 script {
-                    dir('BackEnd/SpringBootServer') {
-                        echo "Blue/Green 전략을 이용한 배포 진행"
-                        sh "chmod +x deploy_blue_green.sh"
-                        sh "./deploy_blue_green.sh"
-                    }
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'BackEnd Server SSH' // Jenkins Web UI에서 Publish Over SSH에서 설장한 SSH Server 이름
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'BackEnd/SpringBootServer/**/*', // BackEnd Server로 전송할 파일
+                                        remoteDirectory: 'deploy/backend-app', // BackEnd Server에서 작업할 디렉터리
+                                        execCommand: '''
+                                            cd ~/deploy/backend-app
+                                            chmod +x deploy_blue_green.sh
+                                            ./deploy_blue_green.sh
+                                        ''' // BackEnd Server에서 실행할 명령어
+                                    )
+                                ],
+                                verbose; true // 상세 로그 활성화
+                            )
+                        ]
+                    )
                 }
             }
         }
